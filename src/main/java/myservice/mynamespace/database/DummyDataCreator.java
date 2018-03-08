@@ -103,7 +103,7 @@ public class DummyDataCreator {
     public static void createTestData() {
         final MongoClient mongoClient = new MongoClient("localhost", 27017);
         final Morphia morphia = new Morphia();
-        final Datastore datastore = morphia.createDatastore(mongoClient, "Flugdatenverwaltung");
+        final Datastore datastore = morphia.createDatastore(mongoClient, "Flugdatenverwaltung");//TODO checke ob man vorher checkt ob die db nicht leer ist
         morphia.mapPackage("myservice.mynamespace.database.data");
         datastore.ensureIndexes();
 

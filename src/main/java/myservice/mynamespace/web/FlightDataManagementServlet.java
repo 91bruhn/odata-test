@@ -1,5 +1,6 @@
 package myservice.mynamespace.web;
 
+import myservice.mynamespace.database.DummyDataCreator;
 import myservice.mynamespace.database.data.CRUDHandler;
 import myservice.mynamespace.service.DemoEdmProvider;
 import myservice.mynamespace.service.DemoEntityCollectionProcessor;
@@ -22,10 +23,17 @@ import java.util.ArrayList;
 /**
  *
  */
-public class DemoServlet extends HttpServlet {
+public class FlightDataManagementServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(DemoServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FlightDataManagementServlet.class);
+
+    public void init() throws ServletException {
+        LOG.info("Creating dummy data if database is empty.");
+        // creating some sample data
+        DummyDataCreator.createTestData();
+        LOG.info("Dummy data created.");//TODO verschieben
+    }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,10 +56,8 @@ public class DemoServlet extends HttpServlet {
             // let the handler do the work
             handler.process(req, resp);
         } catch (RuntimeException e) {
-            LOG.error("Server Error occurred in DemoServlet", e);
+            LOG.error("Server Error occurred in FlightDataManagementServlet", e);
             throw new ServletException(e);
         }
-
     }
-
 }

@@ -22,13 +22,24 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 
 	<servlet>
-	  <servlet-name>DemoServlet</servlet-name>
-	  <servlet-class> myservice.mynamespace.web.DemoServlet</servlet-class>
+	  <servlet-name>Servlet-flight-data-management</servlet-name>
+	  <servlet-class>myservice.mynamespace.web.FlightDataManagementServlet</servlet-class>
 	  <load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<servlet-mapping>
-	  <servlet-name>DemoServlet</servlet-name>
-	  <url-pattern>/DemoService.svc/*</url-pattern>
+	  <servlet-name>Servlet-flight-data-management</servlet-name>
+	  <url-pattern>/flightDataManagement.svc/*</url-pattern>
 	</servlet-mapping>
+
+
+    <!--<display-name>CrunchifyTutorials</display-name>-->
+    <!--<welcome-file-list>-->
+        <!--<welcome-file>index.html</welcome-file>-->
+        <!--<welcome-file>index.htm</welcome-file>-->
+        <!--<welcome-file>index.jsp</welcome-file>-->
+        <!--<welcome-file>default.html</welcome-file>-->
+        <!--<welcome-file>default.htm</welcome-file>-->
+        <!--<welcome-file>default.jsp</welcome-file>-->
+    <!--</welcome-file-list>-->
 </web-app>

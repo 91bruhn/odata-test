@@ -44,8 +44,6 @@ public class CRUDHandler {//Service?
     private DatabaseHandler mDatabaseHandler;
 
     public CRUDHandler() {
-        // creating some sample data
-        DummyDataCreator.createTestData();//TODO anders lösen
         mDatabaseHandler = new DatabaseHandler();
     }
 
