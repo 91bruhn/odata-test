@@ -20,7 +20,7 @@ import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSOCC_B;
 import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSOCC_F;
 
 /**
- * Created by bruhn on 09.12.2017.
+ *
  */
 @Entity(value = SFLIGHT, noClassnameStored = true)
 public class Sflight {//todo compound indexes um schneller zu sein zb. monat, jahr, ...land, country

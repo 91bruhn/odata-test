@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.service;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
@@ -37,20 +36,7 @@ import static myservice.mynamespace.util.EntityTypes.getFlightEntityType;
 import static myservice.mynamespace.util.EntityTypes.getPlaneEntityType;
 
 /**
- * The base class CsdlAbstractEdmProvider provides methods for declaring the metadata of all OData elements.
- * For example: The entries that are displayed in the Service Document are provided by the method getEntityContainerInfo() The structure of EntityTypes is declared in the method getEntityType()
- * <p>
- * In our simple example, we implement the minimum amount of methods, required to run a meaningful OData service. These are:
- * <p>
- * getEntityType() Here we declare the EntityType “Product” and a few of its properties
- * getEntitySet() Here we state that the list of products can be called via the EntitySet “Products”
- * getEntityContainer() Here we provide a Container element that is necessary to host the EntitySet.
- * getSchemas() The Schema is the root element to carry the elements.
- * getEntityContainerInfo() Information about the EntityContainer to be displayed in the Service Document
- * <p>
- * Summary: We have created a class that declares the metadata of our OData service. We have declared the main elements of an OData service: EntityType, EntitySet, EntityContainer and Schema (with the corresponding Olingo classes CsdlEntityType, CsdlEntitySet, CsdlEntityContainer and CsdlSchema).
- * <p>
- * At runtime of an OData service, such metadata can be viewed by invoking the Metadata Document.
+ *
  */
 public class DemoEdmProvider extends CsdlAbstractEdmProvider {
 

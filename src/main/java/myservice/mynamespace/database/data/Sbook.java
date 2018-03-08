@@ -22,7 +22,7 @@ import static myservice.mynamespace.util.EntityNames.SBOOK_SMOKER;
 import static myservice.mynamespace.util.EntityNames.SBOOK_WUNIT;
 
 /**
- * Created by bruhn on 09.12.2017.
+ *
  */
 @Entity(value = SBOOK, noClassnameStored = true)
 public class Sbook {

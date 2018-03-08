@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.database.data;
 
 import myservice.mynamespace.database.DatabaseHandler;
@@ -37,6 +36,9 @@ import static myservice.mynamespace.util.EntityNames.ES_SPFLI_NAME;
 import static myservice.mynamespace.util.EntityNames.ET_SCARR_FQN;
 import static myservice.mynamespace.util.EntityNames.ET_SFLIGHT_FQN;
 
+/**
+ *
+ */
 public class CRUDHandler {//Service?
 
     private DatabaseHandler mDatabaseHandler;

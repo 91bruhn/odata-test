@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.service;
 
 import myservice.mynamespace.database.data.CRUDHandler;
@@ -31,6 +30,9 @@ import org.apache.olingo.server.api.uri.UriResourceNavigation;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ *
+ */
 public class DemoEntityCollectionProcessor implements EntityCollectionProcessor {
 
     private OData odata;

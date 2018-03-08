@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.service;
 
 import myservice.mynamespace.database.data.CRUDHandler;
@@ -32,6 +31,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ *
+ */
 public class DemoPrimitiveProcessor implements PrimitiveProcessor {
 
     private OData odata;

@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.database.service;
 
 import myservice.mynamespace.database.DatabaseHandler;

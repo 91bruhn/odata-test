@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.database;
 
 import com.mongodb.MongoClient;
@@ -12,7 +11,6 @@ import myservice.mynamespace.database.data.enums.Currency;
 import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import myservice.mynamespace.database.data.enums.UnitOfSpeed;
-import myservice.mynamespace.delete.EnterTestData;
 import org.apache.commons.collections.CollectionUtils;
 import org.bson.BSONObject;
 import org.mongodb.morphia.Datastore;
@@ -20,7 +18,9 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.converters.LocalDateConverter;
 import org.mongodb.morphia.converters.LocalDateTimeConverter;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -108,31 +108,45 @@ public class DummyDataCreator {
         datastore.ensureIndexes();
 
         ////////////////////////SCARR////////////////////////
-        BSONObject jsonArray = readJson("/dummyData/dummyDataScarr.json", EnterTestData.class);//todo this.getClass()
+        BSONObject jsonArray = readJson("/dummyData/dummyDataScarr.json", DummyDataCreator.class);
         List<Scarr> carriers = transformScarr(jsonArray);
         datastore.save(carriers);
         ////////////////////////SAPLANE////////////////////////
-        jsonArray = readJson("/dummyData/dummyDataSaplane.json", EnterTestData.class);
+        jsonArray = readJson("/dummyData/dummyDataSaplane.json", DummyDataCreator.class);
         List<Saplane> planes = transformSaplane(jsonArray);
         datastore.save(planes);
         ////////////////////////SPFLI////////////////////////
-        jsonArray = readJson("/dummyData/dummyDataSpfli.json", EnterTestData.class);
+        jsonArray = readJson("/dummyData/dummyDataSpfli.json", DummyDataCreator.class);
         List<Spfli> connections = transformSpfli(jsonArray, carriers);
         datastore.save(connections);
         ////////////////////////SFLIGHTS////////////////////////
-        jsonArray = readJson("/dummyData/dummyDataSflight.json", EnterTestData.class);
+        jsonArray = readJson("/dummyData/dummyDataSflight.json", DummyDataCreator.class);
         List<Sflight> flights = transformSflight(jsonArray, carriers, connections, planes);
         datastore.save(flights);
         ////////////////////////SBOOKS////////////////////////
-        jsonArray = readJson("/dummyData/dummyDataSbook.json", EnterTestData.class);
+        jsonArray = readJson("/dummyData/dummyDataSbook.json", DummyDataCreator.class);
         List<Sbook> bookings = transformSbooking(jsonArray, carriers, connections, flights);//mehrzahl
         datastore.save(bookings);
     }
 
     private static BSONObject readJson(String path, Class clazz) {
         final InputStream inputStream = clazz.getResourceAsStream(path);
-        final String json = EnterTestData.readFromInputStream(inputStream);
+        final String json = readFromInputStream(inputStream);
         return (BSONObject) JSON.parse(json);
+    }
+
+    public static String readFromInputStream(InputStream inputStream) {
+        StringBuilder resultStringBuilder = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = br.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+        } catch (Exception e) {
+            System.out.print("");
+        }
+        return resultStringBuilder.toString();
     }
 
     private static List<Scarr> transformScarr(BSONObject jsonArray) {

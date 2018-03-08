@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.database;
 
 import com.mongodb.MongoClient;

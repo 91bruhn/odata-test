@@ -25,7 +25,7 @@ import static myservice.mynamespace.util.EntityNames.SPFLI_FLTYPE;
 import static myservice.mynamespace.util.EntityNames.SPFLI_PERIOD;
 
 /**
- * Created by bruhn on 09.12.2017.
+ *
  */
 @Entity(value = SPFLI, noClassnameStored = true)
 public class Spfli {

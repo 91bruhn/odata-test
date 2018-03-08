@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.web;
 
 import myservice.mynamespace.database.data.CRUDHandler;
@@ -20,6 +19,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class DemoServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

@@ -3,7 +3,7 @@ package myservice.mynamespace.util;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
 /**
- * Created by bruhn on 05.12.2017.
+ *
  */
 public class EntityNames {
     // Service Namespace

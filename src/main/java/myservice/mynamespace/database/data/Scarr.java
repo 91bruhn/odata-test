@@ -12,7 +12,7 @@ import static myservice.mynamespace.util.EntityNames.SCARR_CURRCODE;
 import static myservice.mynamespace.util.EntityNames.SCARR_URL;
 
 /**
- * Created by bruhn on 09.12.2017.
+ *
  */
 @Entity(value = SCARR, noClassnameStored = true)
 public class Scarr {

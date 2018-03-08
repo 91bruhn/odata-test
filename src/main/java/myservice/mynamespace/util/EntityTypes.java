@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.util;
 
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;

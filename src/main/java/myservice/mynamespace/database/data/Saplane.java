@@ -27,7 +27,7 @@ import static myservice.mynamespace.util.EntityNames.SAPLANE_WEIGHT;
 import static myservice.mynamespace.util.EntityNames.SAPLANE_WEI_UNIT;
 
 /**
- * Created by bruhn on 09.12.2017.
+ *
  */
 @Entity(value = SAPLANE, noClassnameStored = true)
 public class Saplane {

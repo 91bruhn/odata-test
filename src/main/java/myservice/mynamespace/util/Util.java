@@ -1,4 +1,3 @@
-
 package myservice.mynamespace.util;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +21,9 @@ import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ *
+ */
 public class Util {
 
     public static EdmEntitySet getEdmEntitySet(UriInfoResource uriInfo) throws ODataApplicationException {
