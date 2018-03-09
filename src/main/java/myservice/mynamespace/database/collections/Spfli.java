@@ -1,4 +1,4 @@
-package myservice.mynamespace.database.data;
+package myservice.mynamespace.database.collections;
 
 import myservice.mynamespace.database.data.enums.UnitOfLength;
 import org.mongodb.morphia.annotations.Entity;
@@ -8,21 +8,21 @@ import org.mongodb.morphia.annotations.Reference;
 
 import java.time.LocalTime;
 
-import static myservice.mynamespace.util.EntityNames.SPFLI;
-import static myservice.mynamespace.util.EntityNames.SPFLI_AIRPFROM;
-import static myservice.mynamespace.util.EntityNames.SPFLI_AIRPTO;
-import static myservice.mynamespace.util.EntityNames.SPFLI_ARRTIME;
-import static myservice.mynamespace.util.EntityNames.SPFLI_CITYFROM;
-import static myservice.mynamespace.util.EntityNames.SPFLI_CITYTO;
-import static myservice.mynamespace.util.EntityNames.SPFLI_CONNID;
-import static myservice.mynamespace.util.EntityNames.SPFLI_COUNTRYFR;
-import static myservice.mynamespace.util.EntityNames.SPFLI_COUNTRYTO;
-import static myservice.mynamespace.util.EntityNames.SPFLI_DEPTIME;
-import static myservice.mynamespace.util.EntityNames.SPFLI_DISTANCE;
-import static myservice.mynamespace.util.EntityNames.SPFLI_DISTID;
-import static myservice.mynamespace.util.EntityNames.SPFLI_FLTIME;
-import static myservice.mynamespace.util.EntityNames.SPFLI_FLTYPE;
-import static myservice.mynamespace.util.EntityNames.SPFLI_PERIOD;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_AIRPFROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_AIRPTO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_ARRTIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_CITYFROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_CITYTO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_CONNID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_COUNTRYFR;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_COUNTRYTO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_DEPTIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_DISTANCE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_DISTID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_FLTIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_FLTYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_PERIOD;
 
 /**
  *

@@ -1,6 +1,6 @@
 package myservice.mynamespace.service;
 
-import myservice.mynamespace.database.data.CRUDHandler;
+import myservice.mynamespace.database.service.CRUDHandler;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
@@ -34,13 +34,13 @@ import java.util.Locale;
 /**
  *
  */
-public class DemoPrimitiveProcessor implements PrimitiveProcessor {
+public class FlightDataPrimitiveProcessor implements org.apache.olingo.server.api.processor.PrimitiveProcessor {
 
     private OData odata;
     private CRUDHandler mCRUDHandler;
     private ServiceMetadata serviceMetadata;
 
-    public DemoPrimitiveProcessor(CRUDHandler CRUDHandler) {
+    public FlightDataPrimitiveProcessor(CRUDHandler CRUDHandler) {
         this.mCRUDHandler = CRUDHandler;
     }
 

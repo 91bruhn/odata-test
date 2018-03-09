@@ -1,6 +1,6 @@
-package myservice.mynamespace.database.data;
+package myservice.mynamespace.database.collections;
 
-import myservice.mynamespace.database.data.enums.Currency;
+import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
@@ -8,16 +8,16 @@ import org.mongodb.morphia.annotations.Reference;
 
 import java.util.Date;
 
-import static myservice.mynamespace.util.EntityNames.SFLIGHT;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_CURRENCY;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_FLDATE;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_PRICE;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSMAX;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSMAX_B;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSMAX_F;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSOCC;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSOCC_B;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_SEATSOCC_F;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_CURRENCY;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_FLDATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_PRICE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_SEATSMAX;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_SEATSMAX_B;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_SEATSMAX_F;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_SEATSOCC;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_SEATSOCC_B;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_SEATSOCC_F;
 
 /**
  *
@@ -45,7 +45,7 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
     private double price;
 
     @Property(SFLIGHT_CURRENCY)
-    private Currency currency;
+    private UnitOfCurrency currency;
 
     @Property(SFLIGHT_SEATSMAX)
     private int seatsMax;
@@ -67,7 +67,7 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
 
     public Sflight() {}
 
-    public Sflight(Date flDate, Scarr carrId, Spfli connId, Saplane planeType, double price, Currency currency, int seatsMax, int seatsOcc, int seatsMaxB,
+    public Sflight(Date flDate, Scarr carrId, Spfli connId, Saplane planeType, double price, UnitOfCurrency currency, int seatsMax, int seatsOcc, int seatsMaxB,
                    int seatsOccB, int seatsMaxF, int seatsOccF) {
         this.flDate = flDate;
         this.carrId = carrId;
@@ -123,11 +123,11 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
         this.price = price;
     }
 
-    public Currency getCurrency() {
+    public UnitOfCurrency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(UnitOfCurrency currency) {
         this.currency = currency;
     }
 

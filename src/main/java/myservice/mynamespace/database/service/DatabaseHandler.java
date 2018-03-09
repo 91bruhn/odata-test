@@ -1,17 +1,18 @@
-package myservice.mynamespace.database;
+package myservice.mynamespace.database.service;
 
 import com.mongodb.MongoClient;
-import myservice.mynamespace.database.data.Saplane;
-import myservice.mynamespace.database.data.Sbook;
-import myservice.mynamespace.database.data.Scarr;
-import myservice.mynamespace.database.data.Sflight;
-import myservice.mynamespace.database.data.Spfli;
+import myservice.mynamespace.database.collections.Saplane;
+import myservice.mynamespace.database.collections.Sbook;
+import myservice.mynamespace.database.collections.Scarr;
+import myservice.mynamespace.database.collections.Sflight;
+import myservice.mynamespace.database.collections.Spfli;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -86,7 +87,7 @@ public class DatabaseHandler {
 
     // ----FIND DATA----
 
-    public Object getById(Class clazz, String id){
+    public Object getById(Class clazz, String id) {
         return datastore.get(clazz, id);
     }
 
@@ -111,6 +112,26 @@ public class DatabaseHandler {
         //        List<Sflight> s = datastore.createQuery(Sflight.class).filter(CARRIER_ID + "=", carrierCode).asList();
 
         return query.asList();
+    }
+
+    public List<Sbook> findBookingsForFlight(String carrierCode, String connId, Date fldate) {
+        //TODO check querying von meiner thesis
+        //Documents.find( { "owner": "123456", "category": "recipes", "date.year": 2015 } );
+        //        Documents.find({
+        //                           "owner": "123456",
+        //            "category": { $in: [ "photos", "announcements" ] },
+        //        "date.year": { $lt: 2015 },
+        //        "tags": { $in: [ 'baby', 'wedding' ] }
+        //        });
+
+        //query.field("price").greaterThanOrEq(1000);
+
+        //        q.and(
+        //            q.criteria("width").equal(10),
+        //            q.criteria("height").equal(1)
+        //        );
+        //        Query<Sbook> query = datastore.find(Sbook.class).
+        return null;
     }
 
 }

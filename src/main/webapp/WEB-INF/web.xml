@@ -23,7 +23,7 @@
 
 	<servlet>
 	  <servlet-name>Servlet-flight-data-management</servlet-name>
-	  <servlet-class>myservice.mynamespace.web.FlightDataManagementServlet</servlet-class>
+	  <servlet-class>myservice.mynamespace.web.FlightDataServlet</servlet-class>
 	  <load-on-startup>1</load-on-startup>
 	</servlet>
 	

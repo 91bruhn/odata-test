@@ -1,4 +1,4 @@
-package myservice.mynamespace.database.data;
+package myservice.mynamespace.database.collections;
 
 import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
@@ -7,24 +7,24 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 
-import static myservice.mynamespace.util.EntityNames.SAPLANE;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_CAP_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_CONSUM;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_CON_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_LENG;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_LENG_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_OP_SPEED;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_PLANETYPE;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_PRODUCER;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SEATSMAX;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SEATSMAX_B;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SEATSMAX_F;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SPAN;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SPAN_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SPEED_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_TANKCAP;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_WEIGHT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_WEI_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CAP_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CONSUM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CON_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_LENG;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_LENG_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_OP_SPEED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_PLANETYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_PRODUCER;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SEATSMAX;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SEATSMAX_B;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SEATSMAX_F;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SPAN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SPAN_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SPEED_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_TANKCAP;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_WEIGHT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_WEI_UNIT;
 
 /**
  *

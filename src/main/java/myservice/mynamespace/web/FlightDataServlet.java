@@ -1,11 +1,11 @@
 package myservice.mynamespace.web;
 
-import myservice.mynamespace.database.DummyDataCreator;
-import myservice.mynamespace.database.data.CRUDHandler;
-import myservice.mynamespace.service.DemoEdmProvider;
-import myservice.mynamespace.service.DemoEntityCollectionProcessor;
-import myservice.mynamespace.service.DemoEntityProcessor;
-import myservice.mynamespace.service.DemoPrimitiveProcessor;
+import myservice.mynamespace.database.service.DummyDataCreator;
+import myservice.mynamespace.database.service.CRUDHandler;
+import myservice.mynamespace.service.FlightDataEdmProvider;
+import myservice.mynamespace.service.FlightDataEntityCollectionProcessor;
+import myservice.mynamespace.service.FlightDataEntityProcessor;
+import myservice.mynamespace.service.FlightDataPrimitiveProcessor;
 import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataHttpHandler;
 import org.apache.olingo.server.api.ServiceMetadata;
@@ -23,10 +23,10 @@ import java.util.ArrayList;
 /**
  *
  */
-public class FlightDataManagementServlet extends HttpServlet {
+public class FlightDataServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(FlightDataManagementServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FlightDataServlet.class);
 
     public void init() throws ServletException {
         LOG.info("Creating dummy data if database is empty.");
@@ -45,18 +45,18 @@ public class FlightDataManagementServlet extends HttpServlet {
                 session.setAttribute(CRUDHandler.class.getName(), CRUDHandler);
             }
 
-            // create odata handler and configure it with EdmProvider and Processor
+            // create odata handler and configure it with FlightDataEdmProvider and Processor
             final OData odata = OData.newInstance();
-            final ServiceMetadata edm = odata.createServiceMetadata(new DemoEdmProvider(), new ArrayList<>());
+            final ServiceMetadata edm = odata.createServiceMetadata(new FlightDataEdmProvider(), new ArrayList<>());
             final ODataHttpHandler handler = odata.createHandler(edm);
-            handler.register(new DemoEntityCollectionProcessor(CRUDHandler));
-            handler.register(new DemoEntityProcessor(CRUDHandler));
-            handler.register(new DemoPrimitiveProcessor(CRUDHandler));
+            handler.register(new FlightDataEntityCollectionProcessor(CRUDHandler));
+            handler.register(new FlightDataEntityProcessor(CRUDHandler));
+            handler.register(new FlightDataPrimitiveProcessor(CRUDHandler));
 
             // let the handler do the work
             handler.process(req, resp);
         } catch (RuntimeException e) {
-            LOG.error("Server Error occurred in FlightDataManagementServlet", e);
+            LOG.error("Server Error occurred in FlightDataServlet", e);
             throw new ServletException(e);
         }
     }

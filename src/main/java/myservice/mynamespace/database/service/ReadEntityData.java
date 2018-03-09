@@ -1,4 +1,4 @@
-package myservice.mynamespace.database.data;
+package myservice.mynamespace.database.service;
 
 import myservice.mynamespace.util.Util;
 import org.apache.olingo.commons.api.data.Entity;

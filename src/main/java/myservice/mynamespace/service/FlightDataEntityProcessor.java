@@ -1,6 +1,6 @@
 package myservice.mynamespace.service;
 
-import myservice.mynamespace.database.data.CRUDHandler;
+import myservice.mynamespace.database.service.CRUDHandler;
 import myservice.mynamespace.util.Util;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.ContextURL.Suffix;
@@ -38,13 +38,13 @@ import java.util.Locale;
 /**
  *
  */
-public class DemoEntityProcessor implements EntityProcessor {
+public class FlightDataEntityProcessor implements org.apache.olingo.server.api.processor.EntityProcessor {
 
     private OData odata;
     private ServiceMetadata srvMetadata;
     private CRUDHandler mCRUDHandler;
 
-    public DemoEntityProcessor(CRUDHandler CRUDHandler) {
+    public FlightDataEntityProcessor(CRUDHandler CRUDHandler) {
         this.mCRUDHandler = CRUDHandler;
     }
 

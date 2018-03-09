@@ -1,15 +1,15 @@
-package myservice.mynamespace.database.data;
+package myservice.mynamespace.database.collections;
 
-import myservice.mynamespace.database.data.enums.Currency;
+import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 
-import static myservice.mynamespace.util.EntityNames.SCARR;
-import static myservice.mynamespace.util.EntityNames.SCARR_CARRID;
-import static myservice.mynamespace.util.EntityNames.SCARR_CARRNAME;
-import static myservice.mynamespace.util.EntityNames.SCARR_CURRCODE;
-import static myservice.mynamespace.util.EntityNames.SCARR_URL;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CARRID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CARRNAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CURRCODE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_URL;
 
 /**
  *
@@ -25,7 +25,7 @@ public class Scarr {
     private String carrName;
 
     @Property(SCARR_CURRCODE)
-    private Currency currCode;
+    private UnitOfCurrency currCode;
 
     @Property(SCARR_URL)
     private String url;
@@ -33,7 +33,7 @@ public class Scarr {
     public Scarr() {
     }
 
-    public Scarr(String carrId, String carrName, Currency currCode, String url) {
+    public Scarr(String carrId, String carrName, UnitOfCurrency currCode, String url) {
         this.carrId = carrId;
         this.carrName = carrName;
         this.currCode = currCode;
@@ -56,11 +56,11 @@ public class Scarr {
         this.carrName = carrName;
     }
 
-    public Currency getCurrCode() {
+    public UnitOfCurrency getCurrCode() {
         return currCode;
     }
 
-    public void setCurrCode(Currency currCode) {
+    public void setCurrCode(UnitOfCurrency currCode) {
         this.currCode = currCode;
     }
 

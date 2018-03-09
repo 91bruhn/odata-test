@@ -1,4 +1,4 @@
-package myservice.mynamespace.util;
+package myservice.mynamespace.service.entities.definitions;
 
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
@@ -11,68 +11,69 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static myservice.mynamespace.util.EntityNames.AIRPORT_FROM;
-import static myservice.mynamespace.util.EntityNames.AIRPORT_TO;
-import static myservice.mynamespace.util.EntityNames.ARRIVAL_TIME;
-import static myservice.mynamespace.util.EntityNames.BOOKING_ID;
-import static myservice.mynamespace.util.EntityNames.CARRIER_ID;
-import static myservice.mynamespace.util.EntityNames.CARRIER_NAME;
-import static myservice.mynamespace.util.EntityNames.CITY_FROM;
-import static myservice.mynamespace.util.EntityNames.CITY_TO;
-import static myservice.mynamespace.util.EntityNames.CONNECTION_ID;
-import static myservice.mynamespace.util.EntityNames.CONSUMPTION;
-import static myservice.mynamespace.util.EntityNames.CONSUM_UNIT;
-import static myservice.mynamespace.util.EntityNames.COUNTRY_FROM;
-import static myservice.mynamespace.util.EntityNames.COUNTRY_TO;
-import static myservice.mynamespace.util.EntityNames.CURRENCY;
-import static myservice.mynamespace.util.EntityNames.CUSTOMER_ID;
-import static myservice.mynamespace.util.EntityNames.DEPARTURE_TIME;
-import static myservice.mynamespace.util.EntityNames.DISTANCE_UNIT;
-import static myservice.mynamespace.util.EntityNames.DISTANCE____;
-import static myservice.mynamespace.util.EntityNames.ES_SFLIGHT_NAME;
-import static myservice.mynamespace.util.EntityNames.ET_SAPLANE_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SAPLANE_NAME;
-import static myservice.mynamespace.util.EntityNames.ET_SBOOK_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SBOOK_NAME;
-import static myservice.mynamespace.util.EntityNames.ET_SCARR_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SCARR_NAME;
-import static myservice.mynamespace.util.EntityNames.ET_SFLIGHT_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SFLIGHT_NAME;
-import static myservice.mynamespace.util.EntityNames.ET_SPFLI_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SPFLI_NAME;
-import static myservice.mynamespace.util.EntityNames.FLIGHT_CLASS;
-import static myservice.mynamespace.util.EntityNames.FLIGHT_DATE;
-import static myservice.mynamespace.util.EntityNames.FLIGHT_TIME;
-import static myservice.mynamespace.util.EntityNames.FLIGHT_TYPE;
-import static myservice.mynamespace.util.EntityNames.HAS_INVOICE;
-import static myservice.mynamespace.util.EntityNames.IS_CANCELLED;
-import static myservice.mynamespace.util.EntityNames.IS_RESERVED;
-import static myservice.mynamespace.util.EntityNames.IS_SMOKER;
-import static myservice.mynamespace.util.EntityNames.LENGTH;
-import static myservice.mynamespace.util.EntityNames.LENGTH_UNIT;
-import static myservice.mynamespace.util.EntityNames.LUGGAGE_WEIGHT;
-import static myservice.mynamespace.util.EntityNames.ORDER_DATE;
-import static myservice.mynamespace.util.EntityNames.PERIOD____;
-import static myservice.mynamespace.util.EntityNames.PLANE_TYPE;
-import static myservice.mynamespace.util.EntityNames.PRICE;
-import static myservice.mynamespace.util.EntityNames.PRODUCER;
-import static myservice.mynamespace.util.EntityNames.SEATS_MAX;
-import static myservice.mynamespace.util.EntityNames.SEATS_MAX_B;
-import static myservice.mynamespace.util.EntityNames.SEATS_MAX_E;
-import static myservice.mynamespace.util.EntityNames.SEATS_MAX_F;
-import static myservice.mynamespace.util.EntityNames.SEATS_OCC_B;
-import static myservice.mynamespace.util.EntityNames.SEATS_OCC_E;
-import static myservice.mynamespace.util.EntityNames.SEATS_OCC_F;
-import static myservice.mynamespace.util.EntityNames.SEX;
-import static myservice.mynamespace.util.EntityNames.SPAN;
-import static myservice.mynamespace.util.EntityNames.SPAN_UNIT;
-import static myservice.mynamespace.util.EntityNames.SPEED;
-import static myservice.mynamespace.util.EntityNames.SPEED_UNIT;
-import static myservice.mynamespace.util.EntityNames.TANK_CAPACITY;
-import static myservice.mynamespace.util.EntityNames.TANK_CAP_UNIT;
-import static myservice.mynamespace.util.EntityNames.URL;
-import static myservice.mynamespace.util.EntityNames.WEIGHT;
-import static myservice.mynamespace.util.EntityNames.WEIGHT_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.AIRPORT_FROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.AIRPORT_TO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ARRIVAL_TIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.BOOKING_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CITY_FROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CITY_TO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CONNECTION_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CONSUMPTION;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CONSUM_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.COUNTRY_FROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.COUNTRY_TO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CURRENCY;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CUSTOMER_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DEPARTURE_TIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DISTANCE_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DISTANCE____;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SBOOK_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SFLIGHT_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SPFLI_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SAPLANE_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SAPLANE_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SBOOK_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SCARR_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SCARR_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SFLIGHT_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SFLIGHT_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SPFLI_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SPFLI_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_CLASS;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_TIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_TYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.HAS_INVOICE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.IS_CANCELLED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.IS_RESERVED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.IS_SMOKER;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.LENGTH;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.LENGTH_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.LUGGAGE_WEIGHT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ORDER_DATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.PERIOD____;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.PLANE_TYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.PRICE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.PRODUCER;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEATS_MAX;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEATS_MAX_B;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEATS_MAX_E;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEATS_MAX_F;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEATS_OCC_B;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEATS_OCC_E;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEATS_OCC_F;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SEX;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPAN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPAN_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPEED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPEED_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.TANK_CAPACITY;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.TANK_CAP_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.URL;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.WEIGHT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.WEIGHT_UNIT;
 
 /**
  *
@@ -123,31 +124,28 @@ public class EntityTypes {
         final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(CONNECTION_ID);
         final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(FLIGHT_DATE);
 
-        // navigation property: many-to-one, null not allowed (product must have a category)
-        //TODO hier one-to-many zb: setName: Mehrzahl setPartner: Einzahl
+        // navigation properties
         final CsdlNavigationProperty navPropCarrier = new CsdlNavigationProperty().setName(ET_SCARR_NAME)
                                                                                   .setType(ET_SCARR_FQN)
                                                                                   .setPartner(ES_SFLIGHT_NAME)
                                                                                   .setCollection(false)
                                                                                   .setNullable(false);
         final CsdlNavigationProperty navPropConnection = new CsdlNavigationProperty().setName(ET_SPFLI_NAME)
-                                                                                      .setType(ET_SPFLI_FQN)
-                                                                                      .setPartner(ET_SFLIGHT_NAME)
-                                                                                      .setCollection(false)
-                                                                                      .setNullable(false);//TODO checke ob doch coll?
-
-        //implementieren
+                                                                                     .setType(ET_SPFLI_FQN)
+                                                                                     .setPartner(ES_SFLIGHT_NAME)
+                                                                                     .setCollection(false)
+                                                                                     .setNullable(false);
         final CsdlNavigationProperty navPropPlane = new CsdlNavigationProperty().setName(ET_SAPLANE_NAME)
                                                                                 .setType(ET_SAPLANE_FQN)
-                                                                                .setPartner(ET_SFLIGHT_NAME)
+                                                                                .setPartner(ES_SFLIGHT_NAME)
                                                                                 .setCollection(false)
                                                                                 .setNullable(false);
-        final CsdlNavigationProperty navPropBooking = new CsdlNavigationProperty().setName(ET_SBOOK_NAME)
-                                                                                  .setType(ET_SBOOK_FQN)
-                                                                                  .setPartner(ET_SFLIGHT_NAME)
-                                                                                  .setCollection(false)
-                                                                                  .setNullable(false);
-        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropCarrier, navPropConnection, navPropPlane, navPropBooking));
+        final CsdlNavigationProperty navPropBookings = new CsdlNavigationProperty().setName(ES_SBOOK_NAME)
+                                                                                   .setType(ET_SBOOK_FQN)
+                                                                                   .setPartner(ET_SFLIGHT_NAME)
+                                                                                   .setCollection(true)
+                                                                                   .setNullable(false);
+        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropCarrier, navPropConnection, navPropPlane, navPropBookings));
 
         // configure EntityType
         entityType = new CsdlEntityType();
@@ -196,32 +194,24 @@ public class EntityTypes {
         final CsdlPropertyRef propRefCarrierId = new CsdlPropertyRef().setName(CARRIER_ID);
         final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(CONNECTION_ID);
 
-        // navigation property: one-to-many//TODO navigation stuff
-        //TODO check hier und oben ob mehrzahl nicht vertauscht.
-        //        final CsdlNavigationProperty navPropPlane = new CsdlNavigationProperty().setName(ET_SAPLANE_NAME)
-        //                                                                                .setType(ET_SAPLANE_FQN)
-        //                                                                                .setPartner(ET_SFLIGHT_NAME)
-        //                                                                                .setCollection(false)
-        //                                                                                .setNullable(false);//TODO Verbindung ermöglichen?
-
+        // navigation properties
         final CsdlNavigationProperty navPropFlights = new CsdlNavigationProperty().setName(ES_SFLIGHT_NAME)
-                                                                                      .setType(ET_SPFLI_FQN)
-                                                                                      .setPartner(ET_SPFLI_NAME)
-                                                                                      .setCollection(true)
-                                                                                      .setNullable(false);
-
-        //implementieren
-        final CsdlNavigationProperty navPropBooking = new CsdlNavigationProperty().setName(ET_SBOOK_NAME)
-                                                                                  .setType(ET_SBOOK_FQN)
+                                                                                  .setType(ET_SFLIGHT_FQN)
                                                                                   .setPartner(ET_SPFLI_NAME)
-                                                                                  .setCollection(false)
+                                                                                  .setCollection(true)
                                                                                   .setNullable(false);
+        final CsdlNavigationProperty navPropBookings = new CsdlNavigationProperty().setName(ES_SBOOK_NAME)
+                                                                                   .setType(ET_SBOOK_FQN)
+                                                                                   .setPartner(ET_SPFLI_NAME)
+                                                                                   .setCollection(true)
+                                                                                   .setNullable(false);
         final CsdlNavigationProperty navPropCarrier = new CsdlNavigationProperty().setName(ET_SCARR_NAME)
                                                                                   .setType(ET_SCARR_FQN)
-                                                                                  .setPartner(ET_SPFLI_NAME)
+                                                                                  .setPartner(ES_SPFLI_NAME)
                                                                                   .setCollection(false)
-                                                                                  .setNullable(false);//TODO Einzahl Connection?
-        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropFlights, navPropBooking, navPropCarrier));
+                                                                                  .setNullable(false);
+        //TODO implement navigation to plane
+        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropFlights, navPropBookings, navPropCarrier));
 
         // configure EntityType
         entityType = new CsdlEntityType();
@@ -261,10 +251,25 @@ public class EntityTypes {
         entityType.setProperties(Arrays.asList(carrierId, carrierName, currency, url));
         entityType.setKey(Collections.singletonList(propRefCarrierId));
 
-        //navigation //TODO check Einzahl oder Mehrzahl
-        final CsdlNavigationProperty navProp = new CsdlNavigationProperty().setName(ES_SFLIGHT_NAME).setType(ET_SFLIGHT_FQN).setCollection(true).setNullable(
-            false).setPartner(ET_SCARR_NAME);
-        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navProp));//ES_SFLIGHT_NAME
+        // navigation properties
+        final CsdlNavigationProperty navPropFlights = new CsdlNavigationProperty().setName(ES_SFLIGHT_NAME)
+                                                                                  .setType(ET_SFLIGHT_FQN)
+                                                                                  .setPartner(ET_SCARR_NAME)
+                                                                                  .setCollection(true)
+                                                                                  .setNullable(false);
+        final CsdlNavigationProperty navPropConnections = new CsdlNavigationProperty().setName(ES_SPFLI_NAME)
+                                                                                      .setType(ET_SPFLI_FQN)
+                                                                                      .setPartner(ET_SCARR_NAME)
+                                                                                      .setCollection(true)
+                                                                                      .setNullable(false);
+        final CsdlNavigationProperty navPropBookings = new CsdlNavigationProperty().setName(ES_SBOOK_NAME)
+                                                                                   .setType(ET_SBOOK_FQN)
+                                                                                   .setPartner(ET_SCARR_NAME)
+                                                                                   .setCollection(true)
+                                                                                   .setNullable(false);
+        //TODO implement navigation to plane
+
+        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropConnections, navPropFlights, navPropBookings));
         entityType.setNavigationProperties(navPropList);
 
         return entityType;
@@ -294,6 +299,24 @@ public class EntityTypes {
         final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(BOOKING_ID);
         final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(BOOKING_ID);
 
+        // navigation properties
+        final CsdlNavigationProperty navPropFlight = new CsdlNavigationProperty().setName(ET_SFLIGHT_NAME)
+                                                                                 .setType(ET_SFLIGHT_FQN)
+                                                                                 .setPartner(ES_SBOOK_NAME)
+                                                                                 .setCollection(false)
+                                                                                 .setNullable(false);
+        final CsdlNavigationProperty navPropConnection = new CsdlNavigationProperty().setName(ET_SPFLI_NAME)
+                                                                                     .setType(ET_SPFLI_FQN)
+                                                                                     .setPartner(ES_SBOOK_NAME)
+                                                                                     .setCollection(false)
+                                                                                     .setNullable(false);
+        final CsdlNavigationProperty navPropCarrier = new CsdlNavigationProperty().setName(ET_SCARR_NAME)
+                                                                                  .setType(ET_SCARR_FQN)
+                                                                                  .setPartner(ES_SBOOK_NAME)
+                                                                                  .setCollection(false)
+                                                                                  .setNullable(false);
+        //TODO implement flight
+
         entityType = new CsdlEntityType();
         entityType.setName(ET_SPFLI_NAME);
         entityType.setProperties(Arrays.asList(bookingId,
@@ -311,6 +334,10 @@ public class EntityTypes {
                                                isCancelled,
                                                isReserved));
         entityType.setKey(Arrays.asList(propRefBookingId, propRefCarrierId, propRefConnectionId, propRefFlightDate));
+
+        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropFlight, navPropConnection, navPropCarrier));
+
+        entityType.setNavigationProperties(navPropList);
 
         return entityType;
     }
@@ -341,6 +368,16 @@ public class EntityTypes {
         final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(BOOKING_ID);
         final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(BOOKING_ID);
 
+        // navigation properties
+        final CsdlNavigationProperty navPropFlights = new CsdlNavigationProperty().setName(ES_SFLIGHT_NAME)
+                                                                                  .setType(ET_SFLIGHT_FQN)
+                                                                                  .setPartner(ET_SAPLANE_NAME)
+                                                                                  .setCollection(true)
+                                                                                  .setNullable(false);
+        //TODO implement navigation to connection, booking, carrier
+
+        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropFlights));
+
         entityType = new CsdlEntityType();
         entityType.setName(ET_SPFLI_NAME);
         entityType.setProperties(Arrays.asList(planeType,
@@ -361,6 +398,8 @@ public class EntityTypes {
                                                speedUnit,
                                                producer));
         entityType.setKey(Arrays.asList(propRefBookingId, propRefCarrierId, propRefConnectionId, propRefFlightDate));
+
+        entityType.setNavigationProperties(navPropList);
 
         return entityType;
     }

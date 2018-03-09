@@ -1,9 +1,10 @@
-package myservice.mynamespace.database.data;
+package myservice.mynamespace.database.service;
 
-import myservice.mynamespace.database.DatabaseHandler;
-import myservice.mynamespace.database.DummyDataCreator;
-import myservice.mynamespace.database.service.DataTransformator;
-import myservice.mynamespace.util.EntityNames;
+import myservice.mynamespace.database.collections.Saplane;
+import myservice.mynamespace.database.collections.Sbook;
+import myservice.mynamespace.database.collections.Scarr;
+import myservice.mynamespace.database.collections.Sflight;
+import myservice.mynamespace.service.entities.definitions.EntityNames;
 import myservice.mynamespace.util.Util;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,18 +24,24 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static myservice.mynamespace.util.EntityNames.CARRIER_ID;
-import static myservice.mynamespace.util.EntityNames.ES_SAPLANE_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SBOOK_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SCARR_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SFLIGHT_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SPFLI_NAME;
-import static myservice.mynamespace.util.EntityNames.ET_SCARR_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SFLIGHT_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CONNECTION_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SAPLANE_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SBOOK_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SCARR_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SFLIGHT_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SPFLI_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SAPLANE_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SBOOK_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SCARR_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SFLIGHT_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SPFLI_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
 
 /**
  *
@@ -379,11 +386,14 @@ public class CRUDHandler {//Service?
       /* INTERNAL */
 
     ////////////////////////Navigation////////////////////////
+    //nur ein ergebnis kann zurückkomen vom aufruf
     public Entity getRelatedEntity(Entity entity, EdmEntityType relatedEntityType) {
         final EntityCollection collection = getRelatedEntityCollection(entity, relatedEntityType);
+
         if (collection.getEntities().isEmpty()) {
             return null;
         }
+
         return collection.getEntities().get(0);//TODO check, ists immer das 1.?
     }
 
@@ -394,25 +404,237 @@ public class CRUDHandler {//Service?
     }
 
     public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) {
-        final EntityCollection navigationTargetEntityCollection = new EntityCollection();
-        final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
         final String sourceEntityFqn = sourceEntity.getType();
+        final boolean navFromFlights = sourceEntityFqn.equals(ET_SFLIGHT_FQN.getFullQualifiedNameAsString());
+        final boolean navFromCarriers = sourceEntityFqn.equals(ET_SCARR_FQN.getFullQualifiedNameAsString());
+        final boolean navFromConnections = sourceEntityFqn.equals(ET_SPFLI_FQN.getFullQualifiedNameAsString());
+        final boolean navFromPlanes = sourceEntityFqn.equals(ET_SAPLANE_FQN.getFullQualifiedNameAsString());
+        final boolean navFromBookings = sourceEntityFqn.equals(ET_SBOOK_FQN.getFullQualifiedNameAsString());
+        EntityCollection navigationTargetEntityCollection = new EntityCollection();
 
-        if (sourceEntityFqn.equals(ET_SFLIGHT_FQN.getFullQualifiedNameAsString()) && relatedEntityFqn.equals(ET_SCARR_FQN)) {
-            this.FlightCarrier(sourceEntity, navigationTargetEntityCollection);
-        } else if (sourceEntityFqn.equals(ET_SCARR_FQN.getFullQualifiedNameAsString()) && relatedEntityFqn.equals(ET_SFLIGHT_FQN)) {
-            this.CarrierFlight(sourceEntity, navigationTargetEntityCollection);
+        if (navFromFlights) {
+            navigationTargetEntityCollection = this.getFlightssssss(sourceEntity, targetEntityType, navigationTargetEntityCollection);
+        } else if (navFromCarriers) {
+            navigationTargetEntityCollection = this.getCarreirsssssss(sourceEntity, targetEntityType, navigationTargetEntityCollection);
+        } else if (navFromConnections) {
+            navigationTargetEntityCollection = this.getConnectionsssssss(sourceEntity, targetEntityType, navigationTargetEntityCollection);
+        } else if (navFromPlanes) {
+            navigationTargetEntityCollection = this.getPlanessssssss(sourceEntity, targetEntityType, navigationTargetEntityCollection);
+        } else if (navFromBookings) {
+            navigationTargetEntityCollection = this.getBookingssssss(sourceEntity, targetEntityType, navigationTargetEntityCollection);
         }
 
-        if (navigationTargetEntityCollection.getEntities().isEmpty()) {
+        if (navigationTargetEntityCollection == null) {
+            //TODO LOG
             return null;
         }
 
         return navigationTargetEntityCollection;
     }
 
+    private EntityCollection getFlightssssss(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {
+        final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
+        final boolean navToCarrier = relatedEntityFqn.equals(ET_SCARR_FQN);
+        final boolean navToConnection = relatedEntityFqn.equals(ET_SPFLI_FQN);
+        final boolean navToPlane = relatedEntityFqn.equals(ET_SAPLANE_FQN);
+        final boolean navToBookings = relatedEntityFqn.equals(ET_SBOOK_FQN);
+
+        if (navToCarrier) {
+            return this.getCarrierforFlight(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToConnection) {
+            return this.getConnectionForFlight(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToPlane) {
+            return this.getPlaneForFlight(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToBookings) {
+            return this.getBookingsForFlight(sourceEntity, navigationTargetEntityCollection);
+        } else {
+            return null;
+        }
+    }
+
+    private EntityCollection getBookingsForFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        //von flight - carrierId, connid, fldate
+
+        final String carrierCode = (String) sourceEntity.getProperty(CARRIER_ID).getValue();
+        final String connectionId = (String) sourceEntity.getProperty(CONNECTION_ID).getValue();
+        final Date fldate = (Date) sourceEntity.getProperty(FLIGHT_DATE).getValue();
+        final List<Sbook> sbookings = mDatabaseHandler.findBookingsForFlight(carrierCode, connectionId, fldate);
+        //        final List<Entity> bookings = DataTransformator.
+        return null;
+    }
+
+    private EntityCollection getPlaneForFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getConnectionForFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getCarreirsssssss(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {
+        final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
+        final boolean navToFlights = relatedEntityFqn.equals(ET_SFLIGHT_FQN);
+        final boolean navToConnections = relatedEntityFqn.equals(ET_SPFLI_FQN);
+        final boolean navToBookings = relatedEntityFqn.equals(ET_SBOOK_FQN);
+        //TODO implement
+        final boolean navToPlane = relatedEntityFqn.equals(ET_SAPLANE_FQN);
+
+        if (navToFlights) {
+            return this.getFlightsForCarrier(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToConnections) {
+            return this.getConnectionsForCarrier(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToPlane) {
+            return this.getPlaneForCarrier(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToBookings) {
+            return this.getBookingsForCarrier(sourceEntity, navigationTargetEntityCollection);
+        } else {
+            return null;
+        }
+    }
+
+    private EntityCollection getBookingsForCarrier(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getPlaneForCarrier(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getConnectionsForCarrier(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getConnectionsssssss(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {
+        final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
+        final boolean navToCarrier = relatedEntityFqn.equals(ET_SCARR_FQN);
+        final boolean navToFlights = relatedEntityFqn.equals(ET_SFLIGHT_FQN);
+        final boolean navToBookings = relatedEntityFqn.equals(ET_SBOOK_FQN);
+        //TODO implement
+        final boolean navToPlane = relatedEntityFqn.equals(ET_SAPLANE_FQN);
+
+        if (navToFlights) {
+            return this.getFlightsForConnection(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToCarrier) {
+            return this.getCarrierForConnection(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToPlane) {
+            return this.getPlaneForConnection(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToBookings) {
+            return this.getBookingsForConnection(sourceEntity, navigationTargetEntityCollection);
+        } else {
+            return null;
+        }
+    }
+
+    private EntityCollection getBookingsForConnection(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getPlaneForConnection(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getCarrierForConnection(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getFlightsForConnection(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getPlanessssssss(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {
+        final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
+        final boolean navToFlights = relatedEntityFqn.equals(ET_SFLIGHT_FQN);
+        //TODO implement
+        final boolean navToCarrier = relatedEntityFqn.equals(ET_SAPLANE_FQN);
+        final boolean navToConnection = relatedEntityFqn.equals(ET_SPFLI_FQN);
+        final boolean navToBookings = relatedEntityFqn.equals(ET_SBOOK_FQN);
+
+        if (navToFlights) {
+            return this.getFlightsForPlane(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToConnection) {
+            return this.getConnectionForPlane(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToCarrier) {
+            return this.getCarrierForPlane(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToBookings) {
+            return this.getBookingsForPlane(sourceEntity, navigationTargetEntityCollection);
+        } else {
+            return null;
+        }
+    }
+
+    private EntityCollection getBookingsForPlane(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getCarrierForPlane(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getConnectionForPlane(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getFlightsForPlane(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getBookingssssss(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {
+        final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
+        final boolean navToCarrier = relatedEntityFqn.equals(ET_SAPLANE_FQN);
+        final boolean navToFlight = relatedEntityFqn.equals(ET_SFLIGHT_FQN);
+        final boolean navToConnection = relatedEntityFqn.equals(ET_SPFLI_FQN);
+        //TODO implement
+        final boolean navToPlane = relatedEntityFqn.equals(ET_SAPLANE_FQN);
+
+        if (navToFlight) {
+            return this.getFlightForBooking(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToConnection) {
+            return this.getConnectionForBooking(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToCarrier) {
+            return this.getCarrierForBooking(sourceEntity, navigationTargetEntityCollection);
+        } else if (navToPlane) {
+            return this.getPlaneForBooking(sourceEntity, navigationTargetEntityCollection);
+        } else {
+            return null;
+        }
+    }
+
+    private EntityCollection getPlaneForBooking(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getCarrierForBooking(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getConnectionForBooking(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
+    private EntityCollection getFlightForBooking(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
+        //TODO implement
+        return null;
+    }
+
     //TODO implementiere um von flügen den dazugehörigen carrier zu bekommen
-    private EntityCollection FlightCarrier(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {//TODO name
+    private EntityCollection getCarrierforFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {//TODO name
         // relation Products->Category (result all categories) todo überarbeite kommentar
         final String carrierCode = (String) sourceEntity.getProperty(CARRIER_ID).getValue();
         final Scarr scarr = (Scarr) mDatabaseHandler.getById(Scarr.class, carrierCode);
@@ -422,17 +644,9 @@ public class CRUDHandler {//Service?
         return navigationTargetEntityCollection;
     }
 
-    //        if (productID == 1 || productID == 2) {
-    //            navigationTargetEntityCollection.getEntities().add(categoryList.get(0));
-    //        } else if (productID == 3 || productID == 4) {
-    //            navigationTargetEntityCollection.getEntities().add(categoryList.get(1));
-    //        } else if (productID == 5 || productID == 6) {
-    //            navigationTargetEntityCollection.getEntities().add(categoryList.get(2));
-    //        }
-    private EntityCollection CarrierFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {//TODO name
-        // relation Category->Products (result all products)
+    private EntityCollection getFlightsForCarrier(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {//TODO name
         final String carrierCode = (String) sourceEntity.getProperty(CARRIER_ID).getValue();
-        final List<Entity> flights = new ArrayList<Entity>();
+        final List<Entity> flights = new ArrayList<>();
         final List<Sflight> sflights = mDatabaseHandler.findFlightsForCarrier(carrierCode);
 
         flights.addAll(sflights.stream().map(DataTransformator::transformSflightToEntity).collect(Collectors.toList()));
@@ -442,6 +656,13 @@ public class CRUDHandler {//Service?
         return navigationTargetEntityCollection;
     }
 
+    private URI createId(String entitySetName, Object id) {
+        try {
+            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
+        } catch (URISyntaxException e) {
+            throw new ODataRuntimeException("Unable to create id for entity: " + entitySetName, e);
+        }
+    }
     //
     //    /* HELPER */
     //    private URI createId(Entity entity, String idPropertyName) {
@@ -462,19 +683,11 @@ public class CRUDHandler {//Service?
     //            }
     //        }
 
-    private URI createId(String entitySetName, Object id) {
-        try {
-            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
-        } catch (URISyntaxException e) {
-            throw new ODataRuntimeException("Unable to create id for entity: " + entitySetName, e);
-        }
-    }
-
     //    private String getEntitySetName(Entity entity) {
-    //        if (DemoEdmProvider.ET_SPFLI_FQN.getFullQualifiedNameAsString().equals(entity.getType())) {
-    //            return DemoEdmProvider.ES_SPFLI_NAME;
-    //        } else if (DemoEdmProvider.ET_SFLIGHT_FQN.getFullQualifiedNameAsString().equals(entity.getType())) {
-    //            return DemoEdmProvider.ES_SFLIGHT_NAME;
+    //        if (FlightDataEdmProvider.ET_SPFLI_FQN.getFullQualifiedNameAsString().equals(entity.getType())) {
+    //            return FlightDataEdmProvider.ES_SPFLI_NAME;
+    //        } else if (FlightDataEdmProvider.ET_SFLIGHT_FQN.getFullQualifiedNameAsString().equals(entity.getType())) {
+    //            return FlightDataEdmProvider.ES_SFLIGHT_NAME;
     //        }
     //        return entity.getType();
     //    }

@@ -1,4 +1,4 @@
-package myservice.mynamespace.database.data;
+package myservice.mynamespace.database.collections;
 
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import org.mongodb.morphia.annotations.Entity;
@@ -8,18 +8,18 @@ import org.mongodb.morphia.annotations.Reference;
 
 import java.util.Date;
 
-import static myservice.mynamespace.util.EntityNames.SBOOK;
-import static myservice.mynamespace.util.EntityNames.SBOOK_BOOKID;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CANCELLED;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CLASS;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CUSTOMID;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CUSTTYPE;
-import static myservice.mynamespace.util.EntityNames.SBOOK_INVOICE;
-import static myservice.mynamespace.util.EntityNames.SBOOK_LUGGWEIGHT;
-import static myservice.mynamespace.util.EntityNames.SBOOK_ORDER_DATE;
-import static myservice.mynamespace.util.EntityNames.SBOOK_RESERVED;
-import static myservice.mynamespace.util.EntityNames.SBOOK_SMOKER;
-import static myservice.mynamespace.util.EntityNames.SBOOK_WUNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_BOOKID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CANCELLED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CLASS;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CUSTOMID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CUSTTYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_INVOICE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_LUGGWEIGHT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_ORDER_DATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_RESERVED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_SMOKER;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_WUNIT;
 
 /**
  *

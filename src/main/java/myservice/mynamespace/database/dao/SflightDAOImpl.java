@@ -1,6 +1,6 @@
 package myservice.mynamespace.database.dao;
 
-import myservice.mynamespace.database.data.Sflight;
+import myservice.mynamespace.database.collections.Sflight;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;

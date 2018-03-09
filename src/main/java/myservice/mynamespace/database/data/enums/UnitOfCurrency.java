@@ -3,7 +3,7 @@ package myservice.mynamespace.database.data.enums;
 /**
  *
  */
-public enum Currency {
+public enum UnitOfCurrency {
     USD,
     EUR,
     CAD,

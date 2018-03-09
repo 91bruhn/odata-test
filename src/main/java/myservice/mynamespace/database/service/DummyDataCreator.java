@@ -1,13 +1,13 @@
-package myservice.mynamespace.database;
+package myservice.mynamespace.database.service;
 
 import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
-import myservice.mynamespace.database.data.Saplane;
-import myservice.mynamespace.database.data.Sbook;
-import myservice.mynamespace.database.data.Scarr;
-import myservice.mynamespace.database.data.Sflight;
-import myservice.mynamespace.database.data.Spfli;
-import myservice.mynamespace.database.data.enums.Currency;
+import myservice.mynamespace.database.collections.Saplane;
+import myservice.mynamespace.database.collections.Sbook;
+import myservice.mynamespace.database.collections.Scarr;
+import myservice.mynamespace.database.collections.Sflight;
+import myservice.mynamespace.database.collections.Spfli;
+import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import myservice.mynamespace.database.data.enums.UnitOfSpeed;
@@ -31,59 +31,59 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static myservice.mynamespace.util.EntityNames.COUNTRY_FROM;
-import static myservice.mynamespace.util.EntityNames.COUNTRY_TO;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_CAP_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_CONSUM;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_CON_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_LENG;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_LENG_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_OP_SPEED;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_PLANETYPE;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_PRODUCER;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SEATSMAX;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SEATSMAX_B;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SEATSMAX_F;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SPAN;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SPAN_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_SPEED_UNIT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_TANKCAP;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_WEIGHT;
-import static myservice.mynamespace.util.EntityNames.SAPLANE_WEI_UNIT;
-import static myservice.mynamespace.util.EntityNames.SBOOK_BOOKID;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CANCELLED;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CARRID;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CLASS;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CONNID;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CUSTOMID;
-import static myservice.mynamespace.util.EntityNames.SBOOK_CUSTTYPE;
-import static myservice.mynamespace.util.EntityNames.SBOOK_INVOICE;
-import static myservice.mynamespace.util.EntityNames.SBOOK_LUGGWEIGHT;
-import static myservice.mynamespace.util.EntityNames.SBOOK_ORDER_DATE;
-import static myservice.mynamespace.util.EntityNames.SBOOK_RESERVED;
-import static myservice.mynamespace.util.EntityNames.SBOOK_SMOKER;
-import static myservice.mynamespace.util.EntityNames.SBOOK_WUNIT;
-import static myservice.mynamespace.util.EntityNames.SCARR_CARRID;
-import static myservice.mynamespace.util.EntityNames.SCARR_CARRNAME;
-import static myservice.mynamespace.util.EntityNames.SCARR_CURRCODE;
-import static myservice.mynamespace.util.EntityNames.SCARR_URL;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_CARRID;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_CONNID;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_FLDATE;
-import static myservice.mynamespace.util.EntityNames.SFLIGHT_PLANETYPE;
-import static myservice.mynamespace.util.EntityNames.SPFLI_AIRPFROM;
-import static myservice.mynamespace.util.EntityNames.SPFLI_AIRPTO;
-import static myservice.mynamespace.util.EntityNames.SPFLI_ARRTIME;
-import static myservice.mynamespace.util.EntityNames.SPFLI_CARRID;
-import static myservice.mynamespace.util.EntityNames.SPFLI_CITYFROM;
-import static myservice.mynamespace.util.EntityNames.SPFLI_CITYTO;
-import static myservice.mynamespace.util.EntityNames.SPFLI_CONNID;
-import static myservice.mynamespace.util.EntityNames.SPFLI_DEPTIME;
-import static myservice.mynamespace.util.EntityNames.SPFLI_DISTANCE;
-import static myservice.mynamespace.util.EntityNames.SPFLI_DISTID;
-import static myservice.mynamespace.util.EntityNames.SPFLI_FLTIME;
-import static myservice.mynamespace.util.EntityNames.SPFLI_FLTYPE;
-import static myservice.mynamespace.util.EntityNames.SPFLI_PERIOD;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.COUNTRY_FROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.COUNTRY_TO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CAP_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CONSUM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CON_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_LENG;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_LENG_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_OP_SPEED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_PLANETYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_PRODUCER;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SEATSMAX;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SEATSMAX_B;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SEATSMAX_F;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SPAN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SPAN_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_SPEED_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_TANKCAP;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_WEIGHT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_WEI_UNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_BOOKID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CANCELLED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CARRID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CLASS;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CONNID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CUSTOMID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CUSTTYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_INVOICE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_LUGGWEIGHT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_ORDER_DATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_RESERVED;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_SMOKER;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_WUNIT;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CARRID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CARRNAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CURRCODE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_URL;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_CARRID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_CONNID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_FLDATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_PLANETYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_AIRPFROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_AIRPTO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_ARRTIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_CARRID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_CITYFROM;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_CITYTO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_CONNID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_DEPTIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_DISTANCE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_DISTID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_FLTIME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_FLTYPE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI_PERIOD;
 
 /**
  *
@@ -158,7 +158,7 @@ public class DummyDataCreator {
             final Scarr carrier = new Scarr();
             carrier.setCarrId(convertToString(jsonObject, SCARR_CARRID));
             carrier.setCarrName(convertToString(jsonObject, SCARR_CARRNAME));
-            carrier.setCurrCode(Currency.valueOf(convertToString(jsonObject, SCARR_CURRCODE)));
+            carrier.setCurrCode(UnitOfCurrency.valueOf(convertToString(jsonObject, SCARR_CURRCODE)));
             carrier.setUrl(convertToString(jsonObject, SCARR_URL));
 
             carriers.add(carrier);
@@ -466,7 +466,7 @@ public class DummyDataCreator {
 
     //preis berechnet sich aus der distanz, die business class ist hier nicht bekannt und auch egal, es handelt sich um einen standard preis
     //der preis kann nochmal in sbook extra berechnet werden, indem die klasse miteinbezogen wird.
-    private static double calculateFlightPrice(double distance, UnitOfLength distanceUnit, Currency currency) {
+    private static double calculateFlightPrice(double distance, UnitOfLength distanceUnit, UnitOfCurrency currency) {
         double price;
 
         //calculate base price depending on flight distance

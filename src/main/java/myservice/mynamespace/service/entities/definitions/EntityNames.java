@@ -1,4 +1,4 @@
-package myservice.mynamespace.util;
+package myservice.mynamespace.service.entities.definitions;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
@@ -7,7 +7,7 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
  */
 public class EntityNames {
     // Service Namespace
-    public static final String NAMESPACE = "OData.Flugdatenverwaltung";//TODO flugdatenverwaltung??
+    public static final String NAMESPACE = "OData.Flugdatenverwaltung";//TODO flugdatenverwaltung?? --> flight data management
 
     // EDM Container
     public static final String CONTAINER_NAME = "Container";//TODO flugdaten??

@@ -1,11 +1,10 @@
 package myservice.mynamespace.database.service;
 
-import myservice.mynamespace.database.DatabaseHandler;
-import myservice.mynamespace.database.data.Saplane;
-import myservice.mynamespace.database.data.Sbook;
-import myservice.mynamespace.database.data.Scarr;
-import myservice.mynamespace.database.data.Sflight;
-import myservice.mynamespace.database.data.Spfli;
+import myservice.mynamespace.database.collections.Saplane;
+import myservice.mynamespace.database.collections.Sbook;
+import myservice.mynamespace.database.collections.Scarr;
+import myservice.mynamespace.database.collections.Sflight;
+import myservice.mynamespace.database.collections.Spfli;
 import org.apache.olingo.commons.api.data.Entity;
 
 import java.util.List;

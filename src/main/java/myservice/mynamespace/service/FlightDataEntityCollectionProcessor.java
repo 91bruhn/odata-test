@@ -1,6 +1,6 @@
 package myservice.mynamespace.service;
 
-import myservice.mynamespace.database.data.CRUDHandler;
+import myservice.mynamespace.database.service.CRUDHandler;
 import myservice.mynamespace.util.Util;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.Entity;
@@ -33,14 +33,14 @@ import java.util.Locale;
 /**
  *
  */
-public class DemoEntityCollectionProcessor implements EntityCollectionProcessor {
+public class FlightDataEntityCollectionProcessor implements org.apache.olingo.server.api.processor.EntityCollectionProcessor {
 
     private OData odata;
     private ServiceMetadata srvMetadata;
     // our database-mock
     private CRUDHandler mCRUDHandler;//TODO nutze stattdessen eigene Implementierung
 
-    public DemoEntityCollectionProcessor(CRUDHandler CRUDHandler) {
+    public FlightDataEntityCollectionProcessor(CRUDHandler CRUDHandler) {
         this.mCRUDHandler = CRUDHandler;
     }
 
@@ -108,7 +108,7 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
                 }
                 // then fetch the entity collection where the entity navigates to
                 // note: we don't need to check uriResourceNavigation.isCollection(),
-                // because we are the EntityCollectionProcessor
+                // because we are the FlightDataEntityCollectionProcessor
                 responseEntityCollection = mCRUDHandler.getRelatedEntityCollection(sourceEntity, targetEntityType);
 
             }

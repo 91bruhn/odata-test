@@ -11,34 +11,34 @@ import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 import java.util.ArrayList;
 import java.util.List;
 
-import static myservice.mynamespace.util.EntityNames.CONTAINER;
-import static myservice.mynamespace.util.EntityNames.CONTAINER_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SAPLANE_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SBOOK_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SCARR_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SFLIGHT_NAME;
-import static myservice.mynamespace.util.EntityNames.ES_SPFLI_NAME;
-import static myservice.mynamespace.util.EntityNames.ET_SAPLANE_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SBOOK_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SCARR_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SFLIGHT_FQN;
-import static myservice.mynamespace.util.EntityNames.ET_SPFLI_FQN;
-import static myservice.mynamespace.util.EntityNames.NAMESPACE;
-import static myservice.mynamespace.util.EntitySets.getBookingEntitySet;
-import static myservice.mynamespace.util.EntitySets.getCarrierEntitySet;
-import static myservice.mynamespace.util.EntitySets.getConnectionsEntitySet;
-import static myservice.mynamespace.util.EntitySets.getFlightsEntitySet;
-import static myservice.mynamespace.util.EntitySets.getPlaneEntitySet;
-import static myservice.mynamespace.util.EntityTypes.getBookingEntityType;
-import static myservice.mynamespace.util.EntityTypes.getCarrierEntityType;
-import static myservice.mynamespace.util.EntityTypes.getConnectionEntityType;
-import static myservice.mynamespace.util.EntityTypes.getFlightEntityType;
-import static myservice.mynamespace.util.EntityTypes.getPlaneEntityType;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CONTAINER;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.CONTAINER_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SAPLANE_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SBOOK_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SCARR_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SFLIGHT_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SPFLI_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SAPLANE_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SBOOK_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SCARR_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SFLIGHT_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SPFLI_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.NAMESPACE;
+import static myservice.mynamespace.service.entities.definitions.EntitySets.getBookingEntitySet;
+import static myservice.mynamespace.service.entities.definitions.EntitySets.getCarrierEntitySet;
+import static myservice.mynamespace.service.entities.definitions.EntitySets.getConnectionsEntitySet;
+import static myservice.mynamespace.service.entities.definitions.EntitySets.getFlightsEntitySet;
+import static myservice.mynamespace.service.entities.definitions.EntitySets.getPlaneEntitySet;
+import static myservice.mynamespace.service.entities.definitions.EntityTypes.getBookingEntityType;
+import static myservice.mynamespace.service.entities.definitions.EntityTypes.getCarrierEntityType;
+import static myservice.mynamespace.service.entities.definitions.EntityTypes.getConnectionEntityType;
+import static myservice.mynamespace.service.entities.definitions.EntityTypes.getFlightEntityType;
+import static myservice.mynamespace.service.entities.definitions.EntityTypes.getPlaneEntityType;
 
 /**
  *
  */
-public class DemoEdmProvider extends CsdlAbstractEdmProvider {
+public class FlightDataEdmProvider extends CsdlAbstractEdmProvider {
 
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
