@@ -290,7 +290,7 @@ public class EntityTypes {
         final CsdlProperty weightUnit = new CsdlProperty().setName(WEIGHT_UNIT).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty hasInvoice = new CsdlProperty().setName(HAS_INVOICE).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
         final CsdlProperty flightClass = new CsdlProperty().setName(FLIGHT_CLASS).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        final CsdlProperty orderDate = new CsdlProperty().setName(ORDER_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+        final CsdlProperty orderDate = new CsdlProperty().setName(ORDER_DATE).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty isCancelled = new CsdlProperty().setName(IS_CANCELLED).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
         final CsdlProperty isReserved = new CsdlProperty().setName(IS_RESERVED).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
 

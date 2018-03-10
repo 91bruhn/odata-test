@@ -1,6 +1,7 @@
 package myservice.mynamespace.service;
 
-import myservice.mynamespace.database.service.CRUDHandler;
+import myservice.mynamespace.database.service.crud.CRUDHandler;
+import myservice.mynamespace.database.service.crud.NavigationHandler;
 import myservice.mynamespace.util.Util;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.Entity;
@@ -16,7 +17,6 @@ import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ODataResponse;
 import org.apache.olingo.server.api.ServiceMetadata;
-import org.apache.olingo.server.api.processor.EntityCollectionProcessor;
 import org.apache.olingo.server.api.serializer.EntityCollectionSerializerOptions;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.SerializerException;
@@ -39,9 +39,11 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
     private ServiceMetadata srvMetadata;
     // our database-mock
     private CRUDHandler mCRUDHandler;//TODO nutze stattdessen eigene Implementierung
+    private NavigationHandler mCRUDHandlerNavigation;
 
-    public FlightDataEntityCollectionProcessor(CRUDHandler CRUDHandler) {
-        this.mCRUDHandler = CRUDHandler;
+    public FlightDataEntityCollectionProcessor(CRUDHandler CRUDHandler, NavigationHandler navigationHandler) {
+        mCRUDHandler = CRUDHandler;
+        mCRUDHandlerNavigation = navigationHandler;
     }
 
     public void init(OData odata, ServiceMetadata serviceMetadata) {
@@ -109,7 +111,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
                 // then fetch the entity collection where the entity navigates to
                 // note: we don't need to check uriResourceNavigation.isCollection(),
                 // because we are the FlightDataEntityCollectionProcessor
-                responseEntityCollection = mCRUDHandler.getRelatedEntityCollection(sourceEntity, targetEntityType);
+                responseEntityCollection = mCRUDHandlerNavigation.getRelatedEntityCollection(sourceEntity, targetEntityType);
 
             }
         } else { // this would be the case for e.g. Products(1)/Category/Products

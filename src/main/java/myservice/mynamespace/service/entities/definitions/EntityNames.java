@@ -6,6 +6,11 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
  *
  */
 public class EntityNames {
+
+    // Morphia TODO vllt woanders hin damit
+    public static final String DB_NAME = "Flugdatenverwaltung";
+    public static final String PACKAGE_NAME = "myservice.mynamespace.database.data";
+
     // Service Namespace
     public static final String NAMESPACE = "OData.Flugdatenverwaltung";//TODO flugdatenverwaltung?? --> flight data management
 
@@ -36,8 +41,11 @@ public class EntityNames {
     public static final String ES_SFLIGHT_NAME = "Flights";
     public static final String ES_SBOOK_NAME = "Bookings";
 
-
-
+    // Mongo DB ID Naming
+    public static final String DB_ID = "_id";
+    public static final String DB_CARRIER_ID = "carrId";
+    public static final String DB_CONNECTION_ID = "connId";
+    public static final String DB_FLIGHT_DATE = "flDate";
 
 
     //COMMON --> URL-PATH-NAMES //TODO Umwandlung möglich? URL = PRICE; Anzeige = Airfare

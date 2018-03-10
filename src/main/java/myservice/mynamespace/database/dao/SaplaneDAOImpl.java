@@ -1,11 +1,20 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Created by BBruhns on 10.03.2018.
+//
+// Copyright (c) 2006 - 2018 FORCAM GmbH. All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+
 package myservice.mynamespace.database.dao;
 
 import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
+import myservice.mynamespace.database.collections.Saplane;
 import myservice.mynamespace.database.collections.Scarr;
 import myservice.mynamespace.database.collections.Sflight;
 import myservice.mynamespace.database.collections.Spfli;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
@@ -23,7 +32,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.SPF
 /**
  *
  */
-public class SflightDAOImpl extends BasicDAO<Sflight, ObjectId> implements SflightDAO {
+public class SaplaneDAOImpl extends BasicDAO<Saplane, ObjectId> implements SaplaneDAO {
 
     // ------------------------------------------------------------------------
     // constants
@@ -33,11 +42,13 @@ public class SflightDAOImpl extends BasicDAO<Sflight, ObjectId> implements Sflig
     // members
     // ------------------------------------------------------------------------
 
+    Datastore mDatastore;
+
     // ------------------------------------------------------------------------
     // constructors
     // ------------------------------------------------------------------------
 
-    public SflightDAOImpl(Class<Sflight> entityClass, MongoClient mongoClient, Morphia morphia, String dbName) {
+    public SaplaneDAOImpl(Class<Saplane> entityClass, MongoClient mongoClient, Morphia morphia, String dbName) {
         super(entityClass, mongoClient, morphia, dbName);
     }
 
@@ -45,24 +56,19 @@ public class SflightDAOImpl extends BasicDAO<Sflight, ObjectId> implements Sflig
     // methods
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    // getters/setters
-    // ------------------------------------------------------------------------
-
     @Override
-    public Sflight getById(String id) {
-        return super.get(new ObjectId(id));//TODO testen
-        //        return (Sflight) getDatastore().get(clazz, id);
+    public Saplane getById(String id) {
+        return super.get(new ObjectId(id));
     }
 
     @Override
-    public Key<Sflight> save(Sflight sflight) {
-        return super.save(sflight);
+    public Key<Saplane> save(Saplane saplane) {
+        return super.save(saplane);
     }
 
     @Override
-    public WriteResult delete(Sflight sflight) {
-        return super.delete(sflight);
+    public WriteResult delete(Saplane saplane) {
+        return super.delete(saplane);
     }
 
     @Override
@@ -71,34 +77,20 @@ public class SflightDAOImpl extends BasicDAO<Sflight, ObjectId> implements Sflig
     }
 
     @Override
-    public List<Sflight> getAllSflights() {
-        return super.createQuery().asList(new FindOptions());//.asList(new FindOptions().limit(100));
+    public List<Saplane> getAllSaplanes() {//TODO überall saplane statt splane?
+        return super.getDatastore().createQuery(Saplane.class).asList(new FindOptions());
     }
 
-    //----NAVIGATION----
     @Override
-    public Sflight findFlightByCarrierIdAndConnectionIdAndFlDate(String carrierId, String connectionId, String flDate) {//TODO check reihenfolge der attribute
-        final Query<Sflight> query = super.createQuery().field(DB_ID).equal(flDate).field(DB_CARRIER_ID).equal(new Key<>(Scarr.class, SCARR, carrierId)).field(
+    public Saplane findPlaneByCarrierIdAndConnectionIdAndFlDate(String carrierId, String connectionId, String flDate) {
+        //        Sflight sflight = this.findFlightByCarrierIdAndConnectionIdAndFlDate(carrierId, connectionId, flDate);
+        final Query<Sflight> query = getDatastore().find(Sflight.class).field(DB_ID).equal(flDate).field(DB_CARRIER_ID).equal(new Key<>(Scarr.class,
+                                                                                                                                        SCARR,
+                                                                                                                                        carrierId)).field(
             DB_CONNECTION_ID).equal(new Key<>(Spfli.class, SPFLI, connectionId));
+        final Sflight sflight = query.get();
 
-        return query.get();
-    }
-
-    @Override
-    public List<Sflight> findFlightsByCarrierId(String carrierCode) {
-        final Query<Sflight> query = super.createQuery().field(DB_CARRIER_ID).equal(new Key<>(Scarr.class, SCARR, carrierCode));
-
-        return query.asList();
-    }
-
-    @Override
-    public List<Sflight> findFlightsByCarrierIdAndConnectionId(String carrierId, String connectionId) {
-        final Query<Sflight> query = super.createQuery()
-                                          .field(DB_CARRIER_ID)
-                                          .equal(new Key<>(Scarr.class, SCARR, carrierId))
-                                          .field(DB_CONNECTION_ID)
-                                          .equal(new Key<>(Spfli.class, SPFLI, connectionId));
-        return query.asList();
+        return this.getById(sflight.getPlaneType().getPlaneType());
     }
 
 }

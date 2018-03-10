@@ -1,7 +1,8 @@
 package myservice.mynamespace.web;
 
 import myservice.mynamespace.database.service.DummyDataCreator;
-import myservice.mynamespace.database.service.CRUDHandler;
+import myservice.mynamespace.database.service.crud.CRUDHandler;
+import myservice.mynamespace.database.service.crud.NavigationHandler;
 import myservice.mynamespace.service.FlightDataEdmProvider;
 import myservice.mynamespace.service.FlightDataEntityCollectionProcessor;
 import myservice.mynamespace.service.FlightDataEntityProcessor;
@@ -39,19 +40,26 @@ public class FlightDataServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             final HttpSession session = req.getSession(true);
-            CRUDHandler CRUDHandler = (CRUDHandler) session.getAttribute(CRUDHandler.class.getName());
-            if (CRUDHandler == null) {
-                CRUDHandler = new CRUDHandler();
-                session.setAttribute(CRUDHandler.class.getName(), CRUDHandler);
+            CRUDHandler cRUDHandler = (CRUDHandler) session.getAttribute(CRUDHandler.class.getName());
+            NavigationHandler navigationHandler = (NavigationHandler) session.getAttribute(NavigationHandler.class.getName());
+
+            if (cRUDHandler == null) {
+                cRUDHandler = new CRUDHandler();
+                session.setAttribute(CRUDHandler.class.getName(), cRUDHandler);
+            }
+
+            if (navigationHandler == null) {
+                navigationHandler = new NavigationHandler();
+                session.setAttribute(NavigationHandler.class.getName(), navigationHandler);
             }
 
             // create odata handler and configure it with FlightDataEdmProvider and Processor
             final OData odata = OData.newInstance();
             final ServiceMetadata edm = odata.createServiceMetadata(new FlightDataEdmProvider(), new ArrayList<>());
             final ODataHttpHandler handler = odata.createHandler(edm);
-            handler.register(new FlightDataEntityCollectionProcessor(CRUDHandler));
-            handler.register(new FlightDataEntityProcessor(CRUDHandler));
-            handler.register(new FlightDataPrimitiveProcessor(CRUDHandler));
+            handler.register(new FlightDataEntityCollectionProcessor(cRUDHandler, navigationHandler));
+            handler.register(new FlightDataEntityProcessor(cRUDHandler, navigationHandler));
+            handler.register(new FlightDataPrimitiveProcessor(cRUDHandler));
 
             // let the handler do the work
             handler.process(req, resp);

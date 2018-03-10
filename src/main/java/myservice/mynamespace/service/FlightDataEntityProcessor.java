@@ -1,6 +1,7 @@
 package myservice.mynamespace.service;
 
-import myservice.mynamespace.database.service.CRUDHandler;
+import myservice.mynamespace.database.service.crud.CRUDHandler;
+import myservice.mynamespace.database.service.crud.NavigationHandler;
 import myservice.mynamespace.util.Util;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.ContextURL.Suffix;
@@ -20,7 +21,6 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.deserializer.DeserializerException;
 import org.apache.olingo.server.api.deserializer.DeserializerResult;
 import org.apache.olingo.server.api.deserializer.ODataDeserializer;
-import org.apache.olingo.server.api.processor.EntityProcessor;
 import org.apache.olingo.server.api.serializer.EntitySerializerOptions;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.SerializerException;
@@ -43,9 +43,11 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
     private OData odata;
     private ServiceMetadata srvMetadata;
     private CRUDHandler mCRUDHandler;
+    private NavigationHandler mNavigationHandler;
 
-    public FlightDataEntityProcessor(CRUDHandler CRUDHandler) {
-        this.mCRUDHandler = CRUDHandler;
+    public FlightDataEntityProcessor(CRUDHandler CRUDHandler, NavigationHandler navigationHandler) {
+        mCRUDHandler = CRUDHandler;
+        mNavigationHandler = navigationHandler;
     }
 
     public void init(OData odata, ServiceMetadata serviceMetadata) {
@@ -111,9 +113,10 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
                 // the key for nav is used in this case: Categories(3)/Products(5)
                 final List<UriParameter> navKeyPredicates = uriResourceNavigation.getKeyPredicates();
                 if (navKeyPredicates.isEmpty()) { // e.g. DemoService.svc/Products(1)/Category
-                    responseEntity = mCRUDHandler.getRelatedEntity(sourceEntity, responseEdmEntityType);//TODO testen to many, also /Carriers(1)/Flights(1)
+                    responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity,
+                                                                         responseEdmEntityType);//TODO testen to many, also /Carriers(1)/Flights(1)
                 } else { // e.g. DemoService.svc/Categories(3)/Products(5)
-                    responseEntity = mCRUDHandler.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
+                    responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
                 }
             }
         } else {
