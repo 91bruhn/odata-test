@@ -285,7 +285,7 @@ public class DummyDataCreator {
                 final int maxSeatsF = planeFK.getSeatsMaxF();
 
                 final Sflight flight = new Sflight();
-                flight.setFlDate(convertStringAsDateToDate(json, SFLIGHT_FLDATE));
+                flight.setFlDate(convertToString(json, SFLIGHT_FLDATE));//SAP's DATS format
                 flight.setCarrId(carrierFK);
                 flight.setConnId(connectionFK);
                 flight.setPlaneType(planeFK);
@@ -340,7 +340,7 @@ public class DummyDataCreator {
                 booking.setwUnit(UnitOfMass.valueOf(convertToString(json, SBOOK_WUNIT)));
                 booking.setInvoice(convertToCharacter(json, SBOOK_INVOICE));
                 booking.setFlightClass(convertToCharacter(json, SBOOK_CLASS));
-                booking.setOrderDate(convertStringAsDateToDate(json, SBOOK_ORDER_DATE));
+                booking.setOrderDate(convertToString(json, SBOOK_ORDER_DATE));//SAP's DATS format
                 booking.setCancelled(convertToCharacter(json, SBOOK_CANCELLED));
                 booking.setReserved(convertToCharacter(json, SBOOK_RESERVED));
 
@@ -349,7 +349,7 @@ public class DummyDataCreator {
         }
 
         return bookings;
-    }
+    }//TODO andere die noch Date sind zurück auf String
 
     //todo consider moving to utils and using in concrete entity class
     private static String convertToString(BSONObject bsonObject, String value) {
@@ -376,8 +376,15 @@ public class DummyDataCreator {
         return Double.parseDouble((convertToString(bsonObject, value)).replace(".", ""));
     }
 
+    //TODO erklärung, ich nehme die abflugszeit von der verbindung hier mit rein
+    //    private static Date conv(BSONObject bsonObject, String value, LocalTime departureTime) {
+    //        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss.SSSSSS");
+    //        LocalDateTime localDateTime = LocalDateTime.parse(date, formatter);
+    //
+    //    }
+
     private static Date convertStringAsDateToDate(BSONObject bsonObject, String value) {//2 methhoden
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         final LocalDate date = LocalDate.parse(convertToString(bsonObject, value), formatter);
         final LocalDateConverter ldc = new LocalDateConverter();
         return (Date) ldc.encode(date);

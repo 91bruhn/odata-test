@@ -107,7 +107,9 @@ public class DataTransformator {
 
         flight.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, sflight.getCarrId().getCarrId()));//Todo change name of getter
         flight.addProperty(new Property(null, CONNECTION_ID, ValueType.PRIMITIVE, sflight.getConnId().getConnId()));//Todo change name of getter
-        flight.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sflight.getFlDate().getYear() + 1900));
+        //        flight.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sflight.getFlDate().getYear() + 1900));
+        flight.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sflight.getFlDate()));
+
         //        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.PRIMITIVE, sflight.getPlaneType().getPlaneType()));
 
         //        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.COLLECTION_ENTITY, sflight.getPlaneType()));//COLLECTION_COMPLEX

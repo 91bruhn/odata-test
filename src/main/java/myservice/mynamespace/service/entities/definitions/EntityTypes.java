@@ -96,7 +96,7 @@ public class EntityTypes {
 
         final CsdlProperty connectionId = new CsdlProperty().setName(CONNECTION_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());//TODO doppelt
         final CsdlProperty flightDate = new CsdlProperty().setName(FLIGHT_DATE)
-                                                          .setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());//TODO anpassen für konsis?
+                                                          .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());//TODO anpassen für konsis?
 
         //        CsdlProperty planeType = new CsdlProperty().setName(PLANE_TYPE).setType(EdmCollection);
         //        new CsdlEnumType().set
@@ -182,7 +182,7 @@ public class EntityTypes {
         final CsdlProperty airpTo = new CsdlProperty().setName(AIRPORT_TO).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty cityTo = new CsdlProperty().setName(CITY_TO).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty countryTo = new CsdlProperty().setName(COUNTRY_TO).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        final CsdlProperty flTime = new CsdlProperty().setName(FLIGHT_TIME).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+        final CsdlProperty flTime = new CsdlProperty().setName(FLIGHT_TIME).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());//TODO korrekter typ?
         final CsdlProperty depTime = new CsdlProperty().setName(DEPARTURE_TIME).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty arrTime = new CsdlProperty().setName(ARRIVAL_TIME).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty distance = new CsdlProperty().setName(DISTANCE____).setType(EdmPrimitiveTypeKind.Double.getFullQualifiedName());
@@ -280,7 +280,7 @@ public class EntityTypes {
         final CsdlProperty bookingId = new CsdlProperty().setName(BOOKING_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty carrierId = new CsdlProperty().setName(CARRIER_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty connectionId = new CsdlProperty().setName(CONNECTION_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        final CsdlProperty flightDate = new CsdlProperty().setName(FLIGHT_DATE).setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());//TODO check
+        final CsdlProperty flightDate = new CsdlProperty().setName(FLIGHT_DATE).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());//TODO check
 
         final CsdlProperty customerId = new CsdlProperty().setName(CUSTOMER_ID).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty sex = new CsdlProperty().setName(SEX).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());

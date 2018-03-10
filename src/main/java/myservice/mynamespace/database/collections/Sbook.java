@@ -6,8 +6,6 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
-import java.util.Date;
-
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_BOOKID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CANCELLED;
@@ -65,7 +63,7 @@ public class Sbook {
     private Character flightClass;
 
     @Property(SBOOK_ORDER_DATE)
-    private Date orderDate;
+    private String orderDate;
 
     @Property(SBOOK_CANCELLED)
     private boolean cancelled;
@@ -77,7 +75,7 @@ public class Sbook {
     }
 
     public Sbook(String bookId, Scarr carrId, Spfli connId, Sflight flDate, String customId, Character custType, Character smoker, double luggWeight,
-                 UnitOfMass wUnit, boolean invoice, Character flightClass, Date orderDate, boolean cancelled, boolean reserved) {
+                 UnitOfMass wUnit, boolean invoice, Character flightClass, String orderDate, boolean cancelled, boolean reserved) {
         this.bookId = bookId;
         this.carrId = carrId;
         this.connId = connId;
@@ -191,11 +189,11 @@ public class Sbook {
         this.flightClass = flightClass;
     }
 
-    public Date getOrderDate() {
+    public String getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
     }
 

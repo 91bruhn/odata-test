@@ -6,8 +6,6 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
-import java.util.Date;
-
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_CURRENCY;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_FLDATE;
@@ -27,7 +25,7 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
 
     @Id
     @Property(SFLIGHT_FLDATE)
-    private Date flDate;
+    private String flDate;//SAP's DATS format
 
     @Reference//todo can also be loaded when this is loaded, idOnly() parameter to just save the key value
     //    @Property(SFLIGHT_CARRID)
@@ -67,8 +65,8 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
 
     public Sflight() {}
 
-    public Sflight(Date flDate, Scarr carrId, Spfli connId, Saplane planeType, double price, UnitOfCurrency currency, int seatsMax, int seatsOcc, int seatsMaxB,
-                   int seatsOccB, int seatsMaxF, int seatsOccF) {
+    public Sflight(String flDate, Scarr carrId, Spfli connId, Saplane planeType, double price, UnitOfCurrency currency, int seatsMax, int seatsOcc,
+                   int seatsMaxB, int seatsOccB, int seatsMaxF, int seatsOccF) {
         this.flDate = flDate;
         this.carrId = carrId;
         this.connId = connId;
@@ -83,11 +81,13 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
         this.seatsOccF = seatsOccF;
     }
 
-    public Date getFlDate() {
+    //todo SAP's DATS format
+    public String getFlDate() {
         return flDate;
     }
 
-    public void setFlDate(Date flDate) {
+    //todo SAP's DATS format
+    public void setFlDate(String flDate) {
         this.flDate = flDate;
     }
 

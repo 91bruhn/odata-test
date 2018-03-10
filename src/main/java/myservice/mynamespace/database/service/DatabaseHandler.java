@@ -12,7 +12,6 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -114,7 +113,7 @@ public class DatabaseHandler {
         return query.asList();
     }
 
-    public List<Sbook> findBookingsForFlight(String carrierCode, String connId, Date fldate) {
+    public List<Sbook> findBookingsForFlight(String carrierCode, String connId, String fldate) {
         //TODO check querying von meiner thesis
         //Documents.find( { "owner": "123456", "category": "recipes", "date.year": 2015 } );
         //        Documents.find({
@@ -123,7 +122,6 @@ public class DatabaseHandler {
         //        "date.year": { $lt: 2015 },
         //        "tags": { $in: [ 'baby', 'wedding' ] }
         //        });
-
         //query.field("price").greaterThanOrEq(1000);
 
         //        q.and(
@@ -131,7 +129,43 @@ public class DatabaseHandler {
         //            q.criteria("height").equal(1)
         //        );
         //        Query<Sbook> query = datastore.find(Sbook.class).
-        return null;
+
+        //        Query<Sbook> query = datastore.find(Sbook.class).field("carrId").equal(new Key<>(Scarr.class, "SCARR", carrierCode)).field("connId").equal(new Key<>(
+        //            Spfli.class,
+        //            "SPFLI",
+        //            connId)).field("flDate").equal(new Key<>(Sflight.class, "SFLIGHT", fldate));
+        //        List<Sbook> list = query.asList();
+        long start = System.currentTimeMillis();
+
+        List<Sbook> list = datastore.find(Sbook.class)
+                                    .field("carrId")
+                                    .equal(new Key<>(Scarr.class, "SCARR", carrierCode))
+                                    .field("connId")
+                                    .equal(new Key<>(Spfli.class, "SPFLI", connId))
+                                    .field("flDate")
+                                    .equal(new Key<>(Sflight.class, "SFLIGHT", fldate))
+                                    .asList();
+        long stop = System.currentTimeMillis();
+        System.out.println(stop - start);
+        start = System.currentTimeMillis();
+        list = datastore.createQuery(Sbook.class)
+                        .filter("carrId = ", new Key<>(Scarr.class, "SCARR", carrierCode))
+                        .filter("connId = ", new Key<>(Spfli.class,
+                                                       "SPFLI",
+                                                       connId))
+                        .filter("flDate = ", new Key<>(Sflight.class, "SFLIGHT", fldate))
+                        .asList();
+        stop = System.currentTimeMillis();
+        System.out.println(stop - start);
+        return list;
     }
+
+    //    private static Date convertStringAsDateToDate(BSONObject bsonObject, String value) {//2 methhoden
+    //        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    ////        LocalDate.parse()
+    ////        final LocalDate date = LocalDate.parse(convertToString(bsonObject, value), formatter);
+    ////        final LocalDateConverter ldc = new LocalDateConverter();
+    ////        return (Date) ldc.encode(date);
+    //    }
 
 }

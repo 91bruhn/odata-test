@@ -458,7 +458,7 @@ public class CRUDHandler {//Service?
 
         final String carrierCode = (String) sourceEntity.getProperty(CARRIER_ID).getValue();
         final String connectionId = (String) sourceEntity.getProperty(CONNECTION_ID).getValue();
-        final Date fldate = (Date) sourceEntity.getProperty(FLIGHT_DATE).getValue();
+        final String fldate = (String) sourceEntity.getProperty(FLIGHT_DATE).getValue();
         final List<Sbook> sbookings = mDatabaseHandler.findBookingsForFlight(carrierCode, connectionId, fldate);
         //        final List<Entity> bookings = DataTransformator.
         return null;
