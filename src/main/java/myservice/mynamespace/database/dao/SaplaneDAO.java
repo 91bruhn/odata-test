@@ -44,6 +44,8 @@ public interface SaplaneDAO {
 
     List<Saplane> getAllSaplanes();
 
+    Saplane findPlaneByPlaneType(String planeType);
+
     Saplane findPlaneByCarrierIdAndConnectionIdAndFlDate(String carrierId, String connectionId, String flDate);
 
 }

@@ -62,7 +62,12 @@ public class SaplaneService extends AbstractDBService {
         return mSaplaneDAO.idTaken(id);
     }
 
+    public Saplane findPlaneByPlaneType(String planeType) {
+        return mSaplaneDAO.findPlaneByPlaneType(planeType);
+    }
+
     public Saplane findPlaneByCarrierIdAndConnectionIdAndFlDate(String carrierId, String connectionId, String flDate) {
         return mSaplaneDAO.findPlaneByCarrierIdAndConnectionIdAndFlDate(carrierId, connectionId, flDate);
     }
+
 }

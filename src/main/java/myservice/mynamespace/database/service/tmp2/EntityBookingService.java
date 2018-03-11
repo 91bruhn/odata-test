@@ -82,13 +82,13 @@ public class EntityBookingService extends AbstractEntityService {
         final String id;
 
         if (idProperty != null) {
-            final String planeType = (String) idProperty.getValue();
+            final String bookId = (String) idProperty.getValue();
 
-            if (this.idTaken(Saplane.class, planeType)) {
-                //LOG plane already defined in db
+            if (this.idTaken(bookId)) {
+                //TODO LOG plane already defined in db
                 return null;
             } else {
-                id = planeType;
+                id = bookId;
             }
             idProperty.setValue(ValueType.PRIMITIVE, id);//TODO was macht das?
         } else {
@@ -111,7 +111,7 @@ public class EntityBookingService extends AbstractEntityService {
         }
     }
 
-    public boolean idTaken(Class clazz, String idToCheckIfTaken) {//TODO VErschieben?
+    public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?
         //TODO use instance of
         return !StringUtils.isEmpty(idToCheckIfTaken) && mSbookService.idTaken(idToCheckIfTaken);
     }

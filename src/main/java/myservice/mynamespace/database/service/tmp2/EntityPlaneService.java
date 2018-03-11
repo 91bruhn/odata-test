@@ -86,8 +86,8 @@ public class EntityPlaneService extends AbstractEntityService {
         if (idProperty != null) {
             final String planeType = (String) idProperty.getValue();
 
-            if (this.idTaken(Saplane.class, planeType)) {
-                //LOG plane already defined in db
+            if (this.idTaken(planeType)) {
+                //TODO LOG plane already defined in db
                 return null;
             } else {
                 id = planeType;
@@ -112,7 +112,7 @@ public class EntityPlaneService extends AbstractEntityService {
         }
     }
 
-    public boolean idTaken(Class clazz, String idToCheckIfTaken) {//TODO VErschieben?
+    public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?
         //TODO use instance of
         return !StringUtils.isEmpty(idToCheckIfTaken) && mSaplaneService.idTaken(idToCheckIfTaken);
     }
@@ -121,7 +121,8 @@ public class EntityPlaneService extends AbstractEntityService {
     public EntityCollection getPlaneForFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
         final String planeType = (String) sourceEntity.getProperty(PLANE_TYPE).getValue();
         //        final Saplane saplane = mDatabaseHandler.findPlaneForFlight(planeType);
-        final Saplane saplane = (Saplane) mSaplaneService.getById(planeType);
+        //        final Saplane saplane = mSaplaneService.getById(planeType);
+        final Saplane saplane = mSaplaneService.findPlaneByPlaneType(planeType);
         final Entity plane = DataTransformator.transformSaplaneToEntity(saplane);
 
         navigationTargetEntityCollection.getEntities().add(plane);
@@ -131,7 +132,7 @@ public class EntityPlaneService extends AbstractEntityService {
 
     public EntityCollection getPlaneForConnection(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
         final String connectionId = (String) sourceEntity.getProperty(CONNECTION_ID).getValue();
-        final Saplane saplane = (Saplane) mSaplaneService.getById(connectionId);
+        final Saplane saplane = mSaplaneService.getById(connectionId);
         final Entity plane = DataTransformator.transformSaplaneToEntity(saplane);
 
         navigationTargetEntityCollection.getEntities().add(plane);

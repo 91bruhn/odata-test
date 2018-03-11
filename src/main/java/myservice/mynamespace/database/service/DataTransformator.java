@@ -271,22 +271,21 @@ public class DataTransformator {
                            seatsMaxF);
     }
 
-    private static Sflight transformEntityToSflight(Entity entity) {
-        //        final String flDate = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
+    public static Sflight transformEntityToSflight(Entity entity, Scarr scarr, Spfli spfli, Saplane saplane) {
+        final String flDate = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
         //        final String carrId = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
         //        final String connId = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
         //        final String planeType = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String price = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String currency = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String seatsMax = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String seatsOcc = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String seatsMaxB = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String seatsOccB = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String seatsMaxF = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String seatsOccF = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //
-        //        return new Sflight(flDate, carrId, connId, planeType, price, currency, seatsMax, seatsOcc, seatsMaxB, seatsOccB, seatsMaxF, seatsOccF);
-        return null;
+        final double price = (Double) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final UnitOfCurrency currency = (UnitOfCurrency) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final int seatsMax = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final int seatsOcc = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final int seatsMaxB = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final int seatsOccB = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final int seatsMaxF = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final int seatsOccF = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
+
+        return new Sflight(flDate, scarr, spfli, saplane, price, currency, seatsMax, seatsOcc, seatsMaxB, seatsOccB, seatsMaxF, seatsOccF);
     }
 
     /* HELPER */ //TODO delete?

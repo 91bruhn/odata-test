@@ -110,7 +110,7 @@ public class NavigationHandler {
         return navigationTargetEntityCollection;
     }
 
-    private EntityCollection getFlightssssss(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {
+    private EntityCollection getFlightssssss(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {//TODO name
         final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
         final boolean navToCarrier = relatedEntityFqn.equals(ET_SCARR_FQN);
         final boolean navToConnection = relatedEntityFqn.equals(ET_SPFLI_FQN);

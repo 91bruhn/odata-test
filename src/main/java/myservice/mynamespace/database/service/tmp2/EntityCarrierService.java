@@ -79,7 +79,8 @@ public class EntityCarrierService extends AbstractEntityService {
         if (idProperty != null) {
             final String carrierCode = (String) idProperty.getValue();
 
-            if (this.idTaken(Scarr.class, carrierCode)) {
+            if (this.idTaken(carrierCode)) {
+                //TODO LOG plane already defined in db creating new one
                 carrierId = this.generateScarrId(carrierName);
             } else {
                 carrierId = carrierCode;
@@ -138,20 +139,20 @@ public class EntityCarrierService extends AbstractEntityService {
             final Character firstLetter = carrierName.charAt(0);
             idToCheckIfTaken = String.valueOf(firstLetter) + String.valueOf(secondLetter);
         }
-        carrierId = this.generateId(Scarr.class, idToCheckIfTaken, 5, true, false);
+        carrierId = this.generateId(idToCheckIfTaken, 5, true, false);
 
         return carrierId;
     }
 
-    public String generateId(Class clazz, String idToCheckIfTaken, int length, boolean useLetters, boolean useNumbers) {//TODO nicht nur String
-        while (idTaken(clazz, idToCheckIfTaken)) {
+    public String generateId(String idToCheckIfTaken, int length, boolean useLetters, boolean useNumbers) {//TODO nicht nur String
+        while (idTaken(idToCheckIfTaken)) {
             idToCheckIfTaken = this.generateRandomId(length, useLetters, useNumbers);
         }
 
         return idToCheckIfTaken;
     }
 
-    public boolean idTaken(Class clazz, String idToCheckIfTaken) {//TODO VErschieben?
+    public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?
         //TODO use instance of
         return !StringUtils.isEmpty(idToCheckIfTaken) && mScarrService.idTaken(idToCheckIfTaken);
     }
@@ -161,7 +162,7 @@ public class EntityCarrierService extends AbstractEntityService {
     public EntityCollection getCarrierforFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {//TODO name
         // relation Products->Category (result all categories) todo überarbeite kommentar
         final String carrierCode = (String) sourceEntity.getProperty(CARRIER_ID).getValue();
-        final Scarr scarr = (Scarr) mScarrService.getById(carrierCode);
+        final Scarr scarr = mScarrService.getById(carrierCode);
         final Entity carrier = DataTransformator.transformScarrToEntity(scarr);
 
         navigationTargetEntityCollection.getEntities().add(carrier);
@@ -171,7 +172,7 @@ public class EntityCarrierService extends AbstractEntityService {
 
     public EntityCollection getCarrierForConnection(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
         final String carrierId = (String) sourceEntity.getProperty(CARRIER_ID).getValue();
-        final Scarr scarr = (Scarr) mScarrService.getById(carrierId);
+        final Scarr scarr = mScarrService.getById(carrierId);
         final Entity carrier = DataTransformator.transformScarrToEntity(scarr);
 
         navigationTargetEntityCollection.getEntities().add(carrier);
@@ -181,7 +182,7 @@ public class EntityCarrierService extends AbstractEntityService {
 
     public EntityCollection getCarrierForBooking(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
         final String carrierId = (String) sourceEntity.getProperty(CARRIER_ID).getValue();
-        final Scarr scarr = (Scarr) mScarrService.getById(carrierId);
+        final Scarr scarr = mScarrService.getById(carrierId);
         final Entity carrier = DataTransformator.transformScarrToEntity(scarr);
 
         navigationTargetEntityCollection.getEntities().add(carrier);

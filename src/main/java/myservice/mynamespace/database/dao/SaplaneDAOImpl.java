@@ -18,7 +18,6 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.query.FindOptions;
 import org.mongodb.morphia.query.Query;
 
 import java.util.List;
@@ -26,6 +25,7 @@ import java.util.List;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CONNECTION_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.PLANE_TYPE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI;
 
@@ -77,8 +77,13 @@ public class SaplaneDAOImpl extends BasicDAO<Saplane, ObjectId> implements Sapla
     }
 
     @Override
+    public Saplane findPlaneByPlaneType(String planeType) {
+        return createQuery().field(PLANE_TYPE).equal(planeType).get();
+    }
+
+    @Override
     public List<Saplane> getAllSaplanes() {//TODO überall saplane statt splane?
-        return super.getDatastore().createQuery(Saplane.class).asList(new FindOptions());
+        return super.getDatastore().createQuery(Saplane.class).asList();//new FindOptions()
     }
 
     @Override

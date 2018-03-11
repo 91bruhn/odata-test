@@ -26,6 +26,9 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.UriResourceNavigation;
+import org.apache.olingo.server.api.uri.queryoption.CountOption;
+import org.apache.olingo.server.api.uri.queryoption.SkipOption;
+import org.apache.olingo.server.api.uri.queryoption.TopOption;
 
 import java.util.List;
 import java.util.Locale;
@@ -37,8 +40,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
 
     private OData odata;
     private ServiceMetadata srvMetadata;
-    // our database-mock
-    private CRUDHandler mCRUDHandler;//TODO nutze stattdessen eigene Implementierung
+    private CRUDHandler mCRUDHandler;
     private NavigationHandler mCRUDHandlerNavigation;
 
     public FlightDataEntityCollectionProcessor(CRUDHandler CRUDHandler, NavigationHandler navigationHandler) {
@@ -64,14 +66,10 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
      */
     public void readEntityCollection(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat)
         throws ODataApplicationException, SerializerException {
-        /**Here we have to fetch the required data and pass it back to the Olingo library*/
-        EdmEntitySet responseEdmEntitySet = null; // we'll need this to build the ContextURL
-        EntityCollection responseEntityCollection = null; // we'll need this to set the response body
-
-        // 1st retrieve the requested EntitySet from the uriInfo (representation of the parsed URI)
+        // retrieve the requested EntitySet from the uriInfo (representation of the parsed URI)
         final List<UriResource> resourceParts = uriInfo.getUriResourceParts();
         final int segmentCount = resourceParts.size();
-        //the first segment represents here the EntitySet
+        //the first segment represents the EntitySet
         final UriResource uriResource = resourceParts.get(0);
 
         if (!(uriResource instanceof UriResourceEntitySet)) {
@@ -82,56 +80,127 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
         final EdmEntitySet startEdmEntitySet = uriResourceEntitySet.getEntitySet();
 
         if (segmentCount == 1) {
-            // this is the case for: DemoService/DemoService.svc/Categories TODO delete
-            responseEdmEntitySet = startEdmEntitySet; // the response body is built from the first (and only) entitySet
-
-            // 2nd: fetch the data from backend for this requested EntitySetName and deliver as EntitySet
-            responseEntityCollection = mCRUDHandler.readEntitySetData(startEdmEntitySet);
-        } else if (segmentCount == 2) { // in case of navigation: DemoService.svc/Categories(3)/Products
-            // in our example we don't support more complex URIs
-            final UriResource lastSegment = resourceParts.get(1);
-
-            if (lastSegment instanceof UriResourceNavigation) {
-                final UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) lastSegment;
-                final EdmNavigationProperty edmNavigationProperty = uriResourceNavigation.getProperty();
-                final EdmEntityType targetEntityType = edmNavigationProperty.getType();
-                // from Categories(1) to Products
-                responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
-
-                // 2nd: fetch the data from backend
-                // first fetch the entity where the first segment of the URI points to
-                final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
-                // e.g. for Categories(3)/Products we have to find the single entity: Category with ID 3
-                //wenn man über navigation geht und erstmal alle carriers raussucht, den gesuchten nimmt und dazu alle flüge sucht.
-                final Entity sourceEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
-                // error handling for e.g. DemoService.svc/Categories(99)/Products
-                if (sourceEntity == null) {
-                    throw new ODataApplicationException("Entity not found.", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ROOT);
-                }
-                // then fetch the entity collection where the entity navigates to
-                // note: we don't need to check uriResourceNavigation.isCollection(),
-                // because we are the FlightDataEntityCollectionProcessor
-                responseEntityCollection = mCRUDHandlerNavigation.getRelatedEntityCollection(sourceEntity, targetEntityType);
-
-            }
-        } else { // this would be the case for e.g. Products(1)/Category/Products
+            this.normalRequest(startEdmEntitySet, request, response, responseFormat, uriInfo);
+        } else if (segmentCount == 2) {
+            this.handleNavigation(resourceParts, startEdmEntitySet, uriResourceEntitySet, request, response, responseFormat, uriInfo);
+        } else {
+            // this would be the case for e.g. Flights(1)/Category/Flights
             throw new ODataApplicationException("Not supported", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
         }
+    }
 
-        // 3rd: create and configure a serializer
+    // this is the case for: DemoService/DemoService.svc/Categories TODO delete
+    private void normalRequest(EdmEntitySet startEdmEntitySet, ODataRequest request, ODataResponse response, ContentType responseFormat, UriInfo uriInfo)
+        throws SerializerException, ODataApplicationException {//TODO naming der methoden
+
+        final EntityCollection responseEntityCollection = mCRUDHandler.readEntitySetData(startEdmEntitySet);
+
+        this.handleResponse(startEdmEntitySet, request, responseEntityCollection, response, responseFormat, uriInfo);
+    }
+
+    private void handleNavigation(List<UriResource> resourceParts, EdmEntitySet startEdmEntitySet, UriResourceEntitySet uriResourceEntitySet,
+                                  ODataRequest request, ODataResponse response, ContentType responseFormat, UriInfo uriInfo)
+        throws ODataApplicationException, SerializerException {
+        // in case of navigation: DemoService.svc/Categories(3)/Products
+        // in our example we don't support more complex URIs
+        final UriResource lastSegment = resourceParts.get(1);
+
+        if (lastSegment instanceof UriResourceNavigation) {
+            final UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) lastSegment;
+            final EdmNavigationProperty edmNavigationProperty = uriResourceNavigation.getProperty();
+            final EdmEntityType targetEntityType = edmNavigationProperty.getType();
+            // from Flights(1) to Carrier
+            final EdmEntitySet responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
+
+            // fetch the data from backend
+            final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
+            // e.g. for Flights(3)/Carrier - first, find the single entity: Flights with ID 3
+            final Entity sourceEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
+
+            if (sourceEntity == null) {
+                throw new ODataApplicationException("Entity not found.", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ROOT);
+            }
+            // now the entity collection where the entity navigates to will be fetched
+            final EntityCollection responseEntityCollection = mCRUDHandlerNavigation.getRelatedEntityCollection(sourceEntity, targetEntityType);
+
+            this.handleResponse(responseEdmEntitySet, request, responseEntityCollection, response, responseFormat, uriInfo);
+        }
+    }
+
+    // apply System Query Options
+    // modify the result set according to the query options, specified by the end user
+    private EntityCollection handleSystemQueryOptions(UriInfo uriInfo, EntityCollection entityCollection) throws ODataApplicationException {
+        final EntityCollection returnEntityCollection = new EntityCollection();
+        List<Entity> entityList = entityCollection.getEntities();
+
+        // handle $count: always return the original number of entities, without considering $top and $skip
+        final CountOption countOption = uriInfo.getCountOption();
+        if (countOption != null) {
+            final boolean isCount = countOption.getValue();
+            if (isCount) {
+                returnEntityCollection.setCount(entityList.size());
+            }
+        }
+
+        // handle $skip
+        final SkipOption skipOption = uriInfo.getSkipOption();
+        if (skipOption != null) {
+            final int skipNumber = skipOption.getValue();
+            if (skipNumber >= 0) {
+                if (skipNumber <= entityList.size()) {
+                    entityList = entityList.subList(skipNumber, entityList.size());
+                } else {
+                    // The client skipped all entities
+                    entityList.clear();
+                }
+            } else {
+                throw new ODataApplicationException("Invalid value for $skip", HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ROOT);
+            }
+        }
+
+        // handle $top
+        final TopOption topOption = uriInfo.getTopOption();
+        if (topOption != null) {
+            final int topNumber = topOption.getValue();
+            if (topNumber >= 0) {
+                if (topNumber <= entityList.size()) {
+                    entityList = entityList.subList(0, topNumber);
+                }  // else the client has requested more entities than available => return what we have
+            } else {
+                throw new ODataApplicationException("Invalid value for $top", HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ROOT);
+            }
+        }
+
+        // after applying the system query options, a new EntityCollection based on the reduced list will be created
+        for (Entity entity : entityList) {
+            returnEntityCollection.getEntities().add(entity);
+        }//TODO stream
+
+        return returnEntityCollection;
+    }
+
+    private void handleResponse(EdmEntitySet responseEdmEntitySet, ODataRequest request, EntityCollection responseEntityCollection, ODataResponse response,
+                                ContentType responseFormat, UriInfo uriInfo) throws SerializerException, ODataApplicationException {
+        // modify response when query options have been used
+        final EntityCollection queryOptionsEntityCollection = this.handleSystemQueryOptions(uriInfo, responseEntityCollection);
+        if (!queryOptionsEntityCollection.getEntities().isEmpty()) {
+            responseEntityCollection = queryOptionsEntityCollection;
+        }
+
+        // create and configure a serializer
         //TODO responseEdmEntitySet might be null
+        final CountOption countOption = uriInfo.getCountOption();
         final ContextURL contextUrl = ContextURL.with().entitySet(responseEdmEntitySet).build();
         final String id = request.getRawBaseUri() + "/" + responseEdmEntitySet.getName();
-        final EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with().contextURL(contextUrl).id(id).build();
+        final EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with().contextURL(contextUrl).id(id).count(countOption).build();
         final EdmEntityType edmEntityType = responseEdmEntitySet.getEntityType();
 
         final ODataSerializer serializer = odata.createSerializer(responseFormat);
         final SerializerResult serializerResult = serializer.entityCollection(this.srvMetadata, edmEntityType, responseEntityCollection, opts);
 
-        // 4th: configure the response object: set the body, headers and status code
+        // configure the response object: set the body, headers and status code
         response.setContent(serializerResult.getContent());
         response.setStatusCode(HttpStatusCode.OK.getStatusCode());
         response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
     }
-
 }

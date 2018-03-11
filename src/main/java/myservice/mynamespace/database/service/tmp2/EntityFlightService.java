@@ -8,10 +8,14 @@
 package myservice.mynamespace.database.service.tmp2;
 
 import myservice.mynamespace.database.collections.Saplane;
+import myservice.mynamespace.database.collections.Scarr;
 import myservice.mynamespace.database.collections.Sflight;
+import myservice.mynamespace.database.collections.Spfli;
 import myservice.mynamespace.database.service.DataTransformator;
+import myservice.mynamespace.database.service.tmp.SaplaneService;
+import myservice.mynamespace.database.service.tmp.ScarrService;
 import myservice.mynamespace.database.service.tmp.SflightService;
-import myservice.mynamespace.service.entities.definitions.EntityNames;
+import myservice.mynamespace.database.service.tmp.SpfliService;
 import myservice.mynamespace.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.commons.api.data.Entity;
@@ -30,7 +34,10 @@ import java.util.stream.Collectors;
 
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CONNECTION_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SFLIGHT_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SFLIGHT_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.PLANE_TYPE;
 
 /**
  *
@@ -77,24 +84,33 @@ public class EntityFlightService extends AbstractEntityService {
     }
 
     public Entity createFlight(EdmEntityType edmEntityType, Entity entity) {
-        final Property idProperty = entity.getProperty(EntityNames.PLANE_TYPE);
+        final Property idProperty = entity.getProperty(FLIGHT_DATE);
         final String id;
 
         if (idProperty != null) {
-            final String planeType = (String) idProperty.getValue();
+            final String flDate = (String) idProperty.getValue();
 
-            if (this.idTaken(Saplane.class, planeType)) {
-                //LOG plane already defined in db
+            if (this.idTaken(flDate)) {//todo tag ist nicht so eindeutig sollte vllt zu normaler var.
+                //TODO LOG plane already defined in db
                 return null;
             } else {
-                id = planeType;
+                id = flDate;
             }
             idProperty.setValue(ValueType.PRIMITIVE, id);//TODO was macht das?
         } else {
             return null;
         }
-        entity.setId(super.createId("Carriers", id));
-        //        mSflightService.save(DataTransformator.transformEntityToScarr(entity));TODO implement
+        entity.setId(super.createId(ES_SFLIGHT_NAME, id));//TODO load corresponding connectoin und carrier und plane
+
+        final String carrierId = (String) entity.getProperty(CARRIER_ID).getValue();
+        final String connectionId = (String) entity.getProperty(CONNECTION_ID).getValue();
+        final String planeType = (String) entity.getProperty(PLANE_TYPE).getValue();
+
+        final Scarr scarr = this.loadAssociatedCarrier(carrierId);
+        final Spfli spfli = this.loadAssociatedConnection(connectionId);
+        final Saplane saplane = this.loadAssociatedPlane(planeType);
+
+        mSflightService.save(DataTransformator.transformEntityToSflight(entity, scarr, spfli, saplane));
 
         return entity;
     }
@@ -109,7 +125,7 @@ public class EntityFlightService extends AbstractEntityService {
         }
     }
 
-    public boolean idTaken(Class clazz, String idToCheckIfTaken) {//TODO VErschieben?
+    public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?
         //TODO use instance of
         return !StringUtils.isEmpty(idToCheckIfTaken) && mSflightService.idTaken(idToCheckIfTaken);
     }
@@ -146,6 +162,24 @@ public class EntityFlightService extends AbstractEntityService {
         navigationTargetEntityCollection.getEntities().add(flight);
 
         return navigationTargetEntityCollection;
+    }
+
+    private Scarr loadAssociatedCarrier(String carrierId) {
+        final ScarrService scarrService = new ScarrService();
+
+        return scarrService.getById(carrierId);
+    }
+
+    private Spfli loadAssociatedConnection(String connectionId) {
+        final SpfliService spfliService = new SpfliService();
+
+        return spfliService.getById(connectionId);
+    }
+
+    private Saplane loadAssociatedPlane(String planeType) {
+        final SaplaneService saplaneService = new SaplaneService();
+
+        return saplaneService.getById(planeType);
     }
 
 }
