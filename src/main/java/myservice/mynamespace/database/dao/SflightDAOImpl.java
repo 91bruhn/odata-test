@@ -16,7 +16,9 @@ import java.util.List;
 
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CONNECTION_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_FLIGHT_DATE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI;
 
@@ -51,7 +53,8 @@ public class SflightDAOImpl extends BasicDAO<Sflight, ObjectId> implements Sflig
 
     @Override
     public Sflight getById(String id) {
-        return super.get(new ObjectId(id));//TODO testen
+//        return super.get(new ObjectId(id));//TODO testen
+        return super.findOne(DB_ID + " = ", id);
         //        return (Sflight) getDatastore().get(clazz, id);
     }
 

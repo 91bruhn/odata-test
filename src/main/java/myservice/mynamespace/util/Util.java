@@ -1,5 +1,6 @@
 package myservice.mynamespace.util;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -11,6 +12,7 @@ import org.apache.olingo.commons.api.edm.EdmPrimitiveType;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeException;
 import org.apache.olingo.commons.api.edm.EdmProperty;
 import org.apache.olingo.commons.api.edm.EdmType;
+import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.uri.UriInfoResource;
@@ -18,6 +20,8 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,6 +29,18 @@ import java.util.Locale;
  *
  */
 public class Util {
+
+    public static String generateRandomId(int length, boolean useLetters, boolean useNumbers) {
+        return RandomStringUtils.random(length, useLetters, useNumbers);
+    }
+
+    public static URI createId(String entitySetName, Object id) {//TODO ALLES IN UTIL
+        try {
+            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
+        } catch (URISyntaxException e) {
+            throw new ODataRuntimeException("Unable to create id for entity: " + entitySetName, e);
+        }
+    }
 
     public static EdmEntitySet getEdmEntitySet(UriInfoResource uriInfo) throws ODataApplicationException {
         List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
@@ -115,10 +131,10 @@ public class Util {
      * Example:
      * For the following navigation: DemoService.svc/Categories(1)/Products
      * we need the EdmEntitySet for the navigation property "Products"
-     * <p/>
+     * <p>
      * This is defined as follows in the metadata:
      * <code>
-     * <p/>
+     * <p>
      * <EntitySet Name="Categories" EntityType="OData.Demo.Category">
      * <NavigationPropertyBinding Path="Products" Target="Products"/>
      * </EntitySet>

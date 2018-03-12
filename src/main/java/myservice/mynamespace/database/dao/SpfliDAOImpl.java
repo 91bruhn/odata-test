@@ -51,7 +51,7 @@ public class SpfliDAOImpl extends BasicDAO<Spfli, ObjectId> implements SpfliDAO 
 
     @Override
     public Spfli getById(String id) {
-        return super.get(new ObjectId(id));
+        return super.findOne(DB_ID + " = ", id);
     }
 
     @Override

@@ -140,6 +140,14 @@ public class Sbook {
         this.custType = custType;
     }
 
+    public void setCustType(String custType) {
+        if ("Male".equals(custType)) {
+            setCustType('M');
+        } else {
+            setCustType('F');
+        }
+    }
+
     public boolean isSmoker() {//TODO überall wo boolean für eig Character steht ändern
         return smoker == 'Y';
     }

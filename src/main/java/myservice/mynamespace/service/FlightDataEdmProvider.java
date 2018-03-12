@@ -119,7 +119,7 @@ public class FlightDataEdmProvider extends CsdlAbstractEdmProvider {
         schema.setEntityContainer(getEntityContainer());
 
         // finally
-        final  List<CsdlSchema> schemas = new ArrayList<>();
+        final List<CsdlSchema> schemas = new ArrayList<>();
         schemas.add(schema);
 
         return schemas;

@@ -18,6 +18,10 @@ import org.mongodb.morphia.query.FindOptions;
 
 import java.util.List;
 
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CARRIER_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_FLIGHT_DATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
+
 /**
  *
  */
@@ -45,7 +49,7 @@ public class ScarrDAOImpl extends BasicDAO<Scarr, ObjectId> implements ScarrDAO 
 
     @Override
     public Scarr getById(String id) {
-        return super.get(new ObjectId(id));
+        return super.findOne(DB_ID + " = ", id);
     }
 
     @Override

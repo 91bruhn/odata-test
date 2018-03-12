@@ -113,11 +113,11 @@ public class EntityTypes {
         final CsdlProperty price = new CsdlProperty().setName(PRICE).setType(EdmPrimitiveTypeKind.Double.getFullQualifiedName());
         final CsdlProperty currency = new CsdlProperty().setName(CURRENCY).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty seatsMax = new CsdlProperty().setName(SEATS_MAX_E).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-        final CsdlProperty seatsOcc = new CsdlProperty().setName(SEATS_OCC_E).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        final CsdlProperty seatsOcc = new CsdlProperty().setName(SEATS_OCC_E).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
         final CsdlProperty seatsMaxB = new CsdlProperty().setName(SEATS_MAX_B).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-        final CsdlProperty seatsOccB = new CsdlProperty().setName(SEATS_OCC_B).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        final CsdlProperty seatsOccB = new CsdlProperty().setName(SEATS_OCC_B).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
         final CsdlProperty seatsMaxF = new CsdlProperty().setName(SEATS_MAX_F).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-        final CsdlProperty seatsOccF = new CsdlProperty().setName(SEATS_OCC_F).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        final CsdlProperty seatsOccF = new CsdlProperty().setName(SEATS_OCC_F).setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
 
         // create PropertyRef for Key element
         final CsdlPropertyRef propRefCarrierId = new CsdlPropertyRef().setName(CARRIER_ID);

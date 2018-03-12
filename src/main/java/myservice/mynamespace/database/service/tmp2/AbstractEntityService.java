@@ -38,17 +38,7 @@ public class AbstractEntityService {
     // getters/setters
     // ------------------------------------------------------------------------
 
-    protected String generateRandomId(int length, boolean useLetters, boolean useNumbers) {
-        return RandomStringUtils.random(length, useLetters, useNumbers);
-    }
 
-    protected URI createId(String entitySetName, Object id) {//TODO ALLES IN UTIL
-        try {
-            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
-        } catch (URISyntaxException e) {
-            throw new ODataRuntimeException("Unable to create id for entity: " + entitySetName, e);
-        }
-    }
 
     //create id, incrementing...
     //TODO vorübergehend auskommentiert

@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CONNECTION_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SAPLANE_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SCARR_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.PLANE_TYPE;
 
@@ -96,7 +98,7 @@ public class EntityPlaneService extends AbstractEntityService {
         } else {
             return null;
         }
-        entity.setId(super.createId("Carriers", id));
+        entity.setId(Util.createId(ES_SAPLANE_NAME, id));
         mSaplaneService.save(DataTransformator.transformEntityToSaplane(entity));
 
         return entity;

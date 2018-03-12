@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SCARR_NAME;
 
 /**
  *
@@ -91,7 +92,7 @@ public class EntityCarrierService extends AbstractEntityService {
             carrierId = this.generateScarrId(carrierName);
             entity.getProperties().add(new Property(null, EntityNames.CARRIER_ID, ValueType.PRIMITIVE, carrierId));
         }
-        entity.setId(super.createId("Carriers", carrierId));
+        entity.setId(Util.createId(ES_SCARR_NAME, carrierId));
         mScarrService.save(DataTransformator.transformEntityToScarr(entity));
 
         return entity;
@@ -114,47 +115,6 @@ public class EntityCarrierService extends AbstractEntityService {
         //hole object und dann lösche es?
         //        mDatabaseHandler.deleteData();
         //        this.productList.remove(productEntity);
-    }
-
-    /**
-     * Generates from the given carrier name a carrier id. If that generated id is taken a random five letter id will be generated.
-     *
-     * @param carrierName The carrier name of which a carrier id will be tried to generate.
-     * @return A not taken carrier id.
-     */
-    public String generateScarrId(String carrierName) {
-        final String carrierId;
-        String idToCheckIfTaken = null;
-
-        //try to build id from carrier name
-        if (StringUtils.isNotEmpty(carrierName)) {
-            final int posOfWhiteSpace = carrierName.indexOf(" ");
-            Character secondLetter = null;
-            if (posOfWhiteSpace != -1) {
-                secondLetter = carrierName.charAt(posOfWhiteSpace + 1);
-            }
-            if (secondLetter == null) {
-                secondLetter = carrierName.charAt(1);
-            }
-            final Character firstLetter = carrierName.charAt(0);
-            idToCheckIfTaken = String.valueOf(firstLetter) + String.valueOf(secondLetter);
-        }
-        carrierId = this.generateId(idToCheckIfTaken, 5, true, false);
-
-        return carrierId;
-    }
-
-    public String generateId(String idToCheckIfTaken, int length, boolean useLetters, boolean useNumbers) {//TODO nicht nur String
-        while (idTaken(idToCheckIfTaken)) {
-            idToCheckIfTaken = this.generateRandomId(length, useLetters, useNumbers);
-        }
-
-        return idToCheckIfTaken;
-    }
-
-    public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?
-        //TODO use instance of
-        return !StringUtils.isEmpty(idToCheckIfTaken) && mScarrService.idTaken(idToCheckIfTaken);
     }
 
     //NAVIGATION
@@ -188,6 +148,47 @@ public class EntityCarrierService extends AbstractEntityService {
         navigationTargetEntityCollection.getEntities().add(carrier);
 
         return navigationTargetEntityCollection;
+    }
+
+    public boolean idTaken(String idToCheckIfTaken) {
+        return StringUtils.isEmpty(idToCheckIfTaken) || mScarrService.idTaken(idToCheckIfTaken);
+    }
+
+    //checks first if the given id is not taken, if so a new one will be created and returned
+    public String generateId(String idToCheckIfTaken, int length, boolean useLetters, boolean useNumbers) {//TODO VERSCHIEBEN NACH UTIL - nicht nur String
+        while (this.idTaken(idToCheckIfTaken)) {
+            idToCheckIfTaken = Util.generateRandomId(length, useLetters, useNumbers);
+        }
+
+        return idToCheckIfTaken;
+    }
+
+    /**
+     * Generates from the given carrier name a carrier id. If that generated id is taken a random five letter id will be generated.
+     *
+     * @param carrierName The carrier name of which a carrier id will be tried to generate.
+     * @return A not taken carrier id.
+     */
+    public String generateScarrId(String carrierName) {
+        final String carrierId;
+        String idToCheckIfTaken = null;
+
+        //try to build id from carrier name
+        if (StringUtils.isNotEmpty(carrierName)) {
+            final int posOfWhiteSpace = carrierName.indexOf(" ");
+            Character secondLetter = null;
+            if (posOfWhiteSpace != -1) {
+                secondLetter = carrierName.charAt(posOfWhiteSpace + 1);
+            }
+            if (secondLetter == null) {
+                secondLetter = carrierName.charAt(1);
+            }
+            final Character firstLetter = carrierName.charAt(0);
+            idToCheckIfTaken = String.valueOf(firstLetter) + String.valueOf(secondLetter);
+        }
+        carrierId = this.generateId(idToCheckIfTaken, 5, true, false);
+
+        return carrierId;
     }
 
 }

@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CONNECTION_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SFLIGHT_NAME;
-import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SFLIGHT_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.PLANE_TYPE;
 
@@ -100,7 +99,7 @@ public class EntityFlightService extends AbstractEntityService {
         } else {
             return null;
         }
-        entity.setId(super.createId(ES_SFLIGHT_NAME, id));//TODO load corresponding connectoin und carrier und plane
+        entity.setId(Util.createId(ES_SFLIGHT_NAME, id));//TODO load corresponding connectoin und carrier und plane
 
         final String carrierId = (String) entity.getProperty(CARRIER_ID).getValue();
         final String connectionId = (String) entity.getProperty(CONNECTION_ID).getValue();
@@ -123,11 +122,6 @@ public class EntityFlightService extends AbstractEntityService {
         if (productEntity == null) {
             throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
         }
-    }
-
-    public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?
-        //TODO use instance of
-        return !StringUtils.isEmpty(idToCheckIfTaken) && mSflightService.idTaken(idToCheckIfTaken);
     }
 
     //NAVIGATION
@@ -180,6 +174,10 @@ public class EntityFlightService extends AbstractEntityService {
         final SaplaneService saplaneService = new SaplaneService();
 
         return saplaneService.getById(planeType);
+    }
+
+    public boolean idTaken(String idToCheckIfTaken) {
+        return !StringUtils.isEmpty(idToCheckIfTaken) && mSflightService.idTaken(idToCheckIfTaken);
     }
 
 }

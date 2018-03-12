@@ -25,6 +25,7 @@ import java.util.List;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CONNECTION_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_FLIGHT_DATE;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SPFLI;
@@ -56,7 +57,7 @@ public class SbookDAOImpl extends BasicDAO<Sbook, ObjectId> implements SbookDAO 
 
     @Override
     public Sbook getById(String id) {
-        return super.get(new ObjectId(id));
+        return super.findOne(DB_ID + " = ", id);
     }
 
     @Override

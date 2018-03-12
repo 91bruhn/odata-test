@@ -272,20 +272,33 @@ public class DataTransformator {
     }
 
     public static Sflight transformEntityToSflight(Entity entity, Scarr scarr, Spfli spfli, Saplane saplane) {
-        final String flDate = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String carrId = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String connId = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        //        final String planeType = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final double price = (Double) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final UnitOfCurrency currency = (UnitOfCurrency) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final int seatsMax = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final int seatsOcc = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final int seatsMaxB = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final int seatsOccB = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final int seatsMaxF = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final int seatsOccF = (Integer) entity.getProperty(EntityNames.PRODUCER).getValue();
+        final String flDate = (String) entity.getProperty(FLIGHT_DATE).getValue();
+        final double price = (Double) entity.getProperty(PRICE).getValue();
+        final UnitOfCurrency currency = (UnitOfCurrency.valueOf((String) entity.getProperty(EntityNames.CURRENCY).getValue()));
+        final int seatsMax = (Integer) entity.getProperty(SEATS_MAX_E).getValue();
+        final int seatsOcc = (Integer) entity.getProperty(SEATS_OCC_E).getValue();
+        final int seatsMaxB = (Integer) entity.getProperty(SEATS_MAX_B).getValue();
+        final int seatsOccB = (Integer) entity.getProperty(SEATS_OCC_B).getValue();
+        final int seatsMaxF = (Integer) entity.getProperty(SEATS_MAX_F).getValue();
+        final int seatsOccF = (Integer) entity.getProperty(SEATS_OCC_F).getValue();
 
         return new Sflight(flDate, scarr, spfli, saplane, price, currency, seatsMax, seatsOcc, seatsMaxB, seatsOccB, seatsMaxF, seatsOccF);
+    }
+
+    public static Sbook transformEntityToSbook(Entity entity, Scarr scarr, Spfli spfli, Sflight sflight) {
+        final String bookId = (String) entity.getProperty(BOOKING_ID).getValue();
+        final String customId = (String) entity.getProperty(CUSTOMER_ID).getValue();
+        final char sex = (Character) entity.getProperty(SEX).getValue();//TODO falsch gespeichert in DB ich hab da nur 'F'
+        final char smoker = (Character) entity.getProperty(IS_SMOKER).getValue();
+        final double luggWeight = (Double) entity.getProperty(LUGGAGE_WEIGHT).getValue();
+        final UnitOfMass wUnit = UnitOfMass.valueOf((String) entity.getProperty(WEIGHT_UNIT).getValue());
+        final boolean invoice = (Boolean) entity.getProperty(HAS_INVOICE).getValue();
+        final char flightClass = (Character) entity.getProperty(FLIGHT_CLASS).getValue();
+        final String orderDate = (String) entity.getProperty(ORDER_DATE).getValue();
+        final boolean cancelled = (Boolean) entity.getProperty(IS_CANCELLED).getValue();
+        final boolean reserved = (Boolean) entity.getProperty(IS_RESERVED).getValue();
+
+        return new Sbook(bookId, scarr, spfli, sflight, customId, sex, smoker, luggWeight, wUnit, invoice, flightClass, orderDate, cancelled, reserved);
     }
 
     /* HELPER */ //TODO delete?

@@ -58,7 +58,7 @@ public class SaplaneDAOImpl extends BasicDAO<Saplane, ObjectId> implements Sapla
 
     @Override
     public Saplane getById(String id) {
-        return super.get(new ObjectId(id));
+        return super.findOne(DB_ID + " = ", id);
     }
 
     @Override
