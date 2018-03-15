@@ -7,19 +7,21 @@
 
 package myservice.mynamespace.database.service.tmp;
 
+import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
 import myservice.mynamespace.database.collections.Sbook;
 import myservice.mynamespace.database.dao.SbookDAO;
 import myservice.mynamespace.database.dao.SbookDAOImpl;
 import myservice.mynamespace.service.entities.definitions.EntityNames;
 import org.mongodb.morphia.Key;
+import org.mongodb.morphia.Morphia;
 
 import java.util.List;
 
 /**
  *
  */
-public class SbookService extends AbstractDBService {
+public class SbookService implements IDBService {
 
     // ------------------------------------------------------------------------
     // constants
@@ -36,7 +38,8 @@ public class SbookService extends AbstractDBService {
     // ------------------------------------------------------------------------
 
     public SbookService() {
-        mSbookDAO = new SbookDAOImpl(Sbook.class, mMongoClient, mMorphia, EntityNames.DB_NAME);
+        final MorphiaService morphiaService = new MorphiaService();
+        mSbookDAO = new SbookDAOImpl(Sbook.class, morphiaService.getMongoClient(), morphiaService.getMorphia(), EntityNames.DB_NAME);
     }
 
     // ------------------------------------------------------------------------
@@ -59,6 +62,7 @@ public class SbookService extends AbstractDBService {
         return mSbookDAO.delete(sbook);
     }
 
+    @Override
     public boolean idTaken(String id) {
         return mSbookDAO.idTaken(id);
     }

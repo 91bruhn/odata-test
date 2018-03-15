@@ -42,8 +42,6 @@ public class SaplaneDAOImpl extends BasicDAO<Saplane, ObjectId> implements Sapla
     // members
     // ------------------------------------------------------------------------
 
-    Datastore mDatastore;
-
     // ------------------------------------------------------------------------
     // constructors
     // ------------------------------------------------------------------------

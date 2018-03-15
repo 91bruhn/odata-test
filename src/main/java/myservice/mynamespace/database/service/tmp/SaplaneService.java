@@ -19,7 +19,7 @@ import java.util.List;
 /**
  *
  */
-public class SaplaneService extends AbstractDBService {
+public class SaplaneService implements IDBService {
 
     // ------------------------------------------------------------------------
     // constants
@@ -35,7 +35,8 @@ public class SaplaneService extends AbstractDBService {
     // ------------------------------------------------------------------------
 
     public SaplaneService() {
-        mSaplaneDAO = new SaplaneDAOImpl(Saplane.class, mMongoClient, mMorphia, EntityNames.DB_NAME);
+        final MorphiaService morphiaService = new MorphiaService();
+        mSaplaneDAO = new SaplaneDAOImpl(Saplane.class, morphiaService.getMongoClient(), morphiaService.getMorphia(), EntityNames.DB_NAME);
     }
 
     // ------------------------------------------------------------------------
@@ -58,6 +59,7 @@ public class SaplaneService extends AbstractDBService {
         return mSaplaneDAO.delete(saplane);
     }
 
+    @Override
     public boolean idTaken(String id) {
         return mSaplaneDAO.idTaken(id);
     }

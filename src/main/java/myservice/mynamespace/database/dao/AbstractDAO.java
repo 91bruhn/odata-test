@@ -7,22 +7,18 @@
 
 package myservice.mynamespace.database.dao;
 
-import com.mongodb.MongoClient;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
-
 /**
  *
  */
-public class AbstractDAO {
+public class AbstractDAO {//TODO delete
 
     // ------------------------------------------------------------------------
     // constants
     // ------------------------------------------------------------------------
 
-    protected MongoClient mongoClient;
-    protected Morphia morphia;
-    protected Datastore datastore;
+    //    protected MongoClient mongoClient;
+    //    protected Morphia morphia;
+    //    protected Datastore datastore;
 
     // ------------------------------------------------------------------------
     // members
@@ -33,11 +29,11 @@ public class AbstractDAO {
     // ------------------------------------------------------------------------
 
     public AbstractDAO() {
-        mongoClient = new MongoClient("localhost", 27017);
-        morphia = new Morphia();
-        morphia.mapPackage("myservice.mynamespace.database.data");
-        datastore = morphia.createDatastore(mongoClient, "Flugdatenverwaltung");
-        datastore.ensureIndexes();
+        //        mongoClient = new MongoClient("localhost", 27017);
+        //        morphia = new Morphia();
+        //        morphia.mapPackage("myservice.mynamespace.database.data");
+        //        datastore = morphia.createDatastore(mongoClient, "Flugdatenverwaltung");
+        //        datastore.ensureIndexes();
     }
     //    public SpfliDAOImpl(Class<Sflight> entityClass, MongoClient mMongoClient, Morphia mMorphia, String dbName) {
     //        super(entityClass, mMongoClient, mMorphia, dbName);
@@ -47,28 +43,28 @@ public class AbstractDAO {
     // methods
     // ------------------------------------------------------------------------
 
-    public void saveData(Object object) {
-        datastore.save(object);
-        //TODO speichere komplexe objekte, also die verschachtelten Sachen.
-    }
-
-    public void deleteData(Object object) {
-        datastore.delete(object);
-        //        mDatastore.delet; oder direkt mit id
-    }
+    //    public void saveData(Object object) {
+    //        datastore.save(object);
+    //        //TODO speichere komplexe objekte, also die verschachtelten Sachen.
+    //    }
+    //
+    //    public void deleteData(Object object) {
+    //        datastore.delete(object);
+    //        //        mDatastore.delet; oder direkt mit id
+    //    }
 
     // ----FIND DATA----
 
-    public Object getById(Class clazz, String id) {
-        return datastore.get(clazz, id);
-    }
-
-    public boolean idTaken(Class clazz, String id) {
-        return this.getById(clazz, id) != null;
-    }
-
-    public boolean idTaken(Class clazz, int id) {
-        return datastore.get(clazz, id) != null;
-    }
+    //    public Object getById(Class clazz, String id) {
+    //        return datastore.get(clazz, id);
+    //    }
+    //
+    //    public boolean idTaken(Class clazz, String id) {
+    //        return this.getById(clazz, id) != null;
+    //    }
+    //
+    //    public boolean idTaken(Class clazz, int id) {
+    //        return datastore.get(clazz, id) != null;
+    //    }
 
 }

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  *
  */
-public class SpfliService extends AbstractDBService {
+public class SpfliService implements IDBService {
 
     // ------------------------------------------------------------------------
     // constants
@@ -36,7 +36,8 @@ public class SpfliService extends AbstractDBService {
     // ------------------------------------------------------------------------
 
     public SpfliService() {
-        mSpfliDAO = new SpfliDAOImpl(Spfli.class, mMongoClient, mMorphia, EntityNames.DB_NAME);
+        final MorphiaService morphiaService = new MorphiaService();
+        mSpfliDAO = new SpfliDAOImpl(Spfli.class, morphiaService.getMongoClient(), morphiaService.getMorphia(), EntityNames.DB_NAME);
     }
 
     // ------------------------------------------------------------------------
@@ -59,6 +60,7 @@ public class SpfliService extends AbstractDBService {
         return mSpfliDAO.delete(spfli);
     }
 
+    @Override
     public boolean idTaken(String id) {
         return mSpfliDAO.idTaken(id);
     }

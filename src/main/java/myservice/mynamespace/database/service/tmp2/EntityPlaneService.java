@@ -10,7 +10,6 @@ package myservice.mynamespace.database.service.tmp2;
 import myservice.mynamespace.database.collections.Saplane;
 import myservice.mynamespace.database.service.DataTransformator;
 import myservice.mynamespace.database.service.tmp.SaplaneService;
-import myservice.mynamespace.service.entities.definitions.EntityNames;
 import myservice.mynamespace.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.commons.api.data.Entity;
@@ -30,7 +29,6 @@ import java.util.stream.Collectors;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CONNECTION_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SAPLANE_NAME;
-import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SCARR_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.PLANE_TYPE;
 
@@ -82,7 +80,7 @@ public class EntityPlaneService extends AbstractEntityService {
 
     //übergebene id muss vorhanden und gültig sein ansonsten null --> service sollte folgenden http
     public Entity createPlane(EdmEntityType edmEntityType, Entity entity) {
-        final Property idProperty = entity.getProperty(EntityNames.PLANE_TYPE);
+        final Property idProperty = entity.getProperty(PLANE_TYPE);
         final String id;
 
         if (idProperty != null) {
@@ -108,10 +106,13 @@ public class EntityPlaneService extends AbstractEntityService {
     }
 
     public void deletePlane(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {
-        final Entity productEntity = this.getPlane(edmEntityType, keyParams);
-        if (productEntity == null) {
+        final Entity entity = this.getPlane(edmEntityType, keyParams);
+
+        if (entity == null) {
             throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
         }
+
+        mSaplaneService.delete(DataTransformator.transformEntityToSaplane(entity));
     }
 
     public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?

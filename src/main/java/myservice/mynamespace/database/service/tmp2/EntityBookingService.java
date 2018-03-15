@@ -13,10 +13,6 @@ import myservice.mynamespace.database.collections.Sflight;
 import myservice.mynamespace.database.collections.Spfli;
 import myservice.mynamespace.database.service.DataTransformator;
 import myservice.mynamespace.database.service.tmp.SbookService;
-import myservice.mynamespace.database.service.tmp.ScarrService;
-import myservice.mynamespace.database.service.tmp.SflightService;
-import myservice.mynamespace.database.service.tmp.SpfliService;
-import myservice.mynamespace.service.entities.definitions.EntityNames;
 import myservice.mynamespace.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.commons.api.data.Entity;
@@ -67,7 +63,7 @@ public class EntityBookingService extends AbstractEntityService {
     // ------------------------------------------------------------------------
 
     public EntityCollection getBookings() {
-        final List<Sbook> sbooks = mSbookService.getAllSbooks();
+        final List<Sbook> sbooks = mSbookService.getAllSbooks();//TODO whs bei allen variablen falsch konf? da kein type bei enum wert fuer property
         final List<Entity> bookings = sbooks.stream().map(DataTransformator::transformSbookToEntity).collect(Collectors.toList());
         final EntityCollection entitySet = new EntityCollection();
         entitySet.getEntities().addAll(bookings);
@@ -77,28 +73,33 @@ public class EntityBookingService extends AbstractEntityService {
 
     public Entity getBooking(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {
         // the list of entities at runtime
-        final EntityCollection entitySet = this.getBookings();
+        //        final EntityCollection entitySet = this.getBookings();
+
 
     /* generic approach to find the requested entity */
-        return Util.findEntity(edmEntityType, entitySet, keyParams);
+        //        return Util.findEntity(edmEntityType, entitySet, keyParams);//TODO make use of real DB stuff
+
+        Sbook sbook = mSbookService.getById("dfd");
+
+        return DataTransformator.transformSbookToEntity(sbook);
     }
 
     //TODO alle verschieben
     public Entity createBooking(EdmEntityType edmEntityType, Entity entity) {
-        final Property idProperty = entity.getProperty(EntityNames.PLANE_TYPE);
+        final Property idProperty = entity.getProperty(BOOKING_ID);
         final String id;
 
         if (idProperty != null) {
             final String givenBookId = (String) idProperty.getValue();
 
-            if (this.idTaken(givenBookId)) {
-                id = this.generateId(givenBookId, 10, true, true);
+            if (Util.idTaken(givenBookId, mSbookService)) {
+                id = Util.generateId(givenBookId, 10, true, true, mSbookService);
             } else {
                 id = givenBookId;
             }
-            idProperty.setValue(ValueType.PRIMITIVE, id);//TODO was macht das?
+            idProperty.setValue(ValueType.PRIMITIVE, id);
         } else {
-            id = this.generateId(StringUtils.EMPTY, 10, true, true);
+            id = Util.generateId(StringUtils.EMPTY, 10, true, true, mSbookService);
             entity.getProperties().add(new Property(null, BOOKING_ID, ValueType.PRIMITIVE, id));
         }
         entity.setId(Util.createId(ES_SBOOK_NAME, id));
@@ -107,9 +108,9 @@ public class EntityBookingService extends AbstractEntityService {
         final String connectionId = (String) entity.getProperty(CONNECTION_ID).getValue();
         final String flDate = (String) entity.getProperty(FLIGHT_DATE).getValue();
 
-        final Scarr scarr = this.loadAssociatedCarrier(carrierId);
-        final Spfli spfli = this.loadAssociatedConnection(connectionId);
-        final Sflight sflight = this.loadAssociatedFlight(flDate);
+        final Scarr scarr = Util.loadAssociatedCarrier(carrierId);
+        final Spfli spfli = Util.loadAssociatedConnection(connectionId);
+        final Sflight sflight = Util.loadAssociatedFlight(flDate);
 
         mSbookService.save(DataTransformator.transformEntityToSbook(entity, scarr, spfli, sflight));
 
@@ -121,10 +122,21 @@ public class EntityBookingService extends AbstractEntityService {
     }
 
     public void deleteBooking(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {
-        final Entity productEntity = this.getBooking(edmEntityType, keyParams);
-        if (productEntity == null) {
+        final Entity entity = this.getBooking(edmEntityType, keyParams);
+
+        if (entity == null) {
             throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
         }
+
+        final String carrierId = (String) entity.getProperty(CARRIER_ID).getValue();
+        final String connectionId = (String) entity.getProperty(CONNECTION_ID).getValue();
+        final String flDate = (String) entity.getProperty(FLIGHT_DATE).getValue();
+
+        final Scarr scarr = Util.loadAssociatedCarrier(carrierId);
+        final Spfli spfli = Util.loadAssociatedConnection(connectionId);
+        final Sflight sflight = Util.loadAssociatedFlight(flDate);
+
+        mSbookService.delete(DataTransformator.transformEntityToSbook(entity, scarr, spfli, sflight));
     }
 
     //NAVIGATION
@@ -161,34 +173,4 @@ public class EntityBookingService extends AbstractEntityService {
         return navigationTargetEntityCollection;
     }
 
-    private Scarr loadAssociatedCarrier(String carrierId) {
-        final ScarrService scarrService = new ScarrService();
-
-        return scarrService.getById(carrierId);
-    }
-
-    private Spfli loadAssociatedConnection(String connectionId) {
-        final SpfliService spfliService = new SpfliService();
-
-        return spfliService.getById(connectionId);
-    }
-
-    private Sflight loadAssociatedFlight(String flDate) {
-        final SflightService sflightService = new SflightService();
-
-        return sflightService.getById(flDate);
-    }
-
-    public boolean idTaken(String idToCheckIfTaken) {
-        return StringUtils.isEmpty(idToCheckIfTaken) || mSbookService.idTaken(idToCheckIfTaken);
-    }
-
-    //checks first if the given id is not taken, if so a new one will be created and returned
-    public String generateId(String idToCheckIfTaken, int length, boolean useLetters, boolean useNumbers) {
-        while (this.idTaken(idToCheckIfTaken)) {
-            idToCheckIfTaken = Util.generateRandomId(length, useLetters, useNumbers);
-        }
-
-        return idToCheckIfTaken;
-    }
 }

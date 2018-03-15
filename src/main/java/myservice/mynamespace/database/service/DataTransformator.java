@@ -162,7 +162,7 @@ public class DataTransformator {
         Entity carrier = new Entity();
         carrier.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, scarr.getCarrId()));
         carrier.addProperty(new Property(null, CARRIER_NAME, ValueType.PRIMITIVE, scarr.getCarrName()));
-        carrier.addProperty(new Property(null, CURRENCY, ValueType.PRIMITIVE, scarr.getCurrCode()));
+        carrier.addProperty(new Property(null, CURRENCY, ValueType.ENUM, scarr.getCurrCode()));
         carrier.addProperty(new Property(null, SCARR_URL, ValueType.PRIMITIVE, scarr.getUrl()));
 
         carrier.setType(ET_SCARR_FQN.getFullQualifiedNameAsString());
@@ -183,7 +183,7 @@ public class DataTransformator {
         carrier.addProperty(new Property(null, SEX, ValueType.PRIMITIVE, sbook.getCustType()));
         carrier.addProperty(new Property(null, IS_SMOKER, ValueType.PRIMITIVE, sbook.isSmoker()));
         carrier.addProperty(new Property(null, LUGGAGE_WEIGHT, ValueType.PRIMITIVE, sbook.getLuggWeight()));
-        carrier.addProperty(new Property(null, WEIGHT_UNIT, ValueType.PRIMITIVE, sbook.getwUnit()));
+        carrier.addProperty(new Property(null, WEIGHT_UNIT, ValueType.ENUM, sbook.getwUnit()));//TODO neuer test mit ENUM
         carrier.addProperty(new Property(null, HAS_INVOICE, ValueType.PRIMITIVE, sbook.hasInvoice()));
         carrier.addProperty(new Property(null, FLIGHT_CLASS, ValueType.PRIMITIVE, sbook.getFlightClass()));
         carrier.addProperty(new Property(null, ORDER_DATE, ValueType.PRIMITIVE, sbook.getOrderDate()));
@@ -305,6 +305,40 @@ public class DataTransformator {
         sbook.setReserved((Boolean) entity.getProperty(IS_RESERVED).getValue());
 
         return sbook;
+    }
+
+    public static Spfli transformEntityToSpfli(Entity entity, Scarr carrier) {
+        final String connId = (String) entity.getProperty(CONNECTION_ID).getValue();
+        final String airpFrom = (String) entity.getProperty(AIRPORT_FROM).getValue();
+        final String airpTo = (String) entity.getProperty(AIRPORT_TO).getValue();
+        final String cityFrom = (String) entity.getProperty(CITY_FROM).getValue();
+        final String cityTo = (String) entity.getProperty(CITY_TO).getValue();
+        final String countryFrom = (String) entity.getProperty(COUNTRY_FROM).getValue();
+        final String countryTo = (String) entity.getProperty(COUNTRY_TO).getValue();
+        final int flTime = (Integer) entity.getProperty(FLIGHT_TIME).getValue();
+        final String depTime = (String) entity.getProperty(DEPARTURE_TIME).getValue();
+        final String arrTime = (String) entity.getProperty(ARRIVAL_TIME).getValue();
+        final double distance = (Double) entity.getProperty(DISTANCE____).getValue();
+        final UnitOfLength distId = UnitOfLength.valueOf((String) entity.getProperty(DISTANCE_UNIT).getValue());
+        final String flType = (String) entity.getProperty(FLIGHT_TYPE).getValue();
+        final int period = (Integer) entity.getProperty(PERIOD____).getValue();
+
+        return new Spfli(connId,
+                         carrier,
+                         airpFrom,
+                         airpTo,
+                         cityFrom,
+                         cityTo,
+                         countryFrom,
+                         countryTo,
+                         flTime,
+                         depTime,
+                         arrTime,
+                         distance,
+                         distId,
+                         flType,
+                         period);
+
     }
 
     /* HELPER */ //TODO delete?

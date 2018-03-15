@@ -23,6 +23,7 @@ import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.uri.UriParameter;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -80,7 +81,7 @@ public class EntityCarrierService extends AbstractEntityService {
         if (idProperty != null) {
             final String carrierCode = (String) idProperty.getValue();
 
-            if (this.idTaken(carrierCode)) {
+            if (Util.idTaken(carrierCode, mScarrService)) {
                 //TODO LOG plane already defined in db creating new one
                 carrierId = this.generateScarrId(carrierName);
             } else {
@@ -107,14 +108,13 @@ public class EntityCarrierService extends AbstractEntityService {
     }
 
     public void deleteCarrier(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {
-        final Entity productEntity = this.getCarrier(edmEntityType, keyParams);
-        if (productEntity == null) {
+        final Entity entity = this.getCarrier(edmEntityType, keyParams);
+
+        if (entity == null) {
             throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
         }
 
-        //hole object und dann lösche es?
-        //        mDatabaseHandler.deleteData();
-        //        this.productList.remove(productEntity);
+        mScarrService.delete(DataTransformator.transformEntityToScarr(entity));
     }
 
     //NAVIGATION
@@ -150,19 +150,6 @@ public class EntityCarrierService extends AbstractEntityService {
         return navigationTargetEntityCollection;
     }
 
-    public boolean idTaken(String idToCheckIfTaken) {
-        return StringUtils.isEmpty(idToCheckIfTaken) || mScarrService.idTaken(idToCheckIfTaken);
-    }
-
-    //checks first if the given id is not taken, if so a new one will be created and returned
-    public String generateId(String idToCheckIfTaken, int length, boolean useLetters, boolean useNumbers) {//TODO VERSCHIEBEN NACH UTIL - nicht nur String
-        while (this.idTaken(idToCheckIfTaken)) {
-            idToCheckIfTaken = Util.generateRandomId(length, useLetters, useNumbers);
-        }
-
-        return idToCheckIfTaken;
-    }
-
     /**
      * Generates from the given carrier name a carrier id. If that generated id is taken a random five letter id will be generated.
      *
@@ -186,7 +173,7 @@ public class EntityCarrierService extends AbstractEntityService {
             final Character firstLetter = carrierName.charAt(0);
             idToCheckIfTaken = String.valueOf(firstLetter) + String.valueOf(secondLetter);
         }
-        carrierId = this.generateId(idToCheckIfTaken, 5, true, false);
+        carrierId = Util.generateId(idToCheckIfTaken, 5, true, false, mScarrService);
 
         return carrierId;
     }

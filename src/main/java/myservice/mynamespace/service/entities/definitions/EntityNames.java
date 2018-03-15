@@ -66,6 +66,7 @@ public class EntityNames {
     public static final String SEATS_MAX_F = "Max. capacity of Seats in First Class";
     public static final String SEATS_OCC_F = "Occupied Seats in First Class";
 
+    //entity spfli
     public static final String COUNTRY_FROM = "Departure Country (Key)";//TODO adde zu wessen das jew. der key ist
     public static final String CITY_FROM = "Departure City";
     public static final String AIRPORT_FROM = "Departure Airport";
