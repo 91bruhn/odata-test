@@ -7,12 +7,18 @@
 
 package myservice.mynamespace.database.service.tmp2;
 
+import myservice.mynamespace.database.collections.Scarr;
+import myservice.mynamespace.database.collections.Sflight;
 import myservice.mynamespace.database.collections.Spfli;
 import myservice.mynamespace.database.service.DataTransformator;
 import myservice.mynamespace.database.service.tmp.SpfliService;
+import myservice.mynamespace.service.entities.definitions.EntityNames;
 import myservice.mynamespace.util.Util;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
+import org.apache.olingo.commons.api.data.Property;
+import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
@@ -23,8 +29,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static myservice.mynamespace.service.entities.definitions.EntityNames.BOOKING_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CARRIER_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.CONNECTION_ID;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_SBOOK_NAME;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.FLIGHT_DATE;
 
 /**
  *
@@ -71,6 +80,36 @@ public class EntityConnectionService extends AbstractEntityService {
     }
 
     public Entity createConnection(EdmEntityType edmEntityType, Entity entity) {
+        final Property idProperty = entity.getProperty(EntityNames.PLANE_TYPE);
+        final String id;
+
+        if (idProperty != null) {
+            final String givenBookId = (String) idProperty.getValue();
+
+            if (this.idTaken(givenBookId)) {
+                id = this.generateId(givenBookId, 10, true, true);
+            } else {
+                id = givenBookId;
+            }
+            idProperty.setValue(ValueType.PRIMITIVE, id);//TODO was macht das?
+        } else {
+            id = this.generateId(StringUtils.EMPTY, 10, true, true);
+            entity.getProperties().add(new Property(null, BOOKING_ID, ValueType.PRIMITIVE, id));
+        }
+        entity.setId(Util.createId(ES_SBOOK_NAME, id));
+
+        final String carrierId = (String) entity.getProperty(CARRIER_ID).getValue();
+        final String connectionId = (String) entity.getProperty(CONNECTION_ID).getValue();
+        final String flDate = (String) entity.getProperty(FLIGHT_DATE).getValue();
+
+        final Scarr scarr = this.loadAssociatedCarrier(carrierId);
+        final Spfli spfli = this.loadAssociatedConnection(connectionId);
+        final Sflight sflight = this.loadAssociatedFlight(flDate);
+
+        mSbookService.save(DataTransformator.transformEntityToSbook(entity, scarr, spfli, sflight));
+
+        return entity;
+
         return null;
     }
 

@@ -115,6 +115,7 @@ public class DataTransformator {
         //        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.COLLECTION_ENTITY, sflight.getPlaneType()));//COLLECTION_COMPLEX
 
         flight.addProperty(new Property(null, PLANE_TYPE, ValueType.PRIMITIVE, sflight.getPlaneType().getPlaneType()));//COLLECTION_COMPLEX
+        //TODO löschen
         flight.addProperty(new Property(null, SPEED, ValueType.PRIMITIVE, sflight.getPlaneType().getOpSpeed()));//COLLECTION_COMPLEX
 
         flight.addProperty(new Property(null, PRICE, ValueType.PRIMITIVE, sflight.getPrice()));
@@ -197,7 +198,7 @@ public class DataTransformator {
 
     public static Entity transformSaplaneToEntity(Saplane saplane) {
         Entity carrier = new Entity();
-        //IDs
+        //IDs --> Key Property
         carrier.addProperty(new Property(null, PLANE_TYPE, ValueType.PRIMITIVE, saplane.getPlaneType()));
 
         carrier.addProperty(new Property(null, SEATS_MAX, ValueType.PRIMITIVE, saplane.getSeatsMax()));
@@ -286,19 +287,24 @@ public class DataTransformator {
     }
 
     public static Sbook transformEntityToSbook(Entity entity, Scarr scarr, Spfli spfli, Sflight sflight) {
-        final String bookId = (String) entity.getProperty(BOOKING_ID).getValue();
-        final String customId = (String) entity.getProperty(CUSTOMER_ID).getValue();
-        final char sex = (Character) entity.getProperty(SEX).getValue();//TODO falsch gespeichert in DB ich hab da nur 'F'
-        final char smoker = (Character) entity.getProperty(IS_SMOKER).getValue();
-        final double luggWeight = (Double) entity.getProperty(LUGGAGE_WEIGHT).getValue();
-        final UnitOfMass wUnit = UnitOfMass.valueOf((String) entity.getProperty(WEIGHT_UNIT).getValue());
-        final boolean invoice = (Boolean) entity.getProperty(HAS_INVOICE).getValue();
-        final char flightClass = (Character) entity.getProperty(FLIGHT_CLASS).getValue();
-        final String orderDate = (String) entity.getProperty(ORDER_DATE).getValue();
-        final boolean cancelled = (Boolean) entity.getProperty(IS_CANCELLED).getValue();
-        final boolean reserved = (Boolean) entity.getProperty(IS_RESERVED).getValue();
+        final Sbook sbook = new Sbook();
 
-        return new Sbook(bookId, scarr, spfli, sflight, customId, sex, smoker, luggWeight, wUnit, invoice, flightClass, orderDate, cancelled, reserved);
+        sbook.setBookId((String) entity.getProperty(BOOKING_ID).getValue());
+        sbook.setCarrId(scarr);
+        sbook.setConnId(spfli);
+        sbook.setFlDate(sflight);
+        sbook.setCustomId((String) entity.getProperty(CUSTOMER_ID).getValue());
+        sbook.setCustType((String) entity.getProperty(SEX).getValue());
+        sbook.setSmoker((Boolean) entity.getProperty(IS_SMOKER).getValue());
+        sbook.setLuggWeight((Double) entity.getProperty(LUGGAGE_WEIGHT).getValue());
+        sbook.setwUnit(UnitOfMass.valueOf((String) entity.getProperty(WEIGHT_UNIT).getValue()));
+        sbook.setInvoice((Boolean) entity.getProperty(HAS_INVOICE).getValue());
+        sbook.setFlightClass((String) entity.getProperty(FLIGHT_CLASS).getValue());
+        sbook.setOrderDate((String) entity.getProperty(ORDER_DATE).getValue());
+        sbook.setCancelled((Boolean) entity.getProperty(IS_CANCELLED).getValue());
+        sbook.setReserved((Boolean) entity.getProperty(IS_RESERVED).getValue());
+
+        return sbook;
     }
 
     /* HELPER */ //TODO delete?

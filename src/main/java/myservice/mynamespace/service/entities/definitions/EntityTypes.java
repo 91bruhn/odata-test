@@ -35,6 +35,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SAPLANE_FQN;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SAPLANE_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SBOOK_FQN;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SBOOK_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SCARR_FQN;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SCARR_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.ET_SFLIGHT_FQN;
@@ -177,8 +178,8 @@ public class EntityTypes {
 
         final CsdlProperty airpFrom = new CsdlProperty().setName(AIRPORT_FROM).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty cityFrom = new CsdlProperty().setName(CITY_FROM).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-        final CsdlProperty countryFr = new CsdlProperty().setName(COUNTRY_FROM)
-                                                         .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());//TODO change String values
+        //TODO change String values
+        final CsdlProperty countryFr = new CsdlProperty().setName(COUNTRY_FROM).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty airpTo = new CsdlProperty().setName(AIRPORT_TO).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty cityTo = new CsdlProperty().setName(CITY_TO).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty countryTo = new CsdlProperty().setName(COUNTRY_TO).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
@@ -233,6 +234,7 @@ public class EntityTypes {
                                                period));
         entityType.setKey(Arrays.asList(propRefCarrierId, propRefConnectionId));
         entityType.setNavigationProperties(navPropList);
+
         return entityType;
     }
 
@@ -295,9 +297,9 @@ public class EntityTypes {
         final CsdlProperty isReserved = new CsdlProperty().setName(IS_RESERVED).setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
 
         final CsdlPropertyRef propRefBookingId = new CsdlPropertyRef().setName(BOOKING_ID);
-        final CsdlPropertyRef propRefCarrierId = new CsdlPropertyRef().setName(BOOKING_ID);
-        final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(BOOKING_ID);
-        final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(BOOKING_ID);
+        final CsdlPropertyRef propRefCarrierId = new CsdlPropertyRef().setName(CARRIER_ID);
+        final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(CONNECTION_ID);
+        final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(FLIGHT_DATE);
 
         // navigation properties
         final CsdlNavigationProperty navPropFlight = new CsdlNavigationProperty().setName(ET_SFLIGHT_NAME)
@@ -318,7 +320,7 @@ public class EntityTypes {
         //TODO implement flight
 
         entityType = new CsdlEntityType();
-        entityType.setName(ET_SPFLI_NAME);
+        entityType.setName(ET_SBOOK_NAME);
         entityType.setProperties(Arrays.asList(bookingId,
                                                carrierId,
                                                connectionId,
@@ -363,10 +365,7 @@ public class EntityTypes {
         final CsdlProperty speedUnit = new CsdlProperty().setName(SPEED_UNIT).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
         final CsdlProperty producer = new CsdlProperty().setName(PRODUCER).setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
-        final CsdlPropertyRef propRefBookingId = new CsdlPropertyRef().setName(BOOKING_ID);
-        final CsdlPropertyRef propRefCarrierId = new CsdlPropertyRef().setName(BOOKING_ID);
-        final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(BOOKING_ID);
-        final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(BOOKING_ID);
+        final CsdlPropertyRef propRefPlaneType = new CsdlPropertyRef().setName(PLANE_TYPE);
 
         // navigation properties
         final CsdlNavigationProperty navPropFlights = new CsdlNavigationProperty().setName(ES_SFLIGHT_NAME)
@@ -376,10 +375,10 @@ public class EntityTypes {
                                                                                   .setNullable(false);
         //TODO implement navigation to connection, booking, carrier
 
-        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Arrays.asList(navPropFlights));
+        final List<CsdlNavigationProperty> navPropList = new ArrayList<>(Collections.singletonList(navPropFlights));
 
         entityType = new CsdlEntityType();
-        entityType.setName(ET_SPFLI_NAME);
+        entityType.setName(ET_SAPLANE_NAME);
         entityType.setProperties(Arrays.asList(planeType,
                                                seatsMaxE,
                                                seatsMaxB,
@@ -397,7 +396,7 @@ public class EntityTypes {
                                                speed,
                                                speedUnit,
                                                producer));
-        entityType.setKey(Arrays.asList(propRefBookingId, propRefCarrierId, propRefConnectionId, propRefFlightDate));
+        entityType.setKey(Collections.singletonList(propRefPlaneType));
 
         entityType.setNavigationProperties(navPropList);
 

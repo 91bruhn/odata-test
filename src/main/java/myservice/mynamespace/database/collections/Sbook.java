@@ -156,6 +156,14 @@ public class Sbook {
         this.smoker = smoker;
     }
 
+    public void setSmoker(boolean isSmoker) {
+        if (isSmoker) {
+            this.setSmoker('Y');
+        } else {
+            this.setSmoker('N');
+        }
+    }
+
     public double getLuggWeight() {
         return luggWeight;
     }
@@ -180,6 +188,14 @@ public class Sbook {
         this.invoice = 'Y' == invoice;
     }
 
+    public void setInvoice(boolean hasInvoice) {
+        if (hasInvoice) {
+            this.setInvoice('Y');
+        } else {
+            this.setInvoice('N');
+        }
+    }
+
     public String getFlightClass() {
         switch (flightClass) {
             case 'E':
@@ -195,6 +211,19 @@ public class Sbook {
 
     public void setFlightClass(Character flightClass) {
         this.flightClass = flightClass;
+    }
+
+    public void setFlightClass(String flightClass) {
+        switch (flightClass) {
+            case "Economy":
+                setFlightClass('E');
+                return;
+            case "Business":
+                setFlightClass('B');
+                return;
+            case "First Class":
+                setFlightClass('F');
+        }
     }
 
     public String getOrderDate() {
@@ -213,11 +242,27 @@ public class Sbook {
         this.cancelled = 'Y' == cancelled;
     }
 
+    public void setCancelled(boolean isCancelled) {
+        if (isCancelled) {
+            this.setCancelled('Y');
+        } else {
+            this.setCancelled('N');
+        }
+    }
+
     public boolean isReserved() {
         return reserved;
     }
 
     public void setReserved(Character reserved) {
         this.reserved = 'Y' == reserved;
+    }
+
+    public void setReserved(boolean isReserved) {
+        if (isReserved) {
+            this.setReserved('Y');
+        } else {
+            this.setReserved('N');
+        }
     }
 }
