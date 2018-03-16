@@ -16,16 +16,11 @@ import org.mongodb.morphia.Morphia;
 public class MorphiaService {//TODO woanders hin?
 
     // ------------------------------------------------------------------------
-    // constants
+    // members
     // ------------------------------------------------------------------------
 
     protected MongoClient mMongoClient;
     protected Morphia mMorphia;
-    //    protected Datastore mDatastore;
-
-    // ------------------------------------------------------------------------
-    // members
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     // constructors
@@ -35,13 +30,10 @@ public class MorphiaService {//TODO woanders hin?
         mMongoClient = new MongoClient("localhost", 27017);
         mMorphia = new Morphia();
         //        mDatastore = mMorphia.createDatastore(mMongoClient, "Flugdatenverwaltung");
-        mMorphia.mapPackage("myservice.mynamespace.database.data");//TODO namen ueberarbeiten
+        //        mMorphia.mapPackage("myservice.mynamespace.database.data");//TODO namen ueberarbeiten
+        mMorphia.mapPackage("myservice.mynamespace.database.collections");
         //        mDatastore.ensureIndexes();
     }
-
-    // ------------------------------------------------------------------------
-    // methods
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     // getters/setters

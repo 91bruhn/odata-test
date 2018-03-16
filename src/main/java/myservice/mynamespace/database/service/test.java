@@ -7,6 +7,8 @@
 
 package myservice.mynamespace.database.service;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -23,8 +25,15 @@ public class test {
         //    final LocalDateConverter ldc = new LocalDateConverter();
         //    LocalDateTimeConverter ldtc = new LocalDateTimeConverter();
         //    Date bb = (Date) ldtc.encode(lcd);
-        //
-        System.out.println(idTaken(""));
+
+        String v = "USD";
+        String v2 = null;
+
+
+        UnitOfCurrency s = UnitOfCurrency.valueOf(v);
+        UnitOfCurrency s2 = v2 == null ? null : UnitOfCurrency.valueOf(v2);
+        System.out.println(s2);
+        Boolean sd = null;
 
     }
 

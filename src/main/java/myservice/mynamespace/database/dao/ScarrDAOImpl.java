@@ -18,8 +18,6 @@ import org.mongodb.morphia.query.FindOptions;
 
 import java.util.List;
 
-import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_CARRIER_ID;
-import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_FLIGHT_DATE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
 
 /**
@@ -56,6 +54,10 @@ public class ScarrDAOImpl extends BasicDAO<Scarr, ObjectId> implements ScarrDAO 
     public Key<Scarr> save(Scarr scarr) {
         return super.save(scarr);
     }
+    //
+    //    public void update(Scarr scarr){
+    //        getDatastore().up
+    //    }
 
     @Override
     public WriteResult delete(Scarr scarr) {

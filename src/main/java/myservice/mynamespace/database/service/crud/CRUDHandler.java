@@ -105,12 +105,16 @@ public class CRUDHandler {//Service? DB Service Handler???
         switch (edmEntitySet.getName()) {
             case ES_SFLIGHT_NAME:
                 mEntityFlightService.updateFlight(edmEntityType, keyParams, updateEntity, httpMethod);
+                return;
             case ES_SPFLI_NAME:
                 mEntityConnectionService.updateConnection(edmEntityType, keyParams, updateEntity, httpMethod);
+                return;
             case ES_SCARR_NAME:
                 mEntityCarrierService.updateCarrier(edmEntityType, keyParams, updateEntity, httpMethod);
+                return;
             case ES_SBOOK_NAME:
                 mEntityBookingService.updateBooking(edmEntityType, keyParams, updateEntity, httpMethod);
+                return;
             case ES_SAPLANE_NAME:
                 mEntityPlaneService.updatePlane(edmEntityType, keyParams, updateEntity, httpMethod);
         }
@@ -122,12 +126,16 @@ public class CRUDHandler {//Service? DB Service Handler???
         switch (edmEntitySet.getName()) {
             case ES_SFLIGHT_NAME:
                 mEntityFlightService.deleteFlight(edmEntityType, keyParams);
+                return;
             case ES_SPFLI_NAME:
                 mEntityConnectionService.deleteConnection(edmEntityType, keyParams);
+                return;
             case ES_SCARR_NAME:
                 mEntityCarrierService.deleteCarrier(edmEntityType, keyParams);
+                return;
             case ES_SBOOK_NAME:
                 mEntityBookingService.deleteBooking(edmEntityType, keyParams);
+                return;
             case ES_SAPLANE_NAME:
                 mEntityPlaneService.deletePlane(edmEntityType, keyParams);
         }

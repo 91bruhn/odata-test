@@ -95,7 +95,7 @@ public class EntityFlightService extends AbstractEntityService {
         } else {
             return null;
         }
-        entity.setId(Util.createId(ES_SFLIGHT_NAME, id));//TODO load corresponding connectoin und carrier und plane
+        entity.setId(Util.createId(ES_SFLIGHT_NAME, id));
 
         final String carrierId = (String) entity.getProperty(CARRIER_ID).getValue();
         final String connectionId = (String) entity.getProperty(CONNECTION_ID).getValue();
@@ -110,7 +110,47 @@ public class EntityFlightService extends AbstractEntityService {
         return entity;
     }
 
-    public void updateFlight(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entity, HttpMethod httpMethod) throws ODataApplicationException {
+    public void updateFlight(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entityUpdated, HttpMethod httpMethod)
+        throws ODataApplicationException {
+
+        final Entity entityFromDB = getFlight(edmEntityType, keyParams);//TODO wird das auch in die db gespeichert?
+        if (entityFromDB == null) {
+            throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
+        }
+
+        final List<Property> existingProperties = entityFromDB.getProperties();
+        for (Property existingProperty : existingProperties) {
+            final String propName = existingProperty.getName();
+
+            if (Util.isKey(edmEntityType, propName)) {
+                continue;
+            }
+
+            final Property updateProperty = entityUpdated.getProperty(propName);
+
+            if (updateProperty == null) {
+                //if a property has not been added to the request payload
+                //depending on the HttpMethod the behaviour should be different
+                if (httpMethod.equals(HttpMethod.PUT)) {
+                    // in case of PUT, the existing property is set to null
+                    existingProperty.setValue(existingProperty.getValueType(), null);
+                    // in case of PATCH, the existing property is not touched
+                }
+            } else {
+                if (updateProperty.getValue() != null) {
+                    existingProperty.setValue(existingProperty.getValueType(), updateProperty.getValue());
+                } else {
+                    //TODO log das was schiefgegangen ist
+                }
+            }
+        }
+        //TODO checke obs sich bis hierhin verändert hat
+        final Scarr scarr = Util.loadAssociatedCarrier((String) entityUpdated.getProperty(CARRIER_ID).getValue());
+        final Spfli spfli = Util.loadAssociatedConnection((String) entityUpdated.getProperty(CONNECTION_ID).getValue());
+        final Saplane saplane = Util.loadAssociatedPlane((String) entityUpdated.getProperty(PLANE_TYPE).getValue());
+        //TODO namen von object anpassen
+        //actual update - morphias uses upsert todo weiter erklären
+        mSflightService.save(DataTransformator.transformEntityToSflight(entityFromDB, scarr, spfli, saplane));
     }
 
     public void deleteFlight(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {

@@ -8,6 +8,8 @@
 package myservice.mynamespace.database.service.tmp2;
 
 import myservice.mynamespace.database.collections.Saplane;
+import myservice.mynamespace.database.collections.Scarr;
+import myservice.mynamespace.database.collections.Spfli;
 import myservice.mynamespace.database.service.DataTransformator;
 import myservice.mynamespace.database.service.tmp.SaplaneService;
 import myservice.mynamespace.util.Util;
@@ -102,7 +104,42 @@ public class EntityPlaneService extends AbstractEntityService {
         return entity;
     }
 
-    public void updatePlane(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entity, HttpMethod httpMethod) throws ODataApplicationException {
+    public void updatePlane(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entityUpdated, HttpMethod httpMethod) throws ODataApplicationException {
+        final Entity entityFromDB = getPlane(edmEntityType, keyParams);//TODO wird das auch in die db gespeichert?
+        if (entityFromDB == null) {
+            throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
+        }
+
+        final List<Property> existingProperties = entityFromDB.getProperties();
+        for (Property existingProperty : existingProperties) {
+            final String propName = existingProperty.getName();
+
+            if (Util.isKey(edmEntityType, propName)) {
+                continue;
+            }
+
+            final Property updateProperty = entityUpdated.getProperty(propName);
+
+            if (updateProperty == null) {
+                //if a property has not been added to the request payload
+                //depending on the HttpMethod the behaviour should be different
+                if (httpMethod.equals(HttpMethod.PUT)) {
+                    // in case of PUT, the existing property is set to null
+                    existingProperty.setValue(existingProperty.getValueType(), null);
+                    // in case of PATCH, the existing property is not touched
+                }
+            } else {
+                if (updateProperty.getValue() != null) {
+                    existingProperty.setValue(existingProperty.getValueType(), updateProperty.getValue());
+                } else {
+                    //TODO log das was schiefgegangen ist
+                }
+            }
+        }
+        //TODO checke obs sich bis hierhin verändert hat
+        //TODO namen von object anpassen
+        //actual update - morphias uses upsert todo weiter erklären
+        mSaplaneService.save(DataTransformator.transformEntityToSaplane(entityFromDB));
     }
 
     public void deletePlane(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {

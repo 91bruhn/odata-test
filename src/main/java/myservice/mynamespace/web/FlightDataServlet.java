@@ -30,10 +30,8 @@ public class FlightDataServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(FlightDataServlet.class);
 
     public void init() throws ServletException {
-        LOG.info("Creating dummy data if database is empty.");
-        // creating some sample data
+        // creates some sample data at start up
         DummyDataCreator.createTestData();
-        LOG.info("Dummy data created.");//TODO verschieben
     }
 
     @Override
@@ -60,8 +58,6 @@ public class FlightDataServlet extends HttpServlet {
             handler.register(new FlightDataEntityCollectionProcessor(cRUDHandler, navigationHandler));
             handler.register(new FlightDataEntityProcessor(cRUDHandler, navigationHandler));
             handler.register(new FlightDataPrimitiveProcessor(cRUDHandler));
-
-            // let the handler do the work
             handler.process(req, resp);
         } catch (RuntimeException e) {
             LOG.error("Server Error occurred in FlightDataServlet", e);

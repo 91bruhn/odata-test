@@ -11,12 +11,16 @@ import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import myservice.mynamespace.database.data.enums.UnitOfSpeed;
+import myservice.mynamespace.database.service.tmp.MorphiaService;
+import myservice.mynamespace.service.entities.definitions.EntityNames;
 import org.apache.commons.collections.CollectionUtils;
 import org.bson.BSONObject;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.converters.LocalDateConverter;
 import org.mongodb.morphia.converters.LocalDateTimeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -33,6 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static myservice.mynamespace.service.entities.definitions.EntityNames.COUNTRY_FROM;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.COUNTRY_TO;
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_NAME;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CAP_UNIT;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CONSUM;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CON_UNIT;
@@ -90,6 +95,8 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.SPF
  */
 public class DummyDataCreator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DummyDataCreator.class);
+
     // ------------------------------------------------------------------------
     // constructors
     // ------------------------------------------------------------------------
@@ -101,12 +108,14 @@ public class DummyDataCreator {
     // ------------------------------------------------------------------------
 
     public static void createTestData() {
-        final MongoClient mongoClient = new MongoClient("localhost", 27017);
-        final Morphia morphia = new Morphia();
-        final Datastore datastore = morphia.createDatastore(mongoClient, "Flugdatenverwaltung");//TODO checke ob man vorher checkt ob die db nicht leer ist
-        morphia.mapPackage("myservice.mynamespace.database.data");
-        datastore.ensureIndexes();
+        LOG.info("Creating dummy data if database is empty.");
 
+        MorphiaService morphiaService = new MorphiaService();
+        final MongoClient mongoClient = morphiaService.getMongoClient();
+        final Morphia morphia = morphiaService.getMorphia();
+        final Datastore datastore = morphia.createDatastore(mongoClient, DB_NAME);
+
+        datastore.ensureIndexes();
         ////////////////////////SCARR////////////////////////
         BSONObject jsonArray = readJson("/dummyData/dummyDataScarr.json", DummyDataCreator.class);
         List<Scarr> carriers = transformScarr(jsonArray);
@@ -127,6 +136,8 @@ public class DummyDataCreator {
         jsonArray = readJson("/dummyData/dummyDataSbook.json", DummyDataCreator.class);
         List<Sbook> bookings = transformSbooking(jsonArray, carriers, connections, flights);//mehrzahl
         datastore.save(bookings);
+
+        LOG.info("Dummy data created.");
     }
 
     private static BSONObject readJson(String path, Class clazz) {

@@ -73,15 +73,15 @@ public class EntityBookingService extends AbstractEntityService {
 
     public Entity getBooking(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {
         // the list of entities at runtime
-        //        final EntityCollection entitySet = this.getBookings();
+        final EntityCollection entitySet = this.getBookings();
 
 
     /* generic approach to find the requested entity */
-        //        return Util.findEntity(edmEntityType, entitySet, keyParams);//TODO make use of real DB stuff
+        return Util.findEntity(edmEntityType, entitySet, keyParams);//TODO make use of real DB stuff
 
-        Sbook sbook = mSbookService.getById("dfd");
+        //        Sbook sbook = mSbookService.getById("dfd");
 
-        return DataTransformator.transformSbookToEntity(sbook);
+//        return DataTransformator.transformSbookToEntity(sbook);
     }
 
     //TODO alle verschieben
@@ -117,8 +117,47 @@ public class EntityBookingService extends AbstractEntityService {
         return entity;
     }
 
-    public void updateBooking(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entity, HttpMethod httpMethod)
+    public void updateBooking(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entityUpdated, HttpMethod httpMethod)
         throws ODataApplicationException {
+
+        final Entity entityFromDB = getBooking(edmEntityType, keyParams);//TODO wird das auch in die db gespeichert?
+        if (entityFromDB == null) {
+            throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
+        }
+
+        final List<Property> existingProperties = entityFromDB.getProperties();
+        for (Property existingProperty : existingProperties) {
+            final String propName = existingProperty.getName();
+
+            if (Util.isKey(edmEntityType, propName)) {
+                continue;
+            }
+
+            final Property updateProperty = entityUpdated.getProperty(propName);
+
+            if (updateProperty == null) {
+                //if a property has not been added to the request payload
+                //depending on the HttpMethod the behaviour should be different
+                if (httpMethod.equals(HttpMethod.PUT)) {
+                    // in case of PUT, the existing property is set to null
+                    existingProperty.setValue(existingProperty.getValueType(), null);
+                    // in case of PATCH, the existing property is not touched
+                }
+            } else {
+                if (updateProperty.getValue() != null) {
+                    existingProperty.setValue(existingProperty.getValueType(), updateProperty.getValue());
+                } else {
+                    //TODO log das was schiefgegangen ist
+                }
+            }
+        }
+        //TODO checke obs sich bis hierhin verändert hat
+        final Scarr scarr = Util.loadAssociatedCarrier((String) entityUpdated.getProperty(CARRIER_ID).getValue());
+        final Spfli spfli = Util.loadAssociatedConnection((String) entityUpdated.getProperty(CONNECTION_ID).getValue());
+        final Sflight sflight = Util.loadAssociatedFlight((String) entityUpdated.getProperty(FLIGHT_DATE).getValue());
+        //TODO namen von object anpassen
+        //actual update - morphias uses upsert todo weiter erklären
+        mSbookService.save(DataTransformator.transformEntityToSbook(entityFromDB, scarr, spfli, sflight));
     }
 
     public void deleteBooking(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {

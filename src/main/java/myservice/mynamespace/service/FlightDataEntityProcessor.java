@@ -142,16 +142,6 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
         response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
     }
 
-  /*
-   * These processor methods are not handled in this tutorial
-   */
-
-    //  public void createEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo,
-    //      ContentType requestFormat, ContentType responseFormat)
-    //      throws ODataApplicationException, DeserializerException, SerializerException {
-    //    throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
-    //  }
-
     /**
      * Example request:
      * <p>
@@ -193,11 +183,6 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
         response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
     }
 
-    //    public void updateEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType requestFormat, ContentType responseFormat)
-    //        throws ODataApplicationException, DeserializerException, SerializerException {
-    //        throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
-    //    }
-
     public void updateEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType requestFormat, ContentType responseFormat)
         throws ODataApplicationException, DeserializerException, SerializerException {
         //1. Retrieve the entity set which belongs to the requested entity
@@ -222,10 +207,6 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
         //3. configure the response object
         response.setStatusCode(HttpStatusCode.NO_CONTENT.getStatusCode());
     }
-
-    //    public void deleteEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo) throws ODataApplicationException {
-    //        throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
-    //    }
 
     public void deleteEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo) throws ODataApplicationException {
         // 1. Retrieve the entity set which belongs to the requested entity

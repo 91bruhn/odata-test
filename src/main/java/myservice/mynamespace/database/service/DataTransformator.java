@@ -9,7 +9,6 @@ import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import myservice.mynamespace.database.data.enums.UnitOfSpeed;
-import myservice.mynamespace.service.entities.definitions.EntityNames;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
@@ -226,32 +225,32 @@ public class DataTransformator {
 
     //TRANSFORM ENTITY TO TABLE OBJECT
     public static Scarr transformEntityToScarr(Entity entity) {//TODO man könnte auch den typ abfragen um safe zu sein
-        final String carrierId = (String) entity.getProperty(EntityNames.CARRIER_ID).getValue();
-        final String carrierName = (String) entity.getProperty(EntityNames.CARRIER_NAME).getValue();
-        final UnitOfCurrency currency = UnitOfCurrency.valueOf((String) entity.getProperty(EntityNames.CURRENCY).getValue());
-        final String url = (String) entity.getProperty(EntityNames.SCARR_URL).getValue();
+        final String carrierId = getStringValue(entity, CARRIER_ID);
+        final String carrierName = getStringValue(entity, CARRIER_NAME);
+        final UnitOfCurrency currency = getUnitOfCurrencyValue(entity, CURRENCY);
+        final String url = getStringValue(entity, SCARR_URL);
 
         return new Scarr(carrierId, carrierName, currency, url);
     }
 
     public static Saplane transformEntityToSaplane(Entity entity) {//TODO man könnte auch den typ abfragen um safe zu sein
-        final String planeType = (String) entity.getProperty(EntityNames.PLANE_TYPE).getValue();
-        final int seatsMax = (Integer) entity.getProperty(EntityNames.SEATS_MAX).getValue();
-        final double consum = (Double) entity.getProperty(EntityNames.CONSUMPTION).getValue();
-        final UnitOfMass conUnit = UnitOfMass.valueOf((String) entity.getProperty(EntityNames.CONSUM_UNIT).getValue());
-        final double tankCap = (Double) entity.getProperty(EntityNames.TANK_CAPACITY).getValue();
-        final UnitOfMass capUnit = UnitOfMass.valueOf((String) entity.getProperty(EntityNames.TANK_CAP_UNIT).getValue());
-        final double weight = (Double) entity.getProperty(EntityNames.WEIGHT).getValue();
-        final UnitOfMass weiUnit = UnitOfMass.valueOf((String) entity.getProperty(EntityNames.WEIGHT_UNIT).getValue());
-        final double span = (Double) entity.getProperty(EntityNames.SPAN).getValue();
-        final UnitOfLength spanUnit = UnitOfLength.valueOf((String) entity.getProperty(EntityNames.SPAN_UNIT).getValue());
-        final double length = (Double) entity.getProperty(EntityNames.LENGTH).getValue();
-        final UnitOfLength lengUnit = UnitOfLength.valueOf((String) entity.getProperty(EntityNames.LENGTH_UNIT).getValue());
-        final double opSpeed = (Double) entity.getProperty(EntityNames.SPEED).getValue();
-        final UnitOfSpeed speedUnit = UnitOfSpeed.valueOf((String) entity.getProperty(EntityNames.SPEED_UNIT).getValue());
-        final String producer = (String) entity.getProperty(EntityNames.PRODUCER).getValue();
-        final int seatsMaxB = (Integer) entity.getProperty(EntityNames.SEATS_MAX_B).getValue();
-        final int seatsMaxF = (Integer) entity.getProperty(EntityNames.SEATS_MAX_F).getValue();
+        final String planeType = getStringValue(entity, PLANE_TYPE);
+        final int seatsMax = getIntegerValue(entity, SEATS_MAX);
+        final double consum = getDoubleValue(entity, CONSUMPTION);
+        final UnitOfMass conUnit = getUnitOfMassValue(entity, CONSUM_UNIT);
+        final double tankCap = getDoubleValue(entity, TANK_CAPACITY);
+        final UnitOfMass capUnit = getUnitOfMassValue(entity, TANK_CAP_UNIT);
+        final double weight = getDoubleValue(entity, WEIGHT);
+        final UnitOfMass weiUnit = getUnitOfMassValue(entity, WEIGHT_UNIT);
+        final double span = getDoubleValue(entity, SPAN);
+        final UnitOfLength spanUnit = getUnitOfLengthValue(entity, SPAN_UNIT);
+        final double length = getDoubleValue(entity, LENGTH);
+        final UnitOfLength lengUnit = getUnitOfLengthValue(entity, LENGTH_UNIT);
+        final double opSpeed = getDoubleValue(entity, SPEED);
+        final UnitOfSpeed speedUnit = getUnitOfSpeedValue(entity, SPEED_UNIT);
+        final String producer = getStringValue(entity, PRODUCER);
+        final int seatsMaxB = getIntegerValue(entity, SEATS_MAX_B);
+        final int seatsMaxF = getIntegerValue(entity, SEATS_MAX_F);
 
         return new Saplane(planeType,
                            seatsMax,
@@ -273,15 +272,15 @@ public class DataTransformator {
     }
 
     public static Sflight transformEntityToSflight(Entity entity, Scarr scarr, Spfli spfli, Saplane saplane) {
-        final String flDate = (String) entity.getProperty(FLIGHT_DATE).getValue();
-        final double price = (Double) entity.getProperty(PRICE).getValue();
-        final UnitOfCurrency currency = (UnitOfCurrency.valueOf((String) entity.getProperty(EntityNames.CURRENCY).getValue()));
-        final int seatsMax = (Integer) entity.getProperty(SEATS_MAX_E).getValue();
-        final int seatsOcc = (Integer) entity.getProperty(SEATS_OCC_E).getValue();
-        final int seatsMaxB = (Integer) entity.getProperty(SEATS_MAX_B).getValue();
-        final int seatsOccB = (Integer) entity.getProperty(SEATS_OCC_B).getValue();
-        final int seatsMaxF = (Integer) entity.getProperty(SEATS_MAX_F).getValue();
-        final int seatsOccF = (Integer) entity.getProperty(SEATS_OCC_F).getValue();
+        final String flDate = getStringValue(entity, FLIGHT_DATE);
+        final double price = getDoubleValue(entity, PRICE);
+        final UnitOfCurrency currency = getUnitOfCurrencyValue(entity, CURRENCY);
+        final int seatsMax = getIntegerValue(entity, SEATS_MAX_E);
+        final int seatsOcc = getIntegerValue(entity, SEATS_OCC_E);
+        final int seatsMaxB = getIntegerValue(entity, SEATS_MAX_B);
+        final int seatsOccB = getIntegerValue(entity, SEATS_OCC_B);
+        final int seatsMaxF = getIntegerValue(entity, SEATS_MAX_F);
+        final int seatsOccF = getIntegerValue(entity, SEATS_OCC_F);
 
         return new Sflight(flDate, scarr, spfli, saplane, price, currency, seatsMax, seatsOcc, seatsMaxB, seatsOccB, seatsMaxF, seatsOccF);
     }
@@ -289,39 +288,39 @@ public class DataTransformator {
     public static Sbook transformEntityToSbook(Entity entity, Scarr scarr, Spfli spfli, Sflight sflight) {
         final Sbook sbook = new Sbook();
 
-        sbook.setBookId((String) entity.getProperty(BOOKING_ID).getValue());
+        sbook.setBookId(getStringValue(entity, BOOKING_ID));
         sbook.setCarrId(scarr);
         sbook.setConnId(spfli);
         sbook.setFlDate(sflight);
-        sbook.setCustomId((String) entity.getProperty(CUSTOMER_ID).getValue());
-        sbook.setCustType((String) entity.getProperty(SEX).getValue());
-        sbook.setSmoker((Boolean) entity.getProperty(IS_SMOKER).getValue());
-        sbook.setLuggWeight((Double) entity.getProperty(LUGGAGE_WEIGHT).getValue());
-        sbook.setwUnit(UnitOfMass.valueOf((String) entity.getProperty(WEIGHT_UNIT).getValue()));
-        sbook.setInvoice((Boolean) entity.getProperty(HAS_INVOICE).getValue());
-        sbook.setFlightClass((String) entity.getProperty(FLIGHT_CLASS).getValue());
-        sbook.setOrderDate((String) entity.getProperty(ORDER_DATE).getValue());
-        sbook.setCancelled((Boolean) entity.getProperty(IS_CANCELLED).getValue());
-        sbook.setReserved((Boolean) entity.getProperty(IS_RESERVED).getValue());
+        sbook.setCustomId(getStringValue(entity, CUSTOMER_ID));
+        sbook.setCustType(getStringValue(entity, SEX));
+        sbook.setSmoker(getBooleanValue(entity, IS_SMOKER));
+        sbook.setLuggWeight(getDoubleValue(entity, LUGGAGE_WEIGHT));
+        sbook.setwUnit(getUnitOfMassValue(entity, WEIGHT_UNIT));
+        sbook.setInvoice(getBooleanValue(entity, HAS_INVOICE));
+        sbook.setFlightClass(getStringValue(entity, FLIGHT_CLASS));
+        sbook.setOrderDate(getStringValue(entity, ORDER_DATE));
+        sbook.setCancelled(getBooleanValue(entity, IS_CANCELLED));
+        sbook.setReserved(getBooleanValue(entity, IS_RESERVED));
 
         return sbook;
     }
 
     public static Spfli transformEntityToSpfli(Entity entity, Scarr carrier) {
-        final String connId = (String) entity.getProperty(CONNECTION_ID).getValue();
-        final String airpFrom = (String) entity.getProperty(AIRPORT_FROM).getValue();
-        final String airpTo = (String) entity.getProperty(AIRPORT_TO).getValue();
-        final String cityFrom = (String) entity.getProperty(CITY_FROM).getValue();
-        final String cityTo = (String) entity.getProperty(CITY_TO).getValue();
-        final String countryFrom = (String) entity.getProperty(COUNTRY_FROM).getValue();
-        final String countryTo = (String) entity.getProperty(COUNTRY_TO).getValue();
-        final int flTime = (Integer) entity.getProperty(FLIGHT_TIME).getValue();
-        final String depTime = (String) entity.getProperty(DEPARTURE_TIME).getValue();
-        final String arrTime = (String) entity.getProperty(ARRIVAL_TIME).getValue();
-        final double distance = (Double) entity.getProperty(DISTANCE____).getValue();
-        final UnitOfLength distId = UnitOfLength.valueOf((String) entity.getProperty(DISTANCE_UNIT).getValue());
-        final String flType = (String) entity.getProperty(FLIGHT_TYPE).getValue();
-        final int period = (Integer) entity.getProperty(PERIOD____).getValue();
+        final String connId = getStringValue(entity, CONNECTION_ID);
+        final String airpFrom = getStringValue(entity, AIRPORT_FROM);
+        final String airpTo = getStringValue(entity, AIRPORT_TO);
+        final String cityFrom = getStringValue(entity, CITY_FROM);
+        final String cityTo = getStringValue(entity, CITY_TO);
+        final String countryFrom = getStringValue(entity, COUNTRY_FROM);
+        final String countryTo = getStringValue(entity, COUNTRY_TO);
+        final int flTime = getIntegerValue(entity, FLIGHT_TIME);
+        final String depTime = getStringValue(entity, DEPARTURE_TIME);
+        final String arrTime = getStringValue(entity, ARRIVAL_TIME);
+        final double distance = getDoubleValue(entity, DISTANCE____);
+        final UnitOfLength distId = getUnitOfLengthValue(entity, DISTANCE_UNIT);
+        final String flType = getStringValue(entity, FLIGHT_TYPE);
+        final int period = getIntegerValue(entity, PERIOD____);
 
         return new Spfli(connId,
                          carrier,
@@ -338,7 +337,6 @@ public class DataTransformator {
                          distId,
                          flType,
                          period);
-
     }
 
     /* HELPER */ //TODO delete?
@@ -367,5 +365,65 @@ public class DataTransformator {
             return ES_SFLIGHT_NAME;
         }
         return entity.getType();
+    }
+
+    private static String getStringValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        return property == null ? null : (String) property.getValue();
+    }
+
+    private static Double getDoubleValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        return property == null ? 0 : (Double) property.getValue();
+    }
+
+    private static Integer getIntegerValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        return property == null ? 0 : (Integer) property.getValue();
+    }
+
+    private static Boolean getBooleanValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        //todo fucks
+        return property == null ? false : (Boolean) property.getValue();
+    }
+
+    private static UnitOfCurrency getUnitOfCurrencyValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        if (property != null) {
+            String stuff = (String) (property.getValue());
+            UnitOfCurrency of = UnitOfCurrency.valueOf(stuff);
+            return of;
+        } else {
+            return null;
+
+        }
+        //        return property == null ? null : UnitOfCurrency.valueOf((String) property.getValue());
+    }
+
+    private static UnitOfMass getUnitOfMassValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        return property == null ? null : UnitOfMass.valueOf((String) property.getValue());
+    }
+
+    private static UnitOfSpeed getUnitOfSpeedValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        return property == null ? null : UnitOfSpeed.valueOf((String) property.getValue());
+    }
+
+    private static UnitOfLength getUnitOfLengthValue(Entity entity, String propertyName) {
+        final Property property = getProperty(entity, propertyName);
+        return property == null ? null : UnitOfLength.valueOf((String) property.getValue());
+    }
+
+    private static Property getProperty(Entity entity, String propertyName) {
+        final Property property = entity.getProperty(propertyName);
+
+        if (property != null) {
+            if (property.getValue() != null) {
+                return property;
+            }
+        }
+        return null;
     }
 }
