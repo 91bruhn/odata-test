@@ -8,8 +8,6 @@
 package myservice.mynamespace.database.service.tmp2;
 
 import myservice.mynamespace.database.collections.Saplane;
-import myservice.mynamespace.database.collections.Scarr;
-import myservice.mynamespace.database.collections.Spfli;
 import myservice.mynamespace.database.service.DataTransformator;
 import myservice.mynamespace.database.service.tmp.SaplaneService;
 import myservice.mynamespace.util.Util;
@@ -37,7 +35,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.PLA
 /**
  *
  */
-public class EntityPlaneService extends AbstractEntityService {
+public class EntityPlaneService {
 
     // ------------------------------------------------------------------------
     // constants

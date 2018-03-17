@@ -34,7 +34,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_
 /**
  *
  */
-public class EntityConnectionService extends AbstractEntityService {
+public class EntityConnectionService {
 
     // ------------------------------------------------------------------------
     // constants

@@ -33,7 +33,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.ES_
 /**
  *
  */
-public class EntityCarrierService extends AbstractEntityService {
+public class EntityCarrierService {
 
     // ------------------------------------------------------------------------
     // constants

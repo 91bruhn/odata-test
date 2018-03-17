@@ -37,7 +37,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.PLA
 /**
  *
  */
-public class EntityFlightService extends AbstractEntityService {
+public class EntityFlightService {
 
     // ------------------------------------------------------------------------
     // constants

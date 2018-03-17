@@ -161,7 +161,7 @@ public class DataTransformator {
         Entity carrier = new Entity();
         carrier.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, scarr.getCarrId()));
         carrier.addProperty(new Property(null, CARRIER_NAME, ValueType.PRIMITIVE, scarr.getCarrName()));
-        carrier.addProperty(new Property(null, CURRENCY, ValueType.ENUM, scarr.getCurrCode()));
+        carrier.addProperty(new Property(null, CURRENCY, ValueType.PRIMITIVE, scarr.getCurrCode()));
         carrier.addProperty(new Property(null, SCARR_URL, ValueType.PRIMITIVE, scarr.getUrl()));
 
         carrier.setType(ET_SCARR_FQN.getFullQualifiedNameAsString());
@@ -369,7 +369,7 @@ public class DataTransformator {
 
     private static String getStringValue(Entity entity, String propertyName) {
         final Property property = getProperty(entity, propertyName);
-        return property == null ? null : (String) property.getValue();
+        return property == null ? null : String.valueOf(property.getValue());
     }
 
     private static Double getDoubleValue(Entity entity, String propertyName) {
@@ -390,30 +390,22 @@ public class DataTransformator {
 
     private static UnitOfCurrency getUnitOfCurrencyValue(Entity entity, String propertyName) {
         final Property property = getProperty(entity, propertyName);
-        if (property != null) {
-            String stuff = (String) (property.getValue());
-            UnitOfCurrency of = UnitOfCurrency.valueOf(stuff);
-            return of;
-        } else {
-            return null;
-
-        }
-        //        return property == null ? null : UnitOfCurrency.valueOf((String) property.getValue());
+        return property == null ? null : UnitOfCurrency.valueOf(String.valueOf(property.getValue()));
     }
 
     private static UnitOfMass getUnitOfMassValue(Entity entity, String propertyName) {
         final Property property = getProperty(entity, propertyName);
-        return property == null ? null : UnitOfMass.valueOf((String) property.getValue());
+        return property == null ? null : UnitOfMass.valueOf(String.valueOf(property.getValue()));
     }
 
     private static UnitOfSpeed getUnitOfSpeedValue(Entity entity, String propertyName) {
         final Property property = getProperty(entity, propertyName);
-        return property == null ? null : UnitOfSpeed.valueOf((String) property.getValue());
+        return property == null ? null : UnitOfSpeed.valueOf(String.valueOf(property.getValue()));
     }
 
     private static UnitOfLength getUnitOfLengthValue(Entity entity, String propertyName) {
         final Property property = getProperty(entity, propertyName);
-        return property == null ? null : UnitOfLength.valueOf((String) property.getValue());
+        return property == null ? null : UnitOfLength.valueOf(String.valueOf(property.getValue()));
     }
 
     private static Property getProperty(Entity entity, String propertyName) {

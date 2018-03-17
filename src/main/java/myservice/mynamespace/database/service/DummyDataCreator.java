@@ -12,7 +12,6 @@ import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import myservice.mynamespace.database.data.enums.UnitOfSpeed;
 import myservice.mynamespace.database.service.tmp.MorphiaService;
-import myservice.mynamespace.service.entities.definitions.EntityNames;
 import org.apache.commons.collections.CollectionUtils;
 import org.bson.BSONObject;
 import org.mongodb.morphia.Datastore;
@@ -110,7 +109,7 @@ public class DummyDataCreator {
     public static void createTestData() {
         LOG.info("Creating dummy data if database is empty.");
 
-        MorphiaService morphiaService = new MorphiaService();
+        final MorphiaService morphiaService = new MorphiaService();
         final MongoClient mongoClient = morphiaService.getMongoClient();
         final Morphia morphia = morphiaService.getMorphia();
         final Datastore datastore = morphia.createDatastore(mongoClient, DB_NAME);
@@ -118,23 +117,23 @@ public class DummyDataCreator {
         datastore.ensureIndexes();
         ////////////////////////SCARR////////////////////////
         BSONObject jsonArray = readJson("/dummyData/dummyDataScarr.json", DummyDataCreator.class);
-        List<Scarr> carriers = transformScarr(jsonArray);
+        final List<Scarr> carriers = transformScarr(jsonArray);
         datastore.save(carriers);
         ////////////////////////SAPLANE////////////////////////
         jsonArray = readJson("/dummyData/dummyDataSaplane.json", DummyDataCreator.class);
-        List<Saplane> planes = transformSaplane(jsonArray);
+        final List<Saplane> planes = transformSaplane(jsonArray);
         datastore.save(planes);
         ////////////////////////SPFLI////////////////////////
         jsonArray = readJson("/dummyData/dummyDataSpfli.json", DummyDataCreator.class);
-        List<Spfli> connections = transformSpfli(jsonArray, carriers);
+        final List<Spfli> connections = transformSpfli(jsonArray, carriers);
         datastore.save(connections);
         ////////////////////////SFLIGHTS////////////////////////
         jsonArray = readJson("/dummyData/dummyDataSflight.json", DummyDataCreator.class);
-        List<Sflight> flights = transformSflight(jsonArray, carriers, connections, planes);
+        final List<Sflight> flights = transformSflight(jsonArray, carriers, connections, planes);
         datastore.save(flights);
         ////////////////////////SBOOKS////////////////////////
         jsonArray = readJson("/dummyData/dummyDataSbook.json", DummyDataCreator.class);
-        List<Sbook> bookings = transformSbooking(jsonArray, carriers, connections, flights);//mehrzahl
+        final List<Sbook> bookings = transformSbooking(jsonArray, carriers, connections, flights);//mehrzahl
         datastore.save(bookings);
 
         LOG.info("Dummy data created.");
@@ -155,7 +154,7 @@ public class DummyDataCreator {
                 resultStringBuilder.append(line).append("\n");
             }
         } catch (Exception e) {
-            System.out.print("");
+            System.out.print("");//todo adde exception
         }
         return resultStringBuilder.toString();
     }

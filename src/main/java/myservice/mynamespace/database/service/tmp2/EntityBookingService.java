@@ -38,7 +38,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.FLI
 /**
  *
  */
-public class EntityBookingService extends AbstractEntityService {
+public class EntityBookingService {
 
     // ------------------------------------------------------------------------
     // constants
