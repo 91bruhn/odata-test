@@ -60,48 +60,47 @@ public class FlightDataPrimitiveProcessor implements org.apache.olingo.server.ap
      */
     public void readPrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat)
         throws ODataApplicationException, SerializerException {
-
         // 1. Retrieve info from URI
         // 1.1. retrieve the info about the requested entity set
-        List<UriResource> resourceParts = uriInfo.getUriResourceParts();
+        final List<UriResource> resourceParts = uriInfo.getUriResourceParts();
         // Note: only in our example we can rely that the first segment is the EntitySet
-        UriResourceEntitySet uriEntityset = (UriResourceEntitySet) resourceParts.get(0);
-        EdmEntitySet edmEntitySet = uriEntityset.getEntitySet();
+        final UriResourceEntitySet uriEntityset = (UriResourceEntitySet) resourceParts.get(0);
+        final EdmEntitySet edmEntitySet = uriEntityset.getEntitySet();
         // the key for the entity
-        List<UriParameter> keyPredicates = uriEntityset.getKeyPredicates();
+        final List<UriParameter> keyPredicates = uriEntityset.getKeyPredicates();
 
         // 1.2. retrieve the requested (Edm) property
         // the last segment is the Property
-        UriResourceProperty uriProperty = (UriResourceProperty) resourceParts.get(resourceParts.size() - 1);
-        EdmProperty edmProperty = uriProperty.getProperty();
-        String edmPropertyName = edmProperty.getName();
+        final UriResourceProperty uriProperty = (UriResourceProperty) resourceParts.get(resourceParts.size() - 1);
+        final EdmProperty edmProperty = uriProperty.getProperty();
+        final String edmPropertyName = edmProperty.getName();
         // in our example, we know we have only primitive types in our model
-        EdmPrimitiveType edmPropertyType = (EdmPrimitiveType) edmProperty.getType();
+        final EdmPrimitiveType edmPropertyType = (EdmPrimitiveType) edmProperty.getType();
 
         // 2. retrieve data from backend
         // 2.1. retrieve the entity data, for which the property has to be read
-        Entity entity = mCRUDHandler.readEntityData(edmEntitySet, keyPredicates);
+        final Entity entity = mCRUDHandler.readEntityData(edmEntitySet, keyPredicates);
         if (entity == null) { // Bad request
             throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
         }
 
         // 2.2. retrieve the property data from the entity
-        Property property = entity.getProperty(edmPropertyName);
+        final Property property = entity.getProperty(edmPropertyName);
         if (property == null) {
             throw new ODataApplicationException("Property not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
         }
 
         // 3. serialize
-        Object value = property.getValue();
+        final Object value = property.getValue();
         if (value != null) {
             // 3.1. configure the serializer
-            ODataSerializer serializer = odata.createSerializer(responseFormat);
+            final ODataSerializer serializer = odata.createSerializer(responseFormat);
 
-            ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet).navOrPropertyPath(edmPropertyName).build();
-            PrimitiveSerializerOptions options = PrimitiveSerializerOptions.with().contextURL(contextUrl).build();
+            final ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet).navOrPropertyPath(edmPropertyName).build();
+            final PrimitiveSerializerOptions options = PrimitiveSerializerOptions.with().contextURL(contextUrl).build();
             // 3.2. serialize
-            SerializerResult serializerResult = serializer.primitive(serviceMetadata, edmPropertyType, property, options);
-            InputStream propertyStream = serializerResult.getContent();
+            final SerializerResult serializerResult = serializer.primitive(serviceMetadata, edmPropertyType, property, options);
+            final InputStream propertyStream = serializerResult.getContent();
 
             // 4. configure the response object
             response.setContent(propertyStream);
@@ -113,15 +112,13 @@ public class FlightDataPrimitiveProcessor implements org.apache.olingo.server.ap
         }
     }
 
-  /*
-   * These processor methods are not handled in this tutorial
-   */
-
+    //TODO implement??
     public void updatePrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType requestFormat, ContentType responseFormat)
         throws ODataApplicationException, DeserializerException, SerializerException {
         throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }
 
+    //TODO implement??
     public void deletePrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo) throws ODataApplicationException {
         throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }

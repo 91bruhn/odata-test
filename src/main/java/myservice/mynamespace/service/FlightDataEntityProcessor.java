@@ -67,11 +67,6 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
      */
     public void readEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat)
         throws ODataApplicationException, SerializerException {
-
-        EdmEntityType responseEdmEntityType = null; // we'll need this to build the ContextURL
-        EdmEntitySet responseEdmEntitySet = null; // we need this for building the contextUrl
-        Entity responseEntity = null; // required for serialization of the response body
-
         // 1st step: retrieve the requested Entity: can be "normal" read operation, or navigation (to-one)
         final List<UriResource> resourceParts = uriInfo.getUriResourceParts();
         final int segmentCount = resourceParts.size();
@@ -81,45 +76,71 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
             throw new ODataApplicationException("Only EntitySet is supported", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ENGLISH);
         }
 
-        final UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) uriResource;
-        final EdmEntitySet startEdmEntitySet = uriResourceEntitySet.getEntitySet();
-
         // Analyze the URI segments
         if (segmentCount == 1) { // no navigation
-            this.normalRequest(startEdmEntitySet, request, response, responseFormat, uriInfo);
+            this.normalRequest(request, response, responseFormat, uriResource);
         } else if (segmentCount == 2) { // navigation
-
-            final UriResource navSegment = resourceParts.get(1); // in our example we don't support more complex URIs
-            if (navSegment instanceof UriResourceNavigation) {
-                final UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) navSegment;
-                final EdmNavigationProperty edmNavigationProperty = uriResourceNavigation.getProperty();
-                responseEdmEntityType = edmNavigationProperty.getType();//todo kriege ich das gewünschte?
-                // contextURL displays the last segment
-                responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
-
-                // 2nd: fetch the data from backend.
-                // e.g. for the URI: Products(1)/Category we have to find the correct Category entity
-                final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
-                // e.g. for Products(1)/Category we have to find first the Products(1)
-                final Entity sourceEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
-
-                // now we have to check if the navigation is
-                // a) to-one: e.g. Products(1)/Category
-                // b) to-many with key: e.g. Categories(3)/Products(5)
-                // the key for nav is used in this case: Categories(3)/Products(5)
-                final List<UriParameter> navKeyPredicates = uriResourceNavigation.getKeyPredicates();
-                if (navKeyPredicates.isEmpty()) { // e.g. DemoService.svc/Products(1)/Category
-                    responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity,
-                                                                         responseEdmEntityType);//TODO testen to many, also /Carriers(1)/Flights(1)
-                } else { // e.g. DemoService.svc/Categories(3)/Products(5)
-                    responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
-                }
-            }
+            this.handleNavigation(resourceParts, uriResource, responseFormat, response);
         } else {
             // this would be the case for e.g. Products(1)/Category/Products(1)/Category
             throw new ODataApplicationException("Not supported", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
         }
+    }
 
+    private void normalRequest(ODataRequest request, ODataResponse response, ContentType responseFormat, UriResource uriResource)
+        throws ODataApplicationException, SerializerException {
+
+        final UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) uriResource;
+        final EdmEntitySet responseEdmEntitySet = uriResourceEntitySet.getEntitySet();
+        final EdmEntityType responseEdmEntityType = responseEdmEntitySet.getEntityType();
+        // 2. step: retrieve the data from backend
+        final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
+
+        final Entity responseEntity = mCRUDHandler.readEntityData(responseEdmEntitySet, keyPredicates);
+
+        this.handleResponse(responseEntity, responseEdmEntitySet, responseFormat, responseEdmEntityType, response);
+    }
+
+    private void handleNavigation(List<UriResource> resourceParts, UriResource uriResource, ContentType responseFormat, ODataResponse response)
+        throws ODataApplicationException, SerializerException {
+
+        final UriResource navSegment = resourceParts.get(1); // in our example we don't support more complex URIs
+
+        if (navSegment instanceof UriResourceNavigation) {
+            final UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) navSegment;
+            final EdmNavigationProperty edmNavigationProperty = uriResourceNavigation.getProperty();
+            final UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) uriResource;
+            final EdmEntitySet startEdmEntitySet = uriResourceEntitySet.getEntitySet();
+            final EdmEntityType responseEdmEntityType = edmNavigationProperty.getType();//todo kriege ich das gewünschte?
+
+            // contextURL displays the last segment
+            final EdmEntitySet responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
+
+            // 2nd: fetch the data from backend.
+            // e.g. for the URI: Products(1)/Category we have to find the correct Category entity
+            final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
+            // e.g. for Products(1)/Category we have to find first the Products(1)
+            final Entity sourceEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
+
+            // now we have to check if the navigation is
+            // a) to-one: e.g. Products(1)/Category
+            // b) to-many with key: e.g. Categories(3)/Products(5)
+            // the key for nav is used in this case: Categories(3)/Products(5)
+            final List<UriParameter> navKeyPredicates = uriResourceNavigation.getKeyPredicates();
+            final Entity responseEntity;
+
+            if (navKeyPredicates.isEmpty()) { // e.g. DemoService.svc/Products(1)/Category
+                responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType);//TODO testen to many, also /Carriers(1)/Flights(1)
+            } else { // e.g. DemoService.svc/Categories(3)/Products(5)
+                responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
+            }
+
+            this.handleResponse(responseEntity, responseEdmEntitySet, responseFormat, responseEdmEntityType, response);
+        }
+    }
+
+    private void handleResponse(Entity responseEntity, EdmEntitySet responseEdmEntitySet, ContentType responseFormat, EdmEntityType responseEdmEntityType,
+                                ODataResponse response) throws ODataApplicationException, SerializerException {
         if (responseEntity == null) {
             // this is the case for e.g. DemoService.svc/Categories(4) or DemoService.svc/Categories(3)/Products(999) --> product existing but not in that cat.
             throw new ODataApplicationException("Nothing found.", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ROOT);
@@ -136,17 +157,6 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
         response.setContent(serializerResult.getContent());
         response.setStatusCode(HttpStatusCode.OK.getStatusCode());
         response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
-    }
-
-    private void normalRequest(EdmEntitySet startEdmEntitySet, ODataRequest request, ODataResponse response, ContentType responseFormat, UriInfo uriInfo) {
-        final EdmEntityType responseEdmEntityType = startEdmEntitySet.getEntityType();
-        final EdmEntitySet responseEdmEntitySet = startEdmEntitySet;
-
-        // 2. step: retrieve the data from backend
-        final UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) uriResource;
-        final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
-        //        responseEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
-
     }
 
     /**
