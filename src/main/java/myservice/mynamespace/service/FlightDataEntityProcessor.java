@@ -86,13 +86,9 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
 
         // Analyze the URI segments
         if (segmentCount == 1) { // no navigation
-            responseEdmEntityType = startEdmEntitySet.getEntityType();
-            responseEdmEntitySet = startEdmEntitySet; // since we have only one segment
-
-            // 2. step: retrieve the data from backend
-            final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
-            responseEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
+            this.normalRequest(startEdmEntitySet, request, response, responseFormat, uriInfo);
         } else if (segmentCount == 2) { // navigation
+
             final UriResource navSegment = resourceParts.get(1); // in our example we don't support more complex URIs
             if (navSegment instanceof UriResourceNavigation) {
                 final UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) navSegment;
@@ -140,6 +136,17 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
         response.setContent(serializerResult.getContent());
         response.setStatusCode(HttpStatusCode.OK.getStatusCode());
         response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
+    }
+
+    private void normalRequest(EdmEntitySet startEdmEntitySet, ODataRequest request, ODataResponse response, ContentType responseFormat, UriInfo uriInfo) {
+        final EdmEntityType responseEdmEntityType = startEdmEntitySet.getEntityType();
+        final EdmEntitySet responseEdmEntitySet = startEdmEntitySet;
+
+        // 2. step: retrieve the data from backend
+        final UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) uriResource;
+        final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
+        //        responseEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
+
     }
 
     /**
