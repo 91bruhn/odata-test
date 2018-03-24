@@ -5,7 +5,7 @@
 // Copyright (c) 2006 - 2018 FORCAM GmbH. All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
 
-package myservice.mynamespace.database.service.tmp;
+package myservice.mynamespace.database.connection;
 
 import com.mongodb.MongoClient;
 import org.mongodb.morphia.Morphia;
