@@ -103,20 +103,13 @@ public class DataTransformator {
 
     public static Entity transformSflightToEntity(Sflight sflight) {
         Entity flight = new Entity();
-
-        flight.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, sflight.getCarrId().getCarrId()));//Todo change name of getter
-        flight.addProperty(new Property(null, CONNECTION_ID, ValueType.PRIMITIVE, sflight.getConnId().getConnId()));//Todo change name of getter
-        //        flight.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sflight.getFlDate().getYear() + 1900));
+        //        flight.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sflight.getSflight().getYear() + 1900));
+        //        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.PRIMITIVE, sflight.getSaplane().getSaplane()));
+        //        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.COLLECTION_ENTITY, sflight.getSaplane()));//COLLECTION_COMPLEX
+        flight.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, sflight.getScarr().getCarrId()));
+        flight.addProperty(new Property(null, CONNECTION_ID, ValueType.PRIMITIVE, sflight.getSpfli().getConnId()));
         flight.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sflight.getFlDate()));
-
-        //        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.PRIMITIVE, sflight.getPlaneType().getPlaneType()));
-
-        //        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.COLLECTION_ENTITY, sflight.getPlaneType()));//COLLECTION_COMPLEX
-
-        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.PRIMITIVE, sflight.getPlaneType().getPlaneType()));//COLLECTION_COMPLEX
-        //TODO löschen
-        flight.addProperty(new Property(null, SPEED, ValueType.PRIMITIVE, sflight.getPlaneType().getOpSpeed()));//COLLECTION_COMPLEX
-
+        flight.addProperty(new Property(null, PLANE_TYPE, ValueType.PRIMITIVE, sflight.getSaplane().getPlaneType()));//COLLECTION_COMPLEX
         flight.addProperty(new Property(null, PRICE, ValueType.PRIMITIVE, sflight.getPrice()));
         flight.addProperty(new Property(null, CURRENCY, ValueType.PRIMITIVE, sflight.getCurrency()));
         flight.addProperty(new Property(null, SEATS_MAX_E, ValueType.PRIMITIVE, sflight.getSeatsMax()));
@@ -135,7 +128,7 @@ public class DataTransformator {
     public static Entity transformSpfliToEntity(Spfli spfli) {
         Entity connection = new Entity();
         //TODO CARRIER_ID??
-        connection.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, spfli.getCarrId().getCarrId()));
+        connection.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, spfli.getScarr().getCarrId()));
         connection.addProperty(new Property(null, CONNECTION_ID, ValueType.PRIMITIVE, spfli.getConnId()));
         connection.addProperty(new Property(null, AIRPORT_FROM, ValueType.PRIMITIVE, spfli.getAirpFrom()));
         connection.addProperty(new Property(null, CITY_FROM, ValueType.PRIMITIVE, spfli.getCityFrom()));
@@ -174,9 +167,9 @@ public class DataTransformator {
         Entity carrier = new Entity();
         //IDs
         carrier.addProperty(new Property(null, BOOKING_ID, ValueType.PRIMITIVE, sbook.getBookId()));
-        carrier.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, sbook.getCarrId().getCarrId()));
-        carrier.addProperty(new Property(null, CONNECTION_ID, ValueType.PRIMITIVE, sbook.getConnId().getConnId()));
-        carrier.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sbook.getFlDate().getFlDate()));
+        carrier.addProperty(new Property(null, CARRIER_ID, ValueType.PRIMITIVE, sbook.getScarr().getCarrId()));
+        carrier.addProperty(new Property(null, CONNECTION_ID, ValueType.PRIMITIVE, sbook.getSpfli().getConnId()));
+        carrier.addProperty(new Property(null, FLIGHT_DATE, ValueType.PRIMITIVE, sbook.getSflight().getFlDate()));
 
         carrier.addProperty(new Property(null, CUSTOMER_ID, ValueType.PRIMITIVE, sbook.getCustomId()));
         carrier.addProperty(new Property(null, SEX, ValueType.PRIMITIVE, sbook.getCustType()));
@@ -289,9 +282,9 @@ public class DataTransformator {
         final Sbook sbook = new Sbook();
 
         sbook.setBookId(getStringValue(entity, BOOKING_ID));
-        sbook.setCarrId(scarr);
-        sbook.setConnId(spfli);
-        sbook.setFlDate(sflight);
+        sbook.setScarr(scarr);
+        sbook.setSpfli(spfli);
+        sbook.setSflight(sflight);
         sbook.setCustomId(getStringValue(entity, CUSTOMER_ID));
         sbook.setCustType(getStringValue(entity, SEX));
         sbook.setSmoker(getBooleanValue(entity, IS_SMOKER));

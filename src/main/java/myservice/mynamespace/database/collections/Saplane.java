@@ -4,9 +4,13 @@ import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import myservice.mynamespace.database.data.enums.UnitOfSpeed;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
 
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CAP_UNIT;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SAPLANE_CONSUM;
@@ -30,14 +34,15 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.SAP
  *
  */
 @Entity(value = SAPLANE, noClassnameStored = true)
+@Indexes({ @Index(fields = @Field(DB_ID)) })
 public class Saplane {
 
     @Id
     @Property(SAPLANE_PLANETYPE)
-    private String planeType;//todo prime
+    private String planeType;
 
     @Property(SAPLANE_SEATSMAX)
-    private int seatsMax;//todo auch in sflight
+    private int seatsMax;
 
     @Property(SAPLANE_CONSUM)
     private double consum;

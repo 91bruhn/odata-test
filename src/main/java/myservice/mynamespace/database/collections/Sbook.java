@@ -2,10 +2,14 @@ package myservice.mynamespace.database.collections;
 
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_BOOKID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SBOOK_CANCELLED;
@@ -23,6 +27,12 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.SBO
  *
  */
 @Entity(value = SBOOK, noClassnameStored = true)
+@Indexes({
+    @Index(fields = @Field(DB_ID)),
+    @Index(fields = @Field("scarr")),
+    @Index(fields = @Field("spfli")),
+    @Index(fields = @Field("sflight"))
+})
 public class Sbook {
 
     @Id
@@ -30,16 +40,13 @@ public class Sbook {
     private String bookId;
 
     @Reference
-    //    @Property(SBOOK_CARRID)
-    private Scarr carrId;
+    private Scarr scarr;
 
     @Reference
-    //    @Property(SBOOK_CONNID)//TODO lazy = true
-    private Spfli connId;
+    private Spfli spfli;
 
     @Reference
-    //    @Property(SBOOK_FLDATE)
-    private Sflight flDate;
+    private Sflight sflight;
 
     @Property(SBOOK_CUSTOMID)
     private String customId;
@@ -71,15 +78,14 @@ public class Sbook {
     @Property(SBOOK_RESERVED)
     private boolean reserved;
 
-    public Sbook() {
-    }
+    public Sbook() {}
 
-    public Sbook(String bookId, Scarr carrId, Spfli connId, Sflight flDate, String customId, Character custType, Character smoker, double luggWeight,
+    public Sbook(String bookId, Scarr scarr, Spfli spfli, Sflight sflight, String customId, Character custType, Character smoker, double luggWeight,
                  UnitOfMass wUnit, boolean invoice, Character flightClass, String orderDate, boolean cancelled, boolean reserved) {
         this.bookId = bookId;
-        this.carrId = carrId;
-        this.connId = connId;
-        this.flDate = flDate;
+        this.scarr = scarr;
+        this.spfli = spfli;
+        this.sflight = sflight;
         this.customId = customId;
         this.custType = custType;
         this.smoker = smoker;
@@ -100,28 +106,28 @@ public class Sbook {
         this.bookId = bookId;
     }
 
-    public Scarr getCarrId() {
-        return carrId;
+    public Scarr getScarr() {
+        return scarr;
     }
 
-    public void setCarrId(Scarr carrId) {
-        this.carrId = carrId;
+    public void setScarr(Scarr scarr) {
+        this.scarr = scarr;
     }
 
-    public Spfli getConnId() {
-        return connId;
+    public Spfli getSpfli() {
+        return spfli;
     }
 
-    public void setConnId(Spfli connId) {
-        this.connId = connId;
+    public void setSpfli(Spfli spfli) {
+        this.spfli = spfli;
     }
 
-    public Sflight getFlDate() {
-        return flDate;
+    public Sflight getSflight() {
+        return sflight;
     }
 
-    public void setFlDate(Sflight flDate) {
-        this.flDate = flDate;
+    public void setSflight(Sflight sflight) {
+        this.sflight = sflight;
     }
 
     public String getCustomId() {
@@ -133,7 +139,7 @@ public class Sbook {
     }
 
     public String getCustType() {
-        return custType == 'M' ? "Male" : "Female";//TODO könnte hier crashen
+        return custType == 'M' ? "Male" : "Female";
     }
 
     public void setCustType(Character custType) {
@@ -148,7 +154,7 @@ public class Sbook {
         }
     }
 
-    public boolean isSmoker() {//TODO überall wo boolean für eig Character steht ändern
+    public boolean isSmoker() {
         return smoker == 'Y';
     }
 

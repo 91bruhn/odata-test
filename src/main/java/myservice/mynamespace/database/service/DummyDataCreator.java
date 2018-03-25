@@ -11,7 +11,7 @@ import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import myservice.mynamespace.database.data.enums.UnitOfLength;
 import myservice.mynamespace.database.data.enums.UnitOfMass;
 import myservice.mynamespace.database.data.enums.UnitOfSpeed;
-import myservice.mynamespace.database.service.tmp.MorphiaService;
+import myservice.mynamespace.database.connection.MorphiaService;
 import org.apache.commons.collections.CollectionUtils;
 import org.bson.BSONObject;
 import org.mongodb.morphia.Datastore;
@@ -219,7 +219,7 @@ public class DummyDataCreator {
             if (carrierFK != null) {
                 final Spfli connection = new Spfli();
                 connection.setConnId(String.valueOf(convertToInteger(json, SPFLI_CONNID)));
-                connection.setCarrId(carrierFK);
+                connection.setScarr(carrierFK);
                 connection.setAirpFrom(convertToString(json, SPFLI_AIRPFROM));
                 connection.setAirpTo(convertToString(json, SPFLI_AIRPTO));
                 connection.setCityFrom(convertToString(json, SPFLI_CITYFROM));
@@ -296,9 +296,9 @@ public class DummyDataCreator {
 
                 final Sflight flight = new Sflight();
                 flight.setFlDate(convertToString(json, SFLIGHT_FLDATE));//SAP's DATS format
-                flight.setCarrId(carrierFK);
-                flight.setConnId(connectionFK);
-                flight.setPlaneType(planeFK);
+                flight.setScarr(carrierFK);
+                flight.setSpfli(connectionFK);
+                flight.setSaplane(planeFK);
 
                 flight.setCurrency(carrierFK.getCurrCode());
                 flight.setPrice(calculateFlightPrice(connectionFK.getDistance(), connectionFK.getDistId(), flight.getCurrency()));
@@ -340,9 +340,9 @@ public class DummyDataCreator {
                 final Sbook booking = new Sbook();
                 //TODO maybe add value price use standard price of booking and multiply by class
                 booking.setBookId(convertIntegerToString(json, SBOOK_BOOKID));
-                booking.setCarrId(carrierFK);
-                booking.setConnId(connectionFK);
-                booking.setFlDate(flightFK);
+                booking.setScarr(carrierFK);
+                booking.setSpfli(connectionFK);
+                booking.setSflight(flightFK);
                 booking.setCustomId(convertIntegerToString(json, SBOOK_CUSTOMID));
                 booking.setCustType(convertToCharacter(json, SBOOK_CUSTTYPE));
                 booking.setSmoker(convertToCharacter(json, SBOOK_SMOKER));

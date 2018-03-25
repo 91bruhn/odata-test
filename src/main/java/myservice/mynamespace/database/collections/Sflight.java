@@ -2,10 +2,14 @@ package myservice.mynamespace.database.collections;
 
 import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_CURRENCY;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SFLIGHT_FLDATE;
@@ -21,23 +25,27 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.SFL
  *
  */
 @Entity(value = SFLIGHT, noClassnameStored = true)
-public class Sflight {//todo compound indexes um schneller zu sein zb. monat, jahr, ...land, country
+@Indexes({
+    @Index(fields = @Field(DB_ID)),
+    @Index(fields = @Field("scarr")),
+    @Index(fields = @Field("spfli")),
+    @Index(fields = @Field("saplane"))
+})
+public class Sflight {
 
+    /** Represented in SAP's DATS-format (YYYYMMDD) */
     @Id
     @Property(SFLIGHT_FLDATE)
-    private String flDate;//SAP's DATS format
-
-    @Reference//todo can also be loaded when this is loaded, idOnly() parameter to just save the key value
-    //    @Property(SFLIGHT_CARRID)
-    private Scarr carrId;
+    private String flDate;//TODO verändern
 
     @Reference
-    //    @Property(SFLIGHT_CONNID)
-    private Spfli connId;
+    private Scarr scarr;
 
     @Reference
-    //    @Property(SFLIGHT_PLANETYPE)
-    private Saplane planeType;
+    private Spfli spfli;
+
+    @Reference
+    private Saplane saplane;
 
     @Property(SFLIGHT_PRICE)
     private double price;
@@ -65,12 +73,12 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
 
     public Sflight() {}
 
-    public Sflight(String flDate, Scarr carrId, Spfli connId, Saplane planeType, double price, UnitOfCurrency currency, int seatsMax, int seatsOcc,
-                   int seatsMaxB, int seatsOccB, int seatsMaxF, int seatsOccF) {
+    public Sflight(String flDate, Scarr scarr, Spfli spfli, Saplane saplane, double price, UnitOfCurrency currency, int seatsMax, int seatsOcc, int seatsMaxB,
+                   int seatsOccB, int seatsMaxF, int seatsOccF) {
         this.flDate = flDate;
-        this.carrId = carrId;
-        this.connId = connId;
-        this.planeType = planeType;
+        this.scarr = scarr;
+        this.spfli = spfli;
+        this.saplane = saplane;
         this.price = price;
         this.currency = currency;
         this.seatsMax = seatsMax;
@@ -81,38 +89,36 @@ public class Sflight {//todo compound indexes um schneller zu sein zb. monat, ja
         this.seatsOccF = seatsOccF;
     }
 
-    //todo SAP's DATS format
     public String getFlDate() {
         return flDate;
     }
 
-    //todo SAP's DATS format
     public void setFlDate(String flDate) {
         this.flDate = flDate;
     }
 
-    public Scarr getCarrId() {
-        return carrId;
+    public Scarr getScarr() {
+        return scarr;
     }
 
-    public void setCarrId(Scarr carrId) {
-        this.carrId = carrId;
+    public void setScarr(Scarr scarr) {
+        this.scarr = scarr;
     }
 
-    public Spfli getConnId() {
-        return connId;
+    public Spfli getSpfli() {
+        return spfli;
     }
 
-    public void setConnId(Spfli connId) {
-        this.connId = connId;
+    public void setSpfli(Spfli spfli) {
+        this.spfli = spfli;
     }
 
-    public Saplane getPlaneType() {
-        return planeType;
+    public Saplane getSaplane() {
+        return saplane;
     }
 
-    public void setPlaneType(Saplane planeType) {
-        this.planeType = planeType;
+    public void setSaplane(Saplane saplane) {
+        this.saplane = saplane;
     }
 
     public double getPrice() {

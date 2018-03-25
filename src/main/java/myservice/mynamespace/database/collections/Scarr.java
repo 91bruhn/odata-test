@@ -2,9 +2,13 @@ package myservice.mynamespace.database.collections;
 
 import myservice.mynamespace.database.data.enums.UnitOfCurrency;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
 
+import static myservice.mynamespace.service.entities.definitions.EntityNames.DB_ID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CARRID;
 import static myservice.mynamespace.service.entities.definitions.EntityNames.SCARR_CARRNAME;
@@ -15,6 +19,7 @@ import static myservice.mynamespace.service.entities.definitions.EntityNames.SCA
  *
  */
 @Entity(value = SCARR, noClassnameStored = true)
+@Indexes({ @Index(fields = @Field(DB_ID)) })
 public class Scarr {
 
     @Id
@@ -30,8 +35,7 @@ public class Scarr {
     @Property(SCARR_URL)
     private String url;
 
-    public Scarr() {
-    }
+    public Scarr() {}
 
     public Scarr(String carrId, String carrName, UnitOfCurrency currCode, String url) {
         this.carrId = carrId;

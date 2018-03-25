@@ -14,7 +14,6 @@ import myservice.mynamespace.database.collections.Scarr;
 import myservice.mynamespace.database.collections.Sflight;
 import myservice.mynamespace.database.collections.Spfli;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
@@ -93,7 +92,7 @@ public class SaplaneDAOImpl extends BasicDAO<Saplane, ObjectId> implements Sapla
             DB_CONNECTION_ID).equal(new Key<>(Spfli.class, SPFLI, connectionId));
         final Sflight sflight = query.get();
 
-        return this.getById(sflight.getPlaneType().getPlaneType());
+        return this.getById(sflight.getSaplane().getPlaneType());
     }
 
 }

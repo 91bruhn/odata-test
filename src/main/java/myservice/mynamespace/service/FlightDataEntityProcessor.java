@@ -130,7 +130,7 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
             final Entity responseEntity;
 
             if (navKeyPredicates.isEmpty()) { // e.g. DemoService.svc/Products(1)/Category
-                responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType);//TODO testen to many, also /Carriers(1)/Flights(1)
+                responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType);
             } else { // e.g. DemoService.svc/Categories(3)/Products(5)
                 responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
             }

@@ -7,14 +7,13 @@
 
 package myservice.mynamespace.database.service.tmp;
 
-import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
+import myservice.mynamespace.database.connection.MorphiaService;
 import myservice.mynamespace.database.collections.Sflight;
 import myservice.mynamespace.database.dao.SflightDAO;
 import myservice.mynamespace.database.dao.SflightDAOImpl;
 import myservice.mynamespace.service.entities.definitions.EntityNames;
 import org.mongodb.morphia.Key;
-import org.mongodb.morphia.Morphia;
 
 import java.util.List;
 

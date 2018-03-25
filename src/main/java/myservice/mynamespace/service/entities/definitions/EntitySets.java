@@ -102,5 +102,4 @@ public class EntitySets {
         return new CsdlNavigationPropertyBinding().setTarget(target).setPath(path);
     }
 }
-//TODO muss der pfad tatsächlich dann Einzahl sein?
 //TODO bei Einzahl: Cannot find Singleton Fligh//TODO bei Einzahl: "Not supported."

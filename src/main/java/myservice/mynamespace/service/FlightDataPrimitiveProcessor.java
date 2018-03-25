@@ -112,13 +112,11 @@ public class FlightDataPrimitiveProcessor implements org.apache.olingo.server.ap
         }
     }
 
-    //TODO implement??
     public void updatePrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType requestFormat, ContentType responseFormat)
         throws ODataApplicationException, DeserializerException, SerializerException {
         throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }
 
-    //TODO implement??
     public void deletePrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo) throws ODataApplicationException {
         throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }
