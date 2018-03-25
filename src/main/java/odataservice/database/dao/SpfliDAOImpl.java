@@ -19,7 +19,7 @@ import org.mongodb.morphia.query.Query;
 
 import java.util.List;
 
-import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER_ID;
+import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER;
 import static odataservice.service.entities.definitions.EntityNames.DB_ID;
 import static odataservice.service.entities.definitions.EntityNames.SCARR;
 
@@ -71,7 +71,7 @@ public class SpfliDAOImpl extends BasicDAO<Spfli, ObjectId> implements SpfliDAO 
 
     @Override
     public Spfli findConnectionByConnectionIdAndCarrierId(String connectionId, String carrierId) {
-        final Query<Spfli> query = getDatastore().find(Spfli.class).field(DB_ID).equal(connectionId).field(DB_CARRIER_ID).equal(new Key<>(Scarr.class,
+        final Query<Spfli> query = getDatastore().find(Spfli.class).field(DB_ID).equal(connectionId).field(DB_CARRIER).equal(new Key<>(Scarr.class,
                                                                                                                                           SCARR,
                                                                                                                                           carrierId));
         return query.get();
@@ -79,7 +79,7 @@ public class SpfliDAOImpl extends BasicDAO<Spfli, ObjectId> implements SpfliDAO 
 
     @Override
     public List<Spfli> findConnectionsByCarrierId(String carrierId) {
-        final Query<Spfli> query = getDatastore().find(Spfli.class).field(DB_CARRIER_ID).equal(new Key<>(Scarr.class, SCARR, carrierId));
+        final Query<Spfli> query = getDatastore().find(Spfli.class).field(DB_CARRIER).equal(new Key<>(Scarr.class, SCARR, carrierId));
 
         return query.asList();
     }

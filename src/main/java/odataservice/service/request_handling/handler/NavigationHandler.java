@@ -79,7 +79,7 @@ public class NavigationHandler {
     public Entity getRelatedEntity(Entity entity, EdmEntityType relatedEntityType, List<UriParameter> keyPredicates) throws ODataApplicationException {
         final EntityCollection relatedEntities = this.getRelatedEntityCollection(entity, relatedEntityType);
 
-        return Util.findEntity(relatedEntityType, relatedEntities, keyPredicates);
+        return Util.findEntity(relatedEntityType, relatedEntities, keyPredicates);//TODO replace
     }
 
     public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) {

@@ -13,8 +13,8 @@ import org.mongodb.morphia.query.Query;
 
 import java.util.List;
 
-import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER_ID;
-import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION_ID;
+import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER;
+import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION;
 import static odataservice.service.entities.definitions.EntityNames.DB_ID;
 import static odataservice.service.entities.definitions.EntityNames.SCARR;
 import static odataservice.service.entities.definitions.EntityNames.SPFLI;
@@ -67,15 +67,15 @@ public class SflightDAOImpl extends BasicDAO<Sflight, ObjectId> implements Sflig
 
     @Override
     public Sflight findFlightByCarrierIdAndConnectionIdAndFlDate(String carrierId, String connectionId, String flDate) {
-        final Query<Sflight> query = super.createQuery().field(DB_ID).equal(flDate).field(DB_CARRIER_ID).equal(new Key<>(Scarr.class, SCARR, carrierId)).field(
-            DB_CONNECTION_ID).equal(new Key<>(Spfli.class, SPFLI, connectionId));
+        final Query<Sflight> query = super.createQuery().field(DB_ID).equal(flDate).field(DB_CARRIER).equal(new Key<>(Scarr.class, SCARR, carrierId)).field(
+            DB_CONNECTION).equal(new Key<>(Spfli.class, SPFLI, connectionId));
 
         return query.get();
     }
 
     @Override
     public List<Sflight> findFlightsByCarrierId(String carrierCode) {
-        final Query<Sflight> query = super.createQuery().field(DB_CARRIER_ID).equal(new Key<>(Scarr.class, SCARR, carrierCode));
+        final Query<Sflight> query = super.createQuery().field(DB_CARRIER).equal(new Key<>(Scarr.class, SCARR, carrierCode));
 
         return query.asList();
     }
@@ -83,9 +83,9 @@ public class SflightDAOImpl extends BasicDAO<Sflight, ObjectId> implements Sflig
     @Override
     public List<Sflight> findFlightsByCarrierIdAndConnectionId(String carrierId, String connectionId) {
         final Query<Sflight> query = super.createQuery()
-                                          .field(DB_CARRIER_ID)
+                                          .field(DB_CARRIER)
                                           .equal(new Key<>(Scarr.class, SCARR, carrierId))
-                                          .field(DB_CONNECTION_ID)
+                                          .field(DB_CONNECTION)
                                           .equal(new Key<>(Spfli.class, SPFLI, connectionId));
         return query.asList();
     }

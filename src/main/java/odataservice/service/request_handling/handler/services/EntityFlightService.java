@@ -62,7 +62,7 @@ public class EntityFlightService {
         return entitySet;
     }
 
-    public Entity getFlight(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {//TODO rename
+    public Entity getFlight(EdmEntityType edmEntityType, List<UriParameter> keyParams) throws ODataApplicationException {
         final String carrierId = Util.getCarrierIdKey(keyParams);
         final String connectionId = Util.getConnectionIdKey(keyParams);
         final String flDate = Util.getFlightDateKey(keyParams);

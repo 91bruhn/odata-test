@@ -19,9 +19,11 @@ public class EntityNames {
     // ========================================================================
 
     public static final String DB_ID = "_id";
-    public static final String DB_CARRIER_ID = "carrId";
-    public static final String DB_CONNECTION_ID = "connId";
-    public static final String DB_FLIGHT_DATE = "flDate";
+    public static final String DB_CARRIER = "scarr";
+    public static final String DB_CONNECTION = "spfli";
+    public static final String DB_FLIGHT_DATE = "sflight";
+    public static final String DB_SAPLANE = "saplane";
+    public static final String DB_SBOOK = "sbook";
 
     // ========================================================================
     //                           SERVICE NAMESPACE

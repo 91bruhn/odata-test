@@ -13,7 +13,6 @@ import odataservice.database.collections.Saplane;
 import odataservice.database.collections.Scarr;
 import odataservice.database.collections.Sflight;
 import odataservice.database.collections.Spfli;
-import odataservice.service.entities.definitions.EntityNames;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
@@ -22,8 +21,8 @@ import org.mongodb.morphia.query.Query;
 
 import java.util.List;
 
-import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER_ID;
-import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION_ID;
+import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER;
+import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION;
 import static odataservice.service.entities.definitions.EntityNames.DB_ID;
 import static odataservice.service.entities.definitions.EntityNames.PLANE_TYPE;
 import static odataservice.service.entities.definitions.EntityNames.SCARR;
@@ -82,10 +81,10 @@ public class SaplaneDAOImpl extends BasicDAO<Saplane, ObjectId> implements Sapla
 
     @Override
     public Saplane findPlaneByCarrierIdAndConnectionIdAndFlDate(String carrierId, String connectionId, String flDate) {
-        final Query<Sflight> query = getDatastore().find(Sflight.class).field(DB_ID).equal(flDate).field(DB_CARRIER_ID).equal(new Key<>(Scarr.class,
+        final Query<Sflight> query = getDatastore().find(Sflight.class).field(DB_ID).equal(flDate).field(DB_CARRIER).equal(new Key<>(Scarr.class,
                                                                                                                                         SCARR,
                                                                                                                                         carrierId)).field(
-            DB_CONNECTION_ID).equal(new Key<>(Spfli.class, SPFLI, connectionId));
+            DB_CONNECTION).equal(new Key<>(Spfli.class, SPFLI, connectionId));
 
         final Sflight sflight = query.get();
 

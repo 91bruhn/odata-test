@@ -21,8 +21,8 @@ import org.mongodb.morphia.query.Query;
 
 import java.util.List;
 
-import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER_ID;
-import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION_ID;
+import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER;
+import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION;
 import static odataservice.service.entities.definitions.EntityNames.DB_FLIGHT_DATE;
 import static odataservice.service.entities.definitions.EntityNames.DB_ID;
 import static odataservice.service.entities.definitions.EntityNames.SCARR;
@@ -77,7 +77,7 @@ public class SbookDAOImpl extends BasicDAO<Sbook, ObjectId> implements SbookDAO 
 
     @Override
     public List<Sbook> findBookingsByCarrierId(String carrierId) {
-        final Query<Sbook> query = getDatastore().find(Sbook.class).field(DB_CARRIER_ID).equal(new Key<>(Scarr.class, SCARR, carrierId));
+        final Query<Sbook> query = getDatastore().find(Sbook.class).field(DB_CARRIER).equal(new Key<>(Scarr.class, SCARR, carrierId));
 
         return query.asList();
     }
@@ -85,15 +85,15 @@ public class SbookDAOImpl extends BasicDAO<Sbook, ObjectId> implements SbookDAO 
     @Override
     public List<Sbook> findBookingsByCarrierIdAndConnectionIdAndFlDate(String carrierCode, String connId, String fldate) {
         final String equals = " = ";
-        final Query<Sbook> query = getDatastore().createQuery(Sbook.class).filter(DB_CARRIER_ID + equals, new Key<>(Scarr.class, SCARR, carrierCode)).filter(
-            DB_CONNECTION_ID + equals,
+        final Query<Sbook> query = getDatastore().createQuery(Sbook.class).filter(DB_CARRIER + equals, new Key<>(Scarr.class, SCARR, carrierCode)).filter(
+            DB_CONNECTION + equals,
             new Key<>(Spfli.class, SPFLI, connId)).filter(DB_FLIGHT_DATE + equals, new Key<>(Sflight.class, SFLIGHT, fldate));
         return query.asList();
     }
 
     @Override
     public List<Sbook> findBookingsByConnectionId(String connectionId) {
-        final Query<Sbook> query = getDatastore().find(Sbook.class).field(DB_CONNECTION_ID).equal(new Key<>(Spfli.class, SPFLI, connectionId));
+        final Query<Sbook> query = getDatastore().find(Sbook.class).field(DB_CONNECTION).equal(new Key<>(Spfli.class, SPFLI, connectionId));
 
         return query.asList();
     }

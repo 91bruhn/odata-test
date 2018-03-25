@@ -9,7 +9,10 @@ import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
+import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER;
+import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION;
 import static odataservice.service.entities.definitions.EntityNames.DB_ID;
+import static odataservice.service.entities.definitions.EntityNames.DB_SAPLANE;
 import static odataservice.service.entities.definitions.EntityNames.SFLIGHT;
 import static odataservice.service.entities.definitions.EntityNames.SFLIGHT_CURRENCY;
 import static odataservice.service.entities.definitions.EntityNames.SFLIGHT_FLDATE;
@@ -25,7 +28,7 @@ import static odataservice.service.entities.definitions.EntityNames.SFLIGHT_SEAT
  *
  */
 @Entity(value = SFLIGHT, noClassnameStored = true)
-@Indexes({ @Index(fields = @Field(DB_ID)), @Index(fields = @Field("scarr")), @Index(fields = @Field("spfli")), @Index(fields = @Field("saplane")) })
+@Indexes({ @Index(fields = @Field(DB_ID)), @Index(fields = @Field(DB_CARRIER)), @Index(fields = @Field(DB_CONNECTION)), @Index(fields = @Field(DB_SAPLANE)) })
 public class Sflight {
 
     /** Represented in SAP's DATS-format, but in (DDMMYYYY) */

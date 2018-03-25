@@ -11,6 +11,7 @@ import org.mongodb.morphia.annotations.Reference;
 
 import java.time.LocalTime;
 
+import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER;
 import static odataservice.service.entities.definitions.EntityNames.DB_ID;
 import static odataservice.service.entities.definitions.EntityNames.SPFLI;
 import static odataservice.service.entities.definitions.EntityNames.SPFLI_AIRPFROM;
@@ -32,10 +33,7 @@ import static odataservice.service.entities.definitions.EntityNames.SPFLI_PERIOD
  *
  */
 @Entity(value = SPFLI, noClassnameStored = true)
-@Indexes({
-    @Index(fields = @Field(DB_ID)),
-    @Index(fields = @Field("scarr"))
-})
+@Indexes({ @Index(fields = @Field(DB_ID)), @Index(fields = @Field(DB_CARRIER)) })
 public class Spfli {
 
     // ------------------------------------------------------------------------

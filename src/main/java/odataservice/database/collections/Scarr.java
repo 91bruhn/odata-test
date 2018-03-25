@@ -9,11 +9,13 @@ import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
 
+import static odataservice.service.entities.definitions.EntityNames.DB_ID;
+
 /**
  *
  */
 @Entity(value = EntityNames.SCARR, noClassnameStored = true)
-@Indexes({ @Index(fields = @Field(EntityNames.DB_ID)) })
+@Indexes({ @Index(fields = @Field(DB_ID)) })
 public class Scarr {
 
     @Id

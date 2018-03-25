@@ -10,16 +10,17 @@ import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
 
+import static odataservice.service.entities.definitions.EntityNames.DB_CARRIER;
+import static odataservice.service.entities.definitions.EntityNames.DB_CONNECTION;
+import static odataservice.service.entities.definitions.EntityNames.DB_FLIGHT_DATE;
+import static odataservice.service.entities.definitions.EntityNames.DB_ID;
+
 /**
  *
  */
 @Entity(value = EntityNames.SBOOK, noClassnameStored = true)
-@Indexes({
-    @Index(fields = @Field(EntityNames.DB_ID)),
-    @Index(fields = @Field("scarr")),
-    @Index(fields = @Field("spfli")),
-    @Index(fields = @Field("sflight"))
-})
+@Indexes({ @Index(fields = @Field(DB_ID)), @Index(fields = @Field(DB_CARRIER)), @Index(fields = @Field(DB_CONNECTION)),
+           @Index(fields = @Field(DB_FLIGHT_DATE)) })
 public class Sbook {
 
     @Id
