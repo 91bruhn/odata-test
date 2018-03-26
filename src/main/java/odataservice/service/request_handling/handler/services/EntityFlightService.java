@@ -79,7 +79,8 @@ public class EntityFlightService {
         if (idProperty != null) {
             final String flDate = (String) idProperty.getValue();
 
-            if (Util.idTaken(flDate, mSflightService)) {//todo tag ist nicht so eindeutig sollte vllt zu normaler var.
+            if (Util.idTaken(flDate, mSflightService)) {
+                //todo tag ist nicht so eindeutig sollte vllt zu normaler var.
                 //TODO LOG plane already defined in db
                 return null;
             } else {
@@ -104,10 +105,10 @@ public class EntityFlightService {
         return entity;
     }
 
-    public void updateFlight(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity entityUpdated, HttpMethod httpMethod)
+    public void updateFlight(EdmEntityType edmEntityType, List<UriParameter> keyParams, Entity updatedEntityFromRequest, HttpMethod httpMethod)
         throws ODataApplicationException {
 
-        final Entity entityFromDB = getFlight(edmEntityType, keyParams);//TODO wird das auch in die db gespeichert?
+        final Entity entityFromDB = getFlight(edmEntityType, keyParams);
         if (entityFromDB == null) {
             throw new ODataApplicationException("Entity not found", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ENGLISH);
         }
@@ -120,30 +121,27 @@ public class EntityFlightService {
                 continue;
             }
 
-            final Property updateProperty = entityUpdated.getProperty(propName);
+            final Property updateProperty = updatedEntityFromRequest.getProperty(propName);
 
             if (updateProperty == null) {
                 //if a property has not been added to the request payload
                 //depending on the HttpMethod the behaviour should be different
                 if (httpMethod.equals(HttpMethod.PUT)) {
-                    // in case of PUT, the existing property is set to null
+                    // in case of PUT, the existing property is set to null --> deleted
                     existingProperty.setValue(existingProperty.getValueType(), null);
                     // in case of PATCH, the existing property is not touched
                 }
             } else {
                 if (updateProperty.getValue() != null) {
                     existingProperty.setValue(existingProperty.getValueType(), updateProperty.getValue());
-                } else {
-                    //TODO log das was schiefgegangen ist
-                }
+                }//  property (key) is found in payload, but no value is set, then the value will not be touched.
             }
         }
-        //TODO checke obs sich bis hierhin verändert hat
-        final Scarr scarr = Util.loadAssociatedCarrier((String) entityUpdated.getProperty(EntityNames.CARRIER_ID).getValue());
-        final Spfli spfli = Util.loadAssociatedConnection((String) entityUpdated.getProperty(EntityNames.CONNECTION_ID).getValue());
-        final Saplane saplane = Util.loadAssociatedPlane((String) entityUpdated.getProperty(EntityNames.PLANE_TYPE).getValue());
-        //TODO namen von object anpassen
-        //actual update - morphias uses upsert todo weiter erklären
+
+        final Scarr scarr = Util.loadAssociatedCarrier((String) updatedEntityFromRequest.getProperty(EntityNames.CARRIER_ID).getValue());
+        final Spfli spfli = Util.loadAssociatedConnection((String) updatedEntityFromRequest.getProperty(EntityNames.CONNECTION_ID).getValue());
+        final Saplane saplane = Util.loadAssociatedPlane((String) updatedEntityFromRequest.getProperty(EntityNames.PLANE_TYPE).getValue());
+        //this is actually an update - morphias/mongo uses upsert
         mSflightService.save(DataTransformator.transformEntityToSflight(entityFromDB, scarr, spfli, saplane));
     }
 

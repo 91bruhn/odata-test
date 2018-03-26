@@ -70,16 +70,17 @@ public class NavigationHandler {
         final EntityCollection collection = this.getRelatedEntityCollection(entity, relatedEntityType);
 
         if (collection.getEntities().isEmpty()) {
+            LOGGER.info("No related entity found.");
             return null;
         }
 
-        return collection.getEntities().get(0);//TODO check, ists immer das 1.?
+        return collection.getEntities().get(0);
     }
 
     public Entity getRelatedEntity(Entity entity, EdmEntityType relatedEntityType, List<UriParameter> keyPredicates) throws ODataApplicationException {
         final EntityCollection relatedEntities = this.getRelatedEntityCollection(entity, relatedEntityType);
 
-        return Util.findEntity(relatedEntityType, relatedEntities, keyPredicates);//TODO replace
+        return Util.findEntity(relatedEntityType, relatedEntities, keyPredicates);
     }
 
     public EntityCollection getRelatedEntityCollection(Entity sourceEntity, EdmEntityType targetEntityType) {

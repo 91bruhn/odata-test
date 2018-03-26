@@ -98,21 +98,6 @@ public final class Util {
         return uriResource.getEntitySet();
     }
 
-    public static Entity findEntity(EdmEntityType edmEntityType, EntityCollection rt_entitySet, List<UriParameter> keyParams) throws ODataApplicationException {
-        final List<Entity> entityList = rt_entitySet.getEntities();//TODO delete --> Ersetzen mit DB-Suche
-
-        // looping over all entities in order to find that one that matches
-        // all keys in request e.g. contacts(ContactID=1, CompanyID=1)
-        for (Entity entity : entityList) {
-            final boolean foundEntity = entityMatchesAllKeys(edmEntityType, entity, keyParams);
-            if (foundEntity) {
-                return entity;
-            }
-        }
-
-        return null;
-    }
-
     public static boolean isKey(EdmEntityType edmEntityType, String propertyName) {
         final List<EdmKeyPropertyRef> keyPropertyRefs = edmEntityType.getKeyPropertyRefs();
 
@@ -211,44 +196,50 @@ public final class Util {
         return null;
     }
 
-    //TODO delete this method?
+    /** Finds single {@link Entity} from the {@link EntityCollection} that matches all keys from the list of {@link UriParameter}s. */
+    public static Entity findEntity(EdmEntityType edmEntityType, EntityCollection rt_entitySet, List<UriParameter> keyParams) throws ODataApplicationException {
+        final List<Entity> entityList = rt_entitySet.getEntities();
+
+        // looping over all entities in order to find that one that matches all keys in request e.g. contacts(ContactID=1, CompanyID=1)
+        for (Entity entity : entityList) {
+            final boolean foundEntity = entityMatchesAllKeys(edmEntityType, entity, keyParams);
+            if (foundEntity) {
+                return entity;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Compares all given keys (list of {@link UriParameter}) with the the {@link Entity}.
+     *
+     * @return {@code true} if all keys match.
+     */
     public static boolean entityMatchesAllKeys(EdmEntityType edmEntityType, Entity rt_entity, List<UriParameter> keyParams) throws ODataApplicationException {
-        // loop over all keys
         for (final UriParameter key : keyParams) {
-            // key
             final String keyName = key.getName();
             String keyText = key.getText();
-            final String str = "'";
+            final String quote = "'";
 
-            if (keyText.contains(str)) {
-                keyText = keyText.replace(str, StringUtils.EMPTY);
+            if (keyText.contains(quote)) {
+                keyText = keyText.replace(quote, StringUtils.EMPTY);
             }
 
-            // note: below line doesn't consider: keyProp can be part of a complexType in V4
-            // in such case, it would be required to access it via getKeyPropertyRef()
-            // but since this isn't the case in our model, we ignore it in our implementation
+            // note: below line doesn't consider: keyProp which can be part of a complexType in OData V4
+            // in such a case, it would be required to access it via getKeyPropertyRef() --> here it doesn't matter
             final EdmProperty edmKeyProperty = (EdmProperty) edmEntityType.getProperty(keyName);
-            //            EdmKeyPropertyRef edmKeyProperty22 = edmEntityType.getKeyPropertyRef(keyName);
-            //            List<EdmKeyPropertyRef> edmKeyProperty3 = edmEntityType.getKeyPropertyRefs();
-            //            List<String> edmKeyPropert4 = edmEntityType.getKeyPredicateNames();
-            // Edm: we need this info for the comparison below
             final Boolean isNullable = edmKeyProperty.isNullable();
             final Integer maxLength = edmKeyProperty.getMaxLength();
             final Integer precision = edmKeyProperty.getPrecision();
             final Boolean isUnicode = edmKeyProperty.isUnicode();
             final Integer scale = edmKeyProperty.getScale();
-            // get the EdmType in order to compare
             final EdmType edmType = edmKeyProperty.getType();
-            // if(EdmType instanceof EdmPrimitiveType) // do we need this?
             final EdmPrimitiveType edmPrimitiveType = (EdmPrimitiveType) edmType;
-
-            // Runtime data: the value of the current entity
             // don't need to check for null, this is done in FWK
-            final Object valueObject = rt_entity.getProperty(keyName).getValue();//null-check
-            // TODO if the property is a complex type
+            final Object valueObject = rt_entity.getProperty(keyName).getValue();
 
-            // now need to compare the valueObject with the keyText String
-            // this is done using the type.valueToString
+            // valueObject should be compared with the keyText -->  this is done using the type.valueToString
             final String valueAsString;
             try {
                 valueAsString = edmPrimitiveType.valueToString(valueObject, isNullable, maxLength, precision, scale, isUnicode);
@@ -261,7 +252,7 @@ public final class Util {
             }
 
             final boolean matches = valueAsString.equals(keyText);
-            if (!matches) {//TODO lesen und löschen/umbauen
+            if (!matches) {
                 // if any of the key properties is not found in the entity, we don't need to search further
                 return false;
             }
