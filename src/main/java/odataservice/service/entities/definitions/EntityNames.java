@@ -11,7 +11,7 @@ public class EntityNames {
     //                           MORPHIA
     // ========================================================================
 
-    public static final String DB_NAME = "Flugdatenverwaltung";
+    public static final String DB_NAME = "Flugdatenverwaltung";//TODO change naming
     public static final String PACKAGE_NAME = "odataservice.database.collections";
 
     // ========================================================================
@@ -81,7 +81,7 @@ public class EntityNames {
     //                        FLIGHT ENTITY ATTRIBUTES
     // ========================================================================
 
-    public static final String CARRIER_NAME = "CarrierName";
+    public static final String CARRIER_NAME = "CarrierName";//TODO stimmen nicht überein und habe ich den flugpreis in eur?
     public static final String URL = "URL";
     public static final String PRICE = "Airfare";
     public static final String CURRENCY = "LocalCurrencyOfAirline";

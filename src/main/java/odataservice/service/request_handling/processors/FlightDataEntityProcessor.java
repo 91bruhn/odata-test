@@ -3,12 +3,17 @@ package odataservice.service.request_handling.processors;
 import odataservice.service.request_handling.handler.CRUDHandler;
 import odataservice.service.request_handling.handler.NavigationHandler;
 import odataservice.service.util.Util;
+import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.ContextURL.Suffix;
 import org.apache.olingo.commons.api.data.Entity;
+import org.apache.olingo.commons.api.data.EntityCollection;
+import org.apache.olingo.commons.api.data.Link;
+import org.apache.olingo.commons.api.edm.EdmElement;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
+import org.apache.olingo.commons.api.edm.EdmNavigationPropertyBinding;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.commons.api.http.HttpHeader;
 import org.apache.olingo.commons.api.http.HttpMethod;
@@ -30,6 +35,9 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.UriResourceNavigation;
+import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
+import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
+import org.apache.olingo.server.api.uri.queryoption.SelectOption;
 
 import java.io.InputStream;
 import java.util.List;
@@ -90,10 +98,10 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
         // Analyze the URI segments
         if (segmentCount == 1) {
             // no navigation
-            this.normalRequest(response, responseFormat, uriResource);
+            this.normalRequest(response, responseFormat, uriResource, uriInfo);
         } else if (segmentCount == 2) {
             // navigation
-            this.handleNavigationRequest(resourceParts, uriResource, responseFormat, response);
+            this.handleNavigationRequest(resourceParts, uriResource, responseFormat, response, uriInfo);
         } else {
             // this would be the case for e.g. Products(1)/Category/Products(1)/Category
             throw new ODataApplicationException("Not supported", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
@@ -101,7 +109,7 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
     }
 
     /** This is the case for: {@code DemoService/DemoService.svc/Products(1)} */
-    private void normalRequest(ODataResponse response, ContentType responseFormat, UriResource uriResource)
+    private void normalRequest(ODataResponse response, ContentType responseFormat, UriResource uriResource, UriInfo uriInfo)
         throws ODataApplicationException, SerializerException {
 
         final UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) uriResource;
@@ -111,15 +119,15 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
         final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
         final Entity responseEntity = mCRUDHandler.readEntityData(responseEdmEntitySet, keyPredicates);
 
-        this.handleResponse(responseEntity, responseEdmEntitySet, responseFormat, responseEdmEntityType, response);
+        this.handleResponse(responseEntity, responseEdmEntitySet, responseFormat, responseEdmEntityType, response, uriInfo);
     }
 
     /**
      * In case of navigation: {@code DemoService.svc/Products(1)/Category}<br>
      * More complex URIs are not supported.
      */
-    private void handleNavigationRequest(List<UriResource> resourceParts, UriResource uriResource, ContentType responseFormat, ODataResponse response)
-        throws ODataApplicationException, SerializerException {
+    private void handleNavigationRequest(List<UriResource> resourceParts, UriResource uriResource, ContentType responseFormat, ODataResponse response,
+                                         UriInfo uriInfo) throws ODataApplicationException, SerializerException {
         // more complex URIs are not supported here
         final UriResource navSegment = resourceParts.get(1);
 
@@ -151,21 +159,120 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
                 responseEntity = mNavigationHandler.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
             }
 
-            this.handleResponse(responseEntity, responseEdmEntitySet, responseFormat, responseEdmEntityType, response);
+            this.handleResponse(responseEntity, responseEdmEntitySet, responseFormat, responseEdmEntityType, response, uriInfo);
         }
+    }
+
+    /**
+     * Handles System query options by modifying the result set according to the query options, specified by the end user.<p>
+     * <b>Following system queries are currently supported:</b>
+     * <ul>
+     * <li>$count</li>
+     * <li>$skip</li>
+     * <li>$top</li>
+     * </ul>
+     */
+    private Entity handleSystemQueryOptions(UriInfo uriInfo, Entity entity, EdmEntitySet edmEntitySet) throws ODataApplicationException {
+        //        List<Entity> entityList = entityCollection.getEntities();
+        Entity responseQueryOptionsEntity;
+
+        //        // handle $count
+        //        final EntityCollection returnEntityCollection = this.processSystemQueryOptionCount(uriInfo, entityList);
+        //        // handle $skip
+        //        entityList = this.processSystemQueryOptionSkip(uriInfo, entityList);
+        //        // handle $top
+        //        entityList = this.processSystemQueryOptionTop(uriInfo, entityList);
+        // handle $expand
+        responseQueryOptionsEntity = this.processSystemQueryOptionExpand(uriInfo, entity, edmEntitySet);
+
+        // after applying the system query options, a new EntityCollection based on the reduced list will be created
+        //        for (Entity entity : entityList) {
+        //            returnEntityCollection.getEntities().add(entity);
+        //        }
+
+        //        return returnEntityCollection;//TODO vllt query options in DB auslagern
+        return responseQueryOptionsEntity;
+    }
+
+    private Entity processSystemQueryOptionExpand(UriInfo uriInfo, Entity entity, EdmEntitySet edmEntitySet) throws ODataApplicationException {
+        final ExpandOption expandOption = uriInfo.getExpandOption();
+
+        if (expandOption != null) {
+            // retrieve the EdmNavigationProperty from the expand expression
+            // Note: in our example, we have only one NavigationProperty, so we can directly access it
+            EdmNavigationProperty edmNavigationProperty = null;
+            final ExpandItem expandItem = expandOption.getExpandItems().get(0);//TODO hier vllt wenn mehrere?
+
+            if (expandItem.isStar()) {
+                final List<EdmNavigationPropertyBinding> bindings = edmEntitySet.getNavigationPropertyBindings();
+                // we know that there are navigation bindings
+                if (!bindings.isEmpty()) {
+                    final EdmNavigationPropertyBinding binding = bindings.get(0); //TODO check
+                    final EdmElement property = edmEntitySet.getEntityType().getProperty(binding.getPath());
+                    // errors don't have to be handled here since the olingo library already does this
+                    if (property instanceof EdmNavigationProperty) {
+                        edmNavigationProperty = (EdmNavigationProperty) property;
+                    }
+                }
+            } else {
+                final UriResource uriResource = expandItem.getResourcePath().getUriResourceParts().get(0);//todo check
+                // errors don't have to be handled here since the olingo library already does this
+                if (uriResource instanceof UriResourceNavigation) {
+                    edmNavigationProperty = ((UriResourceNavigation) uriResource).getProperty();
+                }
+            }
+
+            if (edmNavigationProperty != null) {
+                final String navPropName = edmNavigationProperty.getName();
+                final EdmEntityType expandEdmEntityType = edmNavigationProperty.getType();
+
+                Link link = new Link();
+                link.setTitle(navPropName);
+                link.setType(Constants.ENTITY_NAVIGATION_LINK_TYPE);
+                link.setRel(Constants.NS_ASSOCIATION_LINK_REL + navPropName);
+
+                if (edmNavigationProperty.isCollection()) {
+                    // fetches the data for the $expand (to-many navigation) from backend       //Todo storage
+                    final EntityCollection expandEntityCollection = mNavigationHandler.getRelatedEntityCollection(entity, expandEdmEntityType);
+
+                    link.setInlineEntitySet(expandEntityCollection);
+                    link.setHref(expandEntityCollection.getId().toASCIIString());
+                } else {
+                    // in case of single?? todo
+                    // fetches the data for the $expand (to-one navigation) from the backend
+                    final Entity expandEntity = mNavigationHandler.getRelatedEntity(entity, expandEdmEntityType); //TODO storage
+                    link.setInlineEntity(expandEntity);
+                    link.setHref(expandEntity.getId().toASCIIString());
+                }
+
+                // set the link - containing the expanded data - to the current entity
+                entity.getNavigationLinks().add(link);
+            }
+        }
+
+        return entity;//Todo vllt rückgabe anpassen
     }
 
     /** Create and send response. */
     private void handleResponse(Entity responseEntity, EdmEntitySet responseEdmEntitySet, ContentType responseFormat, EdmEntityType responseEdmEntityType,
-                                ODataResponse response) throws ODataApplicationException, SerializerException {
+                                ODataResponse response, UriInfo uriInfo) throws ODataApplicationException, SerializerException {
+        // modify response when query options have been used
         if (responseEntity == null) {
             // this is the case for e.g. DemoService.svc/Categories(4) or DemoService.svc/Categories(3)/Products(999) --> product existing but not in that cat.
             throw new ODataApplicationException("Nothing found.", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ROOT);
         }
+        final Entity queryOptionsResponseEntity = this.handleSystemQueryOptions(uriInfo, responseEntity, responseEdmEntitySet);
+
+        if (queryOptionsResponseEntity != null) {
+            responseEntity = queryOptionsResponseEntity;
+        }
 
         // 3. serialize
-        final ContextURL contextUrl = ContextURL.with().entitySet(responseEdmEntitySet).suffix(Suffix.ENTITY).build();
-        final EntitySerializerOptions opts = EntitySerializerOptions.with().contextURL(contextUrl).build();
+        final SelectOption selectOption = uriInfo.getSelectOption();
+        final ExpandOption expandOption = uriInfo.getExpandOption();
+        final String selectList = mOData.createUriHelper().buildContextURLSelectList(responseEdmEntityType, expandOption, selectOption);
+        final ContextURL contextURL = ContextURL.with().entitySet(responseEdmEntitySet).selectList(selectList).suffix(Suffix.ENTITY).build();
+        final EntitySerializerOptions opts = EntitySerializerOptions.with().contextURL(contextURL).select(selectOption).expand(expandOption).build();
 
         final ODataSerializer serializer = this.mOData.createSerializer(responseFormat);
         final SerializerResult serializerResult = serializer.entity(this.mServiceMetadata, responseEdmEntityType, responseEntity, opts);
