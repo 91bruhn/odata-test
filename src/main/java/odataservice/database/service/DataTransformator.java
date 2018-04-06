@@ -285,6 +285,7 @@ public final class DataTransformator {
                 final Property property = entity.getProperty(idPropertyName);
                 sb.append(property.asPrimitive()).append(",");
             }
+            sb.deleteCharAt(sb.lastIndexOf(","));
             sb.append(")");
 
             if (navigationName != null) {

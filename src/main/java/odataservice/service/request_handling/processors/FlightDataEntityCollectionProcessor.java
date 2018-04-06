@@ -275,54 +275,57 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
             // retrieve the EdmNavigationProperty from the expand expression
             // Note: in our example, we have only one NavigationProperty, so we can directly access it
             EdmNavigationProperty edmNavigationProperty = null;
-            final ExpandItem expandItem = expandOption.getExpandItems().get(0);//TODO hier vllt wenn mehrere?
+            for (ExpandItem expandItem : expandOption.getExpandItems()) {
 
-            if (expandItem.isStar()) {
-                final List<EdmNavigationPropertyBinding> bindings = edmEntitySet.getNavigationPropertyBindings();
-                // we know that there are navigation bindings
-                if (!bindings.isEmpty()) {
-                    final EdmNavigationPropertyBinding binding = bindings.get(0); //TODO check
-                    final EdmElement property = edmEntitySet.getEntityType().getProperty(binding.getPath());
+                //            final ExpandItem expandItem = expandOption.getExpandItems().get(0);//TODO hier vllt wenn mehrere?
+
+                if (expandItem.isStar()) {
+                    final List<EdmNavigationPropertyBinding> bindings = edmEntitySet.getNavigationPropertyBindings();
+                    // we know that there are navigation bindings
+                    if (!bindings.isEmpty()) {
+                        final EdmNavigationPropertyBinding binding = bindings.get(0); //TODO check
+                        final EdmElement property = edmEntitySet.getEntityType().getProperty(binding.getPath());
+                        // errors don't have to be handled here since the olingo library already does this
+                        if (property instanceof EdmNavigationProperty) {
+                            edmNavigationProperty = (EdmNavigationProperty) property;
+                        }
+                    }
+                } else {
+                    final UriResource uriResource = expandItem.getResourcePath().getUriResourceParts().get(0);//todo check
                     // errors don't have to be handled here since the olingo library already does this
-                    if (property instanceof EdmNavigationProperty) {
-                        edmNavigationProperty = (EdmNavigationProperty) property;
+                    if (uriResource instanceof UriResourceNavigation) {
+                        edmNavigationProperty = ((UriResourceNavigation) uriResource).getProperty();
                     }
                 }
-            } else {
-                final UriResource uriResource = expandItem.getResourcePath().getUriResourceParts().get(0);//todo check
-                // errors don't have to be handled here since the olingo library already does this
-                if (uriResource instanceof UriResourceNavigation) {
-                    edmNavigationProperty = ((UriResourceNavigation) uriResource).getProperty();
-                }
-            }
 
-            if (edmNavigationProperty != null) {
-                final String navPropName = edmNavigationProperty.getName();
-                final EdmEntityType expandEdmEntityType = edmNavigationProperty.getType();
+                if (edmNavigationProperty != null) {
+                    final String navPropName = edmNavigationProperty.getName();
+                    final EdmEntityType expandEdmEntityType = edmNavigationProperty.getType();
 
-                for (Entity entity : entityList) {
-                    final Link link = new Link();
-                    link.setTitle(navPropName);
-                    link.setType(Constants.ENTITY_NAVIGATION_LINK_TYPE);
-                    link.setRel(Constants.NS_ASSOCIATION_LINK_REL + navPropName);
+                    for (Entity entity : entityList) {
+                        final Link link = new Link();
+                        link.setTitle(navPropName);
+                        link.setType(Constants.ENTITY_NAVIGATION_LINK_TYPE);
+                        link.setRel(Constants.NS_ASSOCIATION_LINK_REL + navPropName);
 
-                    //todo genauer if collection
-                    if (edmNavigationProperty.isCollection()) {
-                        // fetches the data for the $expand (to-many navigation) from backend       //Todo storage
-                        final EntityCollection expandEntityCollection = mNavigationHandler.getRelatedEntityCollection(entity, expandEdmEntityType);
+                        //todo genauer if collection
+                        if (edmNavigationProperty.isCollection()) {
+                            // fetches the data for the $expand (to-many navigation) from backend       //Todo storage
+                            final EntityCollection expandEntityCollection = mNavigationHandler.getRelatedEntityCollection(entity, expandEdmEntityType);
 
-                        link.setInlineEntitySet(expandEntityCollection);
-                        link.setHref(expandEntityCollection.getId().toASCIIString());
-                    } else {
-                        // in case of single?? todo
-                        // fetches the data for the $expand (to-one navigation) from the backend
-                        final Entity expandEntity = mNavigationHandler.getRelatedEntity(entity, expandEdmEntityType); //TODO storage
-                        link.setInlineEntity(expandEntity);
-                        link.setHref(expandEntity.getId().toASCIIString());
+                            link.setInlineEntitySet(expandEntityCollection);
+                            //                            link.setHref(expandEntityCollection.getId().toASCIIString());TODO use maybe Util createId or DataTransformator createId
+                        } else {
+                            // in case of single?? todo
+                            // fetches the data for the $expand (to-one navigation) from the backend
+                            final Entity expandEntity = mNavigationHandler.getRelatedEntity(entity, expandEdmEntityType); //TODO storage
+                            link.setInlineEntity(expandEntity);
+                            link.setHref(expandEntity.getId().toASCIIString());
+                        }
+
+                        // set the link - containing the expand data - to the current entity
+                        entity.getNavigationLinks().add(link);
                     }
-
-                    // set the link - containing the expand data - to the current entity
-                    entity.getNavigationLinks().add(link);
                 }
             }
         }
@@ -349,7 +352,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
         final ContextURL contextUrl = ContextURL.with().entitySet(responseEdmEntitySet).selectList(selectList).build();
         final String id = request.getRawBaseUri() + "/" + responseEdmEntitySet.getName();
         final EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with().contextURL(contextUrl).id(id).count(countOption).select(
-            selectOption).build();
+            selectOption).expand(expandOption).build();
 
         final ODataSerializer serializer = mOData.createSerializer(responseFormat);
         final SerializerResult serializerResult = serializer.entityCollection(this.mServiceMetadata, edmEntityType, responseEntityCollection, opts);
