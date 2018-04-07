@@ -96,11 +96,11 @@ public class EntityNames {
     //                        CONNECTION ENTITY ATTRIBUTES
     // ========================================================================
 
-    public static final String COUNTRY_FROM = "DepartureCountry(Key)";
+    public static final String COUNTRY_FROM = "DepartureCountryKey";
     public static final String CITY_FROM = "DepartureCity";
     public static final String AIRPORT_FROM = "DepartureAirport";
     public static final String DEPARTURE_TIME = "DepartureTime";
-    public static final String COUNTRY_TO = "ArrivalCountry(Key)";
+    public static final String COUNTRY_TO = "ArrivalCountryKey";
     public static final String CITY_TO = "ArrivalCity";
     public static final String AIRPORT_TO = "ArrivalAirport";
     public static final String ARRIVAL_TIME = "ArrivalTime";
