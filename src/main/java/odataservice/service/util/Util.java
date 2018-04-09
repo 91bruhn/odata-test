@@ -59,7 +59,7 @@ public final class Util {
     }
 
     public static boolean idTaken(String idToCheckIfTaken, IDBService idbService) {
-        return !StringUtils.isEmpty(idToCheckIfTaken) && idbService.idTaken(idToCheckIfTaken);
+        return StringUtils.isEmpty(idToCheckIfTaken) || idbService.idTaken(idToCheckIfTaken);
     }
 
     //checks first if the given id is not taken, if so a new one will be created and returned

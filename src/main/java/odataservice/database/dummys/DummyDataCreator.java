@@ -448,35 +448,6 @@ public class DummyDataCreator {
             price = price * 1.62;
         }
 
-//        //if price is not in euros then adjust price
-//        switch (currency) {
-//            case EUR:
-//                break;
-//            case USD:
-//                price = price * 0.846302926;
-//                break;
-//            case CAD:
-//                price = price * 0.660759472;
-//                break;
-//            case GBP:
-//                price = price * 1.13498532;
-//                break;
-//            case JPY:
-//                price = price * 0.00751516998;
-//                break;
-//            case AUD:
-//                price = price * 0.645898393;
-//                break;
-//            case ZAR:
-//                price = price * 0.0628887704;
-//                break;
-//            case SGD:
-//                price = price * 0.628227588;
-//                break;
-//            case CHF:
-//                price = price * 0.859039785;
-//                break;
-//        }/TODO delete
         final DecimalFormat format = new DecimalFormat("#.00");
 
         return Double.parseDouble(format.format(price).replace(",", "."));

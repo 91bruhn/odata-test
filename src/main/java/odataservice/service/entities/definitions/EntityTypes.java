@@ -215,9 +215,9 @@ public class EntityTypes {
 
         // create PropertyRefs for Key elements
         final CsdlPropertyRef propRefBookingId = new CsdlPropertyRef().setName(EntityNames.BOOKING_ID);
-        final CsdlPropertyRef propRefCarrierId = new CsdlPropertyRef().setName(EntityNames.CARRIER_ID);
-        final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(EntityNames.CONNECTION_ID);
-        final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(EntityNames.FLIGHT_DATE);
+//        final CsdlPropertyRef propRefCarrierId = new CsdlPropertyRef().setName(EntityNames.CARRIER_ID);
+//        final CsdlPropertyRef propRefConnectionId = new CsdlPropertyRef().setName(EntityNames.CONNECTION_ID);
+//        final CsdlPropertyRef propRefFlightDate = new CsdlPropertyRef().setName(EntityNames.FLIGHT_DATE);
 
         // navigation properties
         final CsdlNavigationProperty navPropFlight = new CsdlNavigationProperty().setName(EntityNames.ET_SFLIGHT_NAME)
@@ -254,7 +254,7 @@ public class EntityTypes {
                                                orderDate,
                                                isCancelled,
                                                isReserved));
-        entityType.setKey(Arrays.asList(propRefBookingId, propRefCarrierId, propRefConnectionId, propRefFlightDate));
+        entityType.setKey(Collections.singletonList(propRefBookingId));
         entityType.setNavigationProperties(navPropList);
 
         return entityType;
