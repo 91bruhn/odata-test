@@ -165,7 +165,7 @@ public class NavigationHandler {
 
     private EntityCollection getRelatedBookings(Entity sourceEntity, EdmEntityType targetEntityType, EntityCollection navigationTargetEntityCollection) {
         final FullQualifiedName relatedEntityFqn = targetEntityType.getFullQualifiedName();
-        final boolean navToCarrier = relatedEntityFqn.equals(EntityNames.ET_SAPLANE_FQN);
+        final boolean navToCarrier = relatedEntityFqn.equals(EntityNames.ET_SCARR_FQN);
         final boolean navToFlight = relatedEntityFqn.equals(EntityNames.ET_SFLIGHT_FQN);
         final boolean navToConnection = relatedEntityFqn.equals(EntityNames.ET_SPFLI_FQN);
 
