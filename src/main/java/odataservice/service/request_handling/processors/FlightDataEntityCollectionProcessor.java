@@ -1,8 +1,8 @@
 package odataservice.service.request_handling.processors;
 
-import odataservice.service.request_handling.processors.filter_expression.FilterExpressionVisitor;
 import odataservice.service.request_handling.handler.CRUDHandler;
 import odataservice.service.request_handling.handler.NavigationHandler;
+import odataservice.service.request_handling.processors.filter_expression.FilterExpressionVisitor;
 import odataservice.service.util.Util;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.ContextURL;
@@ -119,40 +119,6 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
 
         final EntityCollection responseEntityCollection = mCRUDHandler.readEntitySetData(startEdmEntitySet);
 
-        final FilterOption filterOption = uriInfo.getFilterOption();
-        // apply $filter system query option
-        if (filterOption != null) {
-            try {
-                final List<Entity> entityList = responseEntityCollection.getEntities();
-                final Iterator<Entity> entityIterator = entityList.iterator();
-
-                while (entityIterator.hasNext()) {
-                    // To evaluate the the expression, create an instance of the Filter Expression Visitor and pass
-                    // the current entity to the constructor
-                    final Entity currentEntity = entityIterator.next();
-                    final Expression filterExpression = filterOption.getExpression();
-                    final FilterExpressionVisitor expressionVisitor = new FilterExpressionVisitor(currentEntity);
-
-                    // start evaluating the expression
-                    final Object visitorResult = filterExpression.accept(expressionVisitor);
-
-                    // The result of the filter expression must be of type Edm.Boolean
-                    if (visitorResult instanceof Boolean) {
-                        if (!Boolean.TRUE.equals(visitorResult)) {
-                            // The expression evaluated to false (or null), so we have to remove the currentEntity from entityList
-                            entityIterator.remove();
-                        }
-                    } else {
-                        throw new ODataApplicationException("A filter expression must evaluated to type Edm.Boolean",
-                                                            HttpStatusCode.BAD_REQUEST.getStatusCode(),
-                                                            Locale.ENGLISH);
-                    }
-                }
-            } catch (ExpressionVisitException e) {
-                throw new ODataApplicationException("Exception in filter evaluation", HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ENGLISH);
-            }
-        }
-
         this.handleResponse(startEdmEntitySet, request, responseEntityCollection, response, responseFormat, uriInfo);
     }
 
@@ -203,6 +169,8 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
 
         // handle $count
         final EntityCollection returnEntityCollection = this.processSystemQueryOptionCount(uriInfo, entityList);
+        // handle $filter
+        entityList = this.processSystemQueryOptionFilter(uriInfo, entityList);
         // handle $skip
         entityList = this.processSystemQueryOptionSkip(uriInfo, entityList);
         // handle $top
@@ -216,6 +184,43 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
         }
 
         return returnEntityCollection;
+    }
+
+    private List<Entity> processSystemQueryOptionFilter(UriInfo uriInfo, List<Entity> entityList) throws ODataApplicationException {
+        final FilterOption filterOption = uriInfo.getFilterOption();
+        // apply $filter system query option
+        if (filterOption != null) {
+            try {
+                final Iterator<Entity> entityIterator = entityList.iterator();
+
+                while (entityIterator.hasNext()) {
+                    // To evaluate the the expression, create an instance of the Filter Expression Visitor and pass
+                    // the current entity to the constructor
+                    final Entity currentEntity = entityIterator.next();
+                    final Expression filterExpression = filterOption.getExpression();
+                    final FilterExpressionVisitor expressionVisitor = new FilterExpressionVisitor(currentEntity);
+
+                    // start evaluating the expression
+                    final Object visitorResult = filterExpression.accept(expressionVisitor);
+
+                    // The result of the filter expression must be of type Edm.Boolean
+                    if (visitorResult instanceof Boolean) {
+                        if (!Boolean.TRUE.equals(visitorResult)) {
+                            // The expression evaluated to false (or null), so the currentEntity has to be removed from the entityList
+                            entityIterator.remove();
+                        }
+                    } else {
+                        throw new ODataApplicationException("A filter expression must evaluated to type Edm.Boolean",
+                                                            HttpStatusCode.BAD_REQUEST.getStatusCode(),
+                                                            Locale.ENGLISH);
+                    }
+                }
+            } catch (ExpressionVisitException e) {
+                throw new ODataApplicationException("Exception in filter evaluation", HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), Locale.ENGLISH);
+            }
+        }
+
+        return entityList;
     }
 
     private EntityCollection processSystemQueryOptionCount(UriInfo uriInfo, List<Entity> entityList) {
@@ -258,7 +263,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
             if (topNumber >= 0) {
                 if (topNumber <= entityList.size()) {
                     return entityList.subList(0, topNumber);
-                }  // else the client has requested more entities than available => return what we have
+                }  // else the client has requested more entities than available => return is given
             } else {
                 throw new ODataApplicationException("Invalid value for $top", HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ROOT);
             }
@@ -339,7 +344,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
         final CountOption countOption = uriInfo.getCountOption();
         final SelectOption selectOption = uriInfo.getSelectOption();
         final ExpandOption expandOption = uriInfo.getExpandOption();
-        // we need the property names of the $select, in order to build the context URL
+        // the property names of the $select, in order to build the context URL
         final EdmEntityType edmEntityType = responseEdmEntitySet.getEntityType();
         String selectList = mOData.createUriHelper().buildContextURLSelectList(edmEntityType, expandOption, selectOption);
         final ContextURL contextUrl = ContextURL.with().entitySet(responseEdmEntitySet).selectList(selectList).build();
