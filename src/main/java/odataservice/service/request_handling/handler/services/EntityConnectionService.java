@@ -51,7 +51,7 @@ public class EntityConnectionService {
     // methods
     // ------------------------------------------------------------------------
 
-    public EntityCollection getConnections() {//todo für jede tabelle beide methoden fast identisch
+    public EntityCollection getConnections() {
         final List<Spfli> spflis = mSpfliService.getAllSpflis();
         final List<Entity> connections = spflis.stream().map(DataTransformator::transformSpfliToEntity).collect(Collectors.toList());
         final EntityCollection entitySet = new EntityCollection();

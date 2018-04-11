@@ -22,6 +22,8 @@ import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.uri.UriParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +33,12 @@ import java.util.stream.Collectors;
  *
  */
 public class EntityPlaneService {
+
+    // ------------------------------------------------------------------------
+    // constants
+    // ------------------------------------------------------------------------
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityPlaneService.class);
 
     // ------------------------------------------------------------------------
     // members
@@ -74,12 +82,12 @@ public class EntityPlaneService {
             final String planeType = (String) idProperty.getValue();
 
             if (this.idTaken(planeType)) {
-                //TODO LOG plane already defined in db
+                LOGGER.info("The ID {} is already taken. Sending a payload without an ID will generate a new one.", planeType);
                 return null;
             } else {
                 id = planeType;
             }
-            idProperty.setValue(ValueType.PRIMITIVE, id);//TODO was macht das?
+            idProperty.setValue(ValueType.PRIMITIVE, id);
         } else {
             return null;
         }
@@ -135,8 +143,7 @@ public class EntityPlaneService {
         mSaplaneService.delete(DataTransformator.transformEntityToSaplane(entity));
     }
 
-    public boolean idTaken(String idToCheckIfTaken) {//TODO VErschieben?
-        //TODO use instance of
+    public boolean idTaken(String idToCheckIfTaken) {
         return !StringUtils.isEmpty(idToCheckIfTaken) && mSaplaneService.idTaken(idToCheckIfTaken);
     }
 

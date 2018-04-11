@@ -5,7 +5,7 @@
 // Copyright (c) 2006 - 2018 FORCAM GmbH. All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
 
-package odataservice.service;
+package odataservice.service.request_handling.processors.filter_expression;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.commons.api.data.Entity;
@@ -32,16 +32,14 @@ import java.util.Locale;
 /**
  *
  */
-public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TODO Rückgabewert ändern
-
-    // ------------------------------------------------------------------------
-    // constants
-    // ------------------------------------------------------------------------
+public class FilterExpressionVisitor implements ExpressionVisitor<Object> {
 
     // ------------------------------------------------------------------------
     // members
     // ------------------------------------------------------------------------
+
     private Entity mCurrentEntity;
+
     // ------------------------------------------------------------------------
     // constructors
     // ------------------------------------------------------------------------
@@ -56,7 +54,6 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
 
     @Override
     public Object visitBinaryOperator(BinaryOperatorKind operator, Object left, Object right) throws ExpressionVisitException, ODataApplicationException {
-
         // Binary Operators are split up in three different kinds. Up to the kind of the
         // operator it can be applied to different types
         //   - Arithmetic operations like add, minus, modulo, etc. are allowed on numeric
@@ -64,7 +61,6 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
         //   - Logical operations are allowed on numeric types and also Edm.String
         //   - Boolean operations like and, or are allowed on Edm.Boolean
         // A detailed explanation can be found in OData Version 4.0 Part 2: URL Conventions
-
         if (operator == BinaryOperatorKind.ADD || operator == BinaryOperatorKind.MOD || operator == BinaryOperatorKind.MUL ||
             operator == BinaryOperatorKind.DIV || operator == BinaryOperatorKind.SUB) {
             return evaluateArithmeticOperation(operator, left, right);
@@ -82,9 +78,8 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
 
     @Override
     public Object visitUnaryOperator(UnaryOperatorKind operator, Object operand) throws ExpressionVisitException, ODataApplicationException {
-        // OData allows two different unary operators. We have to take care, that the type of the
-        // operand fits to the operand
-
+        // OData allows two different unary operators.
+        // makes sure that the type of the operand fits to the operand
         if (operator == UnaryOperatorKind.NOT && operand instanceof Boolean) {
             // 1.) boolean negation
             return !(Boolean) operand;
@@ -99,9 +94,6 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
 
     @Override
     public Object visitMethodCall(MethodKind methodCall, List<Object> parameters) throws ExpressionVisitException, ODataApplicationException {
-
-        // To keep this tutorial small and simple, we implement only one method call
-        // contains(String, String) -> Boolean
         if (methodCall == MethodKind.CONTAINS) {
             if (parameters.get(0) instanceof String && parameters.get(1) instanceof String) {
                 String valueParam1 = (String) parameters.get(0);
@@ -127,11 +119,6 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
 
     @Override
     public Object visitLiteral(Literal literal) throws ExpressionVisitException, ODataApplicationException {
-        // To keep this tutorial simple, our filter expression visitor supports only Edm.Int32 and Edm.String
-        // In real world scenarios it can be difficult to guess the type of an literal.
-        // We can be sure, that the literal is a valid OData literal because the URI Parser checks
-        // the lexicographical structure
-
         // String literals start and end with an single quotation mark
         String literalAsString = literal.getText();
         if (literal.getType() instanceof EdmString) {
@@ -142,7 +129,6 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
 
             return stringLiteral;
         } else {
-            // todo Try to convert the literal into an Java Integer?
             try {
                 return Integer.parseInt(literalAsString);
             } catch (NumberFormatException e) {
@@ -151,22 +137,15 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
                                                     Locale.ENGLISH);
             }
         }
-        // As you can see in this little example, it can be difficult to guess the right type. In this tutorial we will focus on Edm.Int32.
-        // In real world scenarios, there is something called “numeric promotion”, which converts numbers to the next higher type.
-        // OData Version 4.0 Part 2: URL Conventions Plus Errata 02
     }
 
     @Override
     public Object visitMember(Member member) throws ExpressionVisitException, ODataApplicationException {
-        // To keeps things simple, this tutorial allows only primitive properties.
-        // We have faith that the java type of Edm.Int32 is Integer
         final UriInfoResource infoResource = member.getResourcePath();
         final List<UriResource> uriResourceParts = infoResource.getUriResourceParts();
 
-        // Make sure that the resource path of the property contains only a single segment and a
-        // primitive property has been addressed. We can be sure, that the property exists because
-        // the UriParser checks if the property has been defined in service metadata document.
-
+        // The UriParser checked already if the property has been defined in the service metadata document
+        // So it is already known here that the property does exist
         if (uriResourceParts.size() == 1 && uriResourceParts.get(0) instanceof UriResourcePrimitiveProperty) {
             UriResourcePrimitiveProperty uriResourceProperty = (UriResourcePrimitiveProperty) uriResourceParts.get(0);
             return mCurrentEntity.getProperty(uriResourceProperty.getProperty().getName()).getValue();
@@ -204,17 +183,11 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
         return null;
     }
 
-    //    @Override
-    //    public Object visitTypeLiteral(EdmType type) throws ExpressionVisitException, ODataApplicationException {
-    //        throw new ODataApplicationException("Type literals are not implemented",
-    //                                            HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ENGLISH);
-    //    }   todo example
-
     private Object evaluateBooleanOperation(BinaryOperatorKind operator, Object left, Object right) throws ODataApplicationException {
         // First check that both operands are of type Boolean
         if (left instanceof Boolean && right instanceof Boolean) {
-            Boolean valueLeft = (Boolean) left;
-            Boolean valueRight = (Boolean) right;
+            final Boolean valueLeft = (Boolean) left;
+            final Boolean valueRight = (Boolean) right;
 
             // Than calculate the result value
             if (operator == BinaryOperatorKind.AND) {
@@ -229,12 +202,9 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
     }
 
     private Object evaluateComparisonOperation(BinaryOperatorKind operator, Object left, Object right) throws ODataApplicationException {
-
-        // All types in our tutorial supports all logical operations, but we have to make sure that
-        // the types are equal
+        // makes sure all the types are equal
         if (left.getClass().equals(right.getClass())) {
-            // Luckily all used types String, Boolean and also Integer support the interface
-            // Comparable
+            // all used types (String, Boolean, and Integer) support the interface Comparable
             int result;
             if (left instanceof Integer) {
                 result = ((Comparable<Integer>) (Integer) left).compareTo((Integer) right);
@@ -269,7 +239,6 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
     }
 
     private Object evaluateArithmeticOperation(BinaryOperatorKind operator, Object left, Object right) throws ODataApplicationException {
-
         // First check if the type of both operands is numerical
         if (left instanceof Integer && right instanceof Integer) {
             Integer valueLeft = (Integer) left;
@@ -292,8 +261,5 @@ public class FilterExpressionVisitor implements ExpressionVisitor<Object> {//TOD
             throw new ODataApplicationException("Arithmetic operations needs two numeric operands", HttpStatusCode.BAD_REQUEST.getStatusCode(), Locale.ENGLISH);
         }
     }
-    // ------------------------------------------------------------------------
-    // getters/setters
-    // ------------------------------------------------------------------------
 
 }

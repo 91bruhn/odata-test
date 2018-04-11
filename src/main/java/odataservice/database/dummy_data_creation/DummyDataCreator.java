@@ -1,4 +1,4 @@
-package odataservice.database.dummys;
+package odataservice.database.dummy_data_creation;
 
 import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;

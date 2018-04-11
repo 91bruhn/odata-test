@@ -24,6 +24,8 @@ import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.uri.UriParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +35,12 @@ import java.util.stream.Collectors;
  *
  */
 public class EntityFlightService {
+
+    // ------------------------------------------------------------------------
+    // constants
+    // ------------------------------------------------------------------------
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityFlightService.class);
 
     // ------------------------------------------------------------------------
     // members
@@ -52,7 +60,7 @@ public class EntityFlightService {
     // methods
     // ------------------------------------------------------------------------
 
-    public EntityCollection getFlights() {//TODO UMWANDLUNG AN DIESER STELLE
+    public EntityCollection getFlights() {
         final List<Sflight> sflights = mSflightService.getAllSflights();
         final List<Entity> flights = sflights.stream().map(DataTransformator::transformSflightToEntity).collect(Collectors.toList());
         final EntityCollection entitySet = new EntityCollection();
@@ -80,8 +88,7 @@ public class EntityFlightService {
             final String flDate = (String) idProperty.getValue();
 
             if (Util.idTaken(flDate, mSflightService)) {
-                //todo tag ist nicht so eindeutig sollte vllt zu normaler var.
-                //TODO LOG plane already defined in db
+                LOGGER.info("The ID {} is already taken. Sending a payload without an ID will generate a new one.",  flDate);
                 return null;
             } else {
                 id = flDate;
@@ -163,7 +170,7 @@ public class EntityFlightService {
     //                           NAVIGATION
     // ========================================================================
 
-    public EntityCollection getFlightsForCarrier(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {//TODO name
+    public EntityCollection getFlightsForCarrier(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
         final String carrierCode = (String) sourceEntity.getProperty(EntityNames.CARRIER_ID).getValue();
         final List<Sflight> sflights = mSflightService.findFlightsByCarrierId(carrierCode);
         final List<Entity> flights = (sflights.stream().map(DataTransformator::transformSflightToEntity).collect(Collectors.toList()));

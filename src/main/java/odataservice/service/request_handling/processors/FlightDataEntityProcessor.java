@@ -173,25 +173,7 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
      * </ul>
      */
     private Entity handleSystemQueryOptions(UriInfo uriInfo, Entity entity, EdmEntitySet edmEntitySet) throws ODataApplicationException {
-        //        List<Entity> entityList = entityCollection.getEntities();
-        Entity responseQueryOptionsEntity;
-
-        //        // handle $count
-        //        final EntityCollection returnEntityCollection = this.processSystemQueryOptionCount(uriInfo, entityList);
-        //        // handle $skip
-        //        entityList = this.processSystemQueryOptionSkip(uriInfo, entityList);
-        //        // handle $top
-        //        entityList = this.processSystemQueryOptionTop(uriInfo, entityList);
-        // handle $expand
-        responseQueryOptionsEntity = this.processSystemQueryOptionExpand(uriInfo, entity, edmEntitySet);
-
-        // after applying the system query options, a new EntityCollection based on the reduced list will be created
-        //        for (Entity entity : entityList) {
-        //            returnEntityCollection.getEntities().add(entity);
-        //        }
-
-        //        return returnEntityCollection;//TODO vllt query options in DB auslagern
-        return responseQueryOptionsEntity;
+        return this.processSystemQueryOptionExpand(uriInfo, entity, edmEntitySet);
     }
 
     private Entity processSystemQueryOptionExpand(UriInfo uriInfo, Entity entity, EdmEntitySet edmEntitySet) throws ODataApplicationException {
@@ -199,9 +181,7 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
 
         if (expandOption != null) {
             // retrieve the EdmNavigationProperty from the expand expression
-            // Note: in our example, we have only one NavigationProperty, so we can directly access it
             EdmNavigationProperty edmNavigationProperty = null;
-//            final ExpandItem expandItem = expandOption.getExpandItems().get(0);//TODO hier vllt wenn mehrere?
 
             for (ExpandItem expandItem : expandOption.getExpandItems()) {
 
@@ -209,7 +189,7 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
                     final List<EdmNavigationPropertyBinding> bindings = edmEntitySet.getNavigationPropertyBindings();
                     // we know that there are navigation bindings
                     if (!bindings.isEmpty()) {
-                        final EdmNavigationPropertyBinding binding = bindings.get(0); //TODO check
+                        final EdmNavigationPropertyBinding binding = bindings.get(0);
                         final EdmElement property = edmEntitySet.getEntityType().getProperty(binding.getPath());
                         // errors don't have to be handled here since the olingo library already does this
                         if (property instanceof EdmNavigationProperty) {
@@ -217,7 +197,7 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
                         }
                     }
                 } else {
-                    final UriResource uriResource = expandItem.getResourcePath().getUriResourceParts().get(0);//todo check
+                    final UriResource uriResource = expandItem.getResourcePath().getUriResourceParts().get(0);
                     // errors don't have to be handled here since the olingo library already does this
                     if (uriResource instanceof UriResourceNavigation) {
                         edmNavigationProperty = ((UriResourceNavigation) uriResource).getProperty();
@@ -234,15 +214,14 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
                     link.setRel(Constants.NS_ASSOCIATION_LINK_REL + navPropName);
 
                     if (edmNavigationProperty.isCollection()) {
-                        // fetches the data for the $expand (to-many navigation) from backend       //Todo storage
+                        // fetches the data for the $expand (to-many navigation) from backend
                         final EntityCollection expandEntityCollection = mNavigationHandler.getRelatedEntityCollection(entity, expandEdmEntityType);
 
                         link.setInlineEntitySet(expandEntityCollection);
 //                        link.setHref(expandEntityCollection.getId().toASCIIString());
                     } else {
-                        // in case of single?? todo
                         // fetches the data for the $expand (to-one navigation) from the backend
-                        final Entity expandEntity = mNavigationHandler.getRelatedEntity(entity, expandEdmEntityType); //TODO storage
+                        final Entity expandEntity = mNavigationHandler.getRelatedEntity(entity, expandEdmEntityType);
                         link.setInlineEntity(expandEntity);
                         link.setHref(expandEntity.getId().toASCIIString());
                     }
@@ -252,7 +231,7 @@ public class FlightDataEntityProcessor implements org.apache.olingo.server.api.p
                 }
             }
         }
-        return entity;//Todo vllt rückgabe anpassen
+        return entity;
     }
 
     /** Create and send response. */

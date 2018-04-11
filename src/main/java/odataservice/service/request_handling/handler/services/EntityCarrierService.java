@@ -148,9 +148,7 @@ public class EntityCarrierService {
     //                           NAVIGATION
     // ========================================================================
 
-    //TODO implementiere um von flügen den dazugehörigen carrier zu bekommen
-    public EntityCollection getCarrierforFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {//TODO name
-        // relation Products->Category (result all categories) todo überarbeite kommentar
+    public EntityCollection getCarrierforFlight(Entity sourceEntity, EntityCollection navigationTargetEntityCollection) {
         final String carrierCode = (String) sourceEntity.getProperty(EntityNames.CARRIER_ID).getValue();
         final Scarr scarr = mScarrService.getById(carrierCode);
         final Entity carrier = DataTransformator.transformScarrToEntity(scarr);

@@ -1,6 +1,6 @@
 package odataservice.service.request_handling.processors;
 
-import odataservice.service.FilterExpressionVisitor;
+import odataservice.service.request_handling.processors.filter_expression.FilterExpressionVisitor;
 import odataservice.service.request_handling.handler.CRUDHandler;
 import odataservice.service.request_handling.handler.NavigationHandler;
 import odataservice.service.util.Util;
@@ -119,10 +119,9 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
 
         final EntityCollection responseEntityCollection = mCRUDHandler.readEntitySetData(startEdmEntitySet);
 
-        //TODO implement query --> über mongo...
-        final FilterOption filterOption = uriInfo.getFilterOption();//todo move
+        final FilterOption filterOption = uriInfo.getFilterOption();
+        // apply $filter system query option
         if (filterOption != null) {
-            // apply $filter system query option
             try {
                 final List<Entity> entityList = responseEntityCollection.getEntities();
                 final Iterator<Entity> entityIterator = entityList.iterator();
@@ -174,7 +173,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
             // from Flights(1) to Carrier
             final EdmEntitySet responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
 
-            // fetch the data from backend
+            // fetch the data from the backend
             final List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
             // e.g. for Flights(3)/Carrier - first, find the single entity: Flights with ID 3
             final Entity sourceEntity = mCRUDHandler.readEntityData(startEdmEntitySet, keyPredicates);
@@ -216,7 +215,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
             returnEntityCollection.getEntities().add(entity);
         }
 
-        return returnEntityCollection;//TODO vllt query options in DB auslagern
+        return returnEntityCollection;
     }
 
     private EntityCollection processSystemQueryOptionCount(UriInfo uriInfo, List<Entity> entityList) {
@@ -273,17 +272,13 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
 
         if (expandOption != null) {
             // retrieve the EdmNavigationProperty from the expand expression
-            // Note: in our example, we have only one NavigationProperty, so we can directly access it
             EdmNavigationProperty edmNavigationProperty = null;
             for (ExpandItem expandItem : expandOption.getExpandItems()) {
 
-                //            final ExpandItem expandItem = expandOption.getExpandItems().get(0);//TODO hier vllt wenn mehrere?
-
                 if (expandItem.isStar()) {
                     final List<EdmNavigationPropertyBinding> bindings = edmEntitySet.getNavigationPropertyBindings();
-                    // we know that there are navigation bindings
                     if (!bindings.isEmpty()) {
-                        final EdmNavigationPropertyBinding binding = bindings.get(0); //TODO check
+                        final EdmNavigationPropertyBinding binding = bindings.get(0);
                         final EdmElement property = edmEntitySet.getEntityType().getProperty(binding.getPath());
                         // errors don't have to be handled here since the olingo library already does this
                         if (property instanceof EdmNavigationProperty) {
@@ -291,7 +286,7 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
                         }
                     }
                 } else {
-                    final UriResource uriResource = expandItem.getResourcePath().getUriResourceParts().get(0);//todo check
+                    final UriResource uriResource = expandItem.getResourcePath().getUriResourceParts().get(0);
                     // errors don't have to be handled here since the olingo library already does this
                     if (uriResource instanceof UriResourceNavigation) {
                         edmNavigationProperty = ((UriResourceNavigation) uriResource).getProperty();
@@ -308,17 +303,15 @@ public class FlightDataEntityCollectionProcessor implements org.apache.olingo.se
                         link.setType(Constants.ENTITY_NAVIGATION_LINK_TYPE);
                         link.setRel(Constants.NS_ASSOCIATION_LINK_REL + navPropName);
 
-                        //todo genauer if collection
                         if (edmNavigationProperty.isCollection()) {
-                            // fetches the data for the $expand (to-many navigation) from backend       //Todo storage
+                            // fetches the data for the $expand (to-many navigation) from backend
                             final EntityCollection expandEntityCollection = mNavigationHandler.getRelatedEntityCollection(entity, expandEdmEntityType);
 
                             link.setInlineEntitySet(expandEntityCollection);
-                            //                            link.setHref(expandEntityCollection.getId().toASCIIString());TODO use maybe Util createId or DataTransformator createId
+                            //                            link.setHref(expandEntityCollection.getId().toASCIIString());
                         } else {
-                            // in case of single?? todo
                             // fetches the data for the $expand (to-one navigation) from the backend
-                            final Entity expandEntity = mNavigationHandler.getRelatedEntity(entity, expandEdmEntityType); //TODO storage
+                            final Entity expandEntity = mNavigationHandler.getRelatedEntity(entity, expandEdmEntityType);
                             link.setInlineEntity(expandEntity);
                             link.setHref(expandEntity.getId().toASCIIString());
                         }

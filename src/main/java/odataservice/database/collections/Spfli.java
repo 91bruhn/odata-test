@@ -83,7 +83,7 @@ public class Spfli {
     private UnitOfLength distId;
 
     @Property(SPFLI_FLTYPE)
-    private String flType;//boolean?
+    private String flType;
 
     @Property(SPFLI_PERIOD)
     private int period;
