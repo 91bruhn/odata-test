@@ -8,7 +8,7 @@
 package odataservice.service.request_handling.handler.services;
 
 import odataservice.database.collections.Saplane;
-import odataservice.database.service.DataTransformator;
+import odataservice.database.util.DataTransformator;
 import odataservice.database.service.SaplaneService;
 import odataservice.service.entities.definitions.EntityNames;
 import odataservice.service.util.Util;

@@ -1,6 +1,6 @@
 package odataservice.web;
 
-import odataservice.database.dummy_data_creation.DummyDataCreator;
+import odataservice.database.util.DummyDataCreator;
 import odataservice.service.request_handling.handler.CRUDHandler;
 import odataservice.service.request_handling.handler.NavigationHandler;
 import odataservice.service.request_handling.processors.FlightDataEdmProvider;

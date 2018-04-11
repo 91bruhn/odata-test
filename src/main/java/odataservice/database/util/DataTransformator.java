@@ -1,4 +1,4 @@
-package odataservice.database.service;
+package odataservice.database.util;
 
 import odataservice.database.collections.Saplane;
 import odataservice.database.collections.Sbook;

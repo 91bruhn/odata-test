@@ -11,7 +11,7 @@ import odataservice.database.collections.Saplane;
 import odataservice.database.collections.Scarr;
 import odataservice.database.collections.Sflight;
 import odataservice.database.collections.Spfli;
-import odataservice.database.service.DataTransformator;
+import odataservice.database.util.DataTransformator;
 import odataservice.database.service.SflightService;
 import odataservice.service.entities.definitions.EntityNames;
 import odataservice.service.util.Util;

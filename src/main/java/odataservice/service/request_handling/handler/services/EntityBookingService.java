@@ -11,7 +11,7 @@ import odataservice.database.collections.Sbook;
 import odataservice.database.collections.Scarr;
 import odataservice.database.collections.Sflight;
 import odataservice.database.collections.Spfli;
-import odataservice.database.service.DataTransformator;
+import odataservice.database.util.DataTransformator;
 import odataservice.database.service.SbookService;
 import odataservice.service.util.Util;
 import org.apache.commons.lang3.StringUtils;

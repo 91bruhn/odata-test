@@ -8,7 +8,7 @@
 package odataservice.service.request_handling.handler.services;
 
 import odataservice.database.collections.Scarr;
-import odataservice.database.service.DataTransformator;
+import odataservice.database.util.DataTransformator;
 import odataservice.database.service.ScarrService;
 import odataservice.service.entities.definitions.EntityNames;
 import odataservice.service.util.Util;
