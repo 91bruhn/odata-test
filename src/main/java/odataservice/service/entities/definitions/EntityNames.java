@@ -68,7 +68,7 @@ public class EntityNames {
     public static final String ES_SBOOK_NAME = "Bookings";
 
     // ========================================================================
-    //                        CARRIER ENTITY ATTRIBUTES
+    //                        KEY PARAMETERS OF ENTITIES
     // ========================================================================
 
     public static final String CARRIER_ID = "CarrierCode";
